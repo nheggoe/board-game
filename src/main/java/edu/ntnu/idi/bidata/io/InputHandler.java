@@ -12,8 +12,6 @@ import java.util.Scanner;
  */
 public class InputHandler {
 
-  private static final InputHandler INPUT_HANDLER = new InputHandler();
-
   private final Scanner scanner;
 
   /**
@@ -22,8 +20,12 @@ public class InputHandler {
    * It is private to enforce the singleton design pattern, allowing only one
    * instance of the InputHandler to be created.
    */
-  private InputHandler() {
-    scanner = new Scanner(System.in);
+  public InputHandler() {
+    this(new Scanner(System.in));
+  }
+
+  public InputHandler(Scanner scanner) {
+    this.scanner = scanner;
   }
 
   /**
@@ -46,25 +48,23 @@ public class InputHandler {
   }
 
   /**
-   * Provides a singleton instance of the InputHandler class.
-   *
-   * @return The singleton instance of InputHandler.
-   */
-  public static InputHandler getInstance() {
-    return INPUT_HANDLER;
-  }
-
-  /**
    * Reads a line of input from the scanner, trims any leading or trailing whitespace,
    * and validates the input to ensure it is not null or blank.
    *
    * @return A non-empty, trimmed string of user input.
    * @throws IllegalArgumentException If the input is null or blank.
    */
-  private String nextLine() {
+  public String nextLine() {
+    assertEmptyLine();
     String input = scanner.nextLine().strip();
     assertInput(input);
     return input;
+  }
+
+  private void assertEmptyLine() {
+    if (!scanner.hasNextLine()) {
+      throw new IllegalArgumentException("The is problem");
+    }
   }
 
   /**
