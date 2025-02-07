@@ -72,5 +72,9 @@ public class Player {
     return currentTile;
   }
 
+  public Board getBoard() {
+    return board;
+  }
+
 
 }

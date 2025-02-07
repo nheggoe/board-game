@@ -33,7 +33,12 @@ public class Board {
     for (int i = 0; i < 90; i++) {
       tiles.add(new Tiles(i, i == 0 ? "Start" : "Tile " + (i+1)));
     }
+
+    new LadderAction(tiles.get(5));
+    new LadderAction(tiles.get(25));
   }
+
+
 
   /**
    * Retrieves a tile at the provided position.
