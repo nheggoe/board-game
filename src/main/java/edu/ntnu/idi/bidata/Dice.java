@@ -8,7 +8,7 @@ import java.util.Random;
  * Uses Singleton in order to ensure non-biased dice rolls.
  *
  * @author Mihailo Hranisavljevic
- * @version 07.02.2025
+ * @version 2025.02.07
  */
 public class Dice {
   private static Dice instance;

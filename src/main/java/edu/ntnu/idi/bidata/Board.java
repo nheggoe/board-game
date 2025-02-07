@@ -9,7 +9,7 @@ import java.util.List;
  * predefined set of tiles.
  *
  * @author Mihailo Hranisavljevic
- * @version 07.02.2025
+ * @version 2025.02.07
  */
 public class Board {
   /**
@@ -48,4 +48,14 @@ public class Board {
     }
     return tiles.get(position);
   }
+  /**
+   * Returns the total number of tiles.
+   *
+   * @return the number of tiles
+   */
+  public int getNumberOfTiles(){
+    return tiles.size();
+  }
+
+
 }
