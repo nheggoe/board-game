@@ -13,18 +13,9 @@ package edu.ntnu.idi.bidata.io;
  * @version 2025.01.29
  */
 public class OutputHandler {
-  private static final OutputHandler OUTPUT_HANDLER = new OutputHandler();
 
-  private OutputHandler() {
-  }
-
-  /**
-   * Provides a singleton instance of the OutputHandler class.
-   *
-   * @return The singleton instance of OutputHandler.
-   */
-  public static OutputHandler getInstance() {
-    return OUTPUT_HANDLER;
+  public OutputHandler() {
+    // default constructor
   }
 
   /**
@@ -35,6 +26,14 @@ public class OutputHandler {
    */
   public void println(String s) {
     System.out.println(s);
+  }
+
+  public void print(String s) {
+    System.out.print(s);
+  }
+
+  public void printInputPrompt() {
+    print("> ");
   }
 
 }
