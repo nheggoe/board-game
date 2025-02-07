@@ -31,7 +31,7 @@ public class Board {
    */
   private void initializeBoard(){
     for (int i = 0; i < 90; i++) {
-      tiles.add(new Tiles(i, i == 0 ? "Start" : "Tile " + i));
+      tiles.add(new Tiles(i, i == 0 ? "Start" : "Tile " + (i+1)));
     }
   }
 
