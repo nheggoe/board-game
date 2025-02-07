@@ -2,6 +2,7 @@ package edu.ntnu.idi.bidata.io;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
@@ -37,6 +38,7 @@ class InputHandlerTest {
    * rejects empty input by throwing the expected exception.
    */
   @Test
+  @Disabled("Allowed for enter only (empty line)")
   void emptyLineNegativeTest() {
     System.setIn(new ByteArrayInputStream("".getBytes()));
     InputHandler inputHandler = new InputHandler();
