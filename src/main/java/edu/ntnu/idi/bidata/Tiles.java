@@ -5,7 +5,7 @@ package edu.ntnu.idi.bidata;
  * Each tile has a unique position and a name.
  *
  * @author Mihailo
- * @version 07.02.2025
+ * @version 2025.02.07
  */
 public class Tiles {
   // The name of the tile.
