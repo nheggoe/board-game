@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class DiceTest {
-  
+
   @Test
   void testSingletonInstance(){
     Dice firstInstance = Dice.getInstance();
@@ -23,8 +23,8 @@ class DiceTest {
   @Test
   void testIsDouble() {
     Dice dice = Dice.getInstance();
-    assertTrue(dice.isDouble(new int[]{3, 3}));
-    assertFalse(dice.isDouble(new int[]{3, 4}));
+    assertTrue(dice.areDiceEqual(new int[]{3, 3}));
+    assertFalse(dice.areDiceEqual(new int[]{3, 4}));
   }
 
   @Test

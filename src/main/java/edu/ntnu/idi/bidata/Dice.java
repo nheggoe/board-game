@@ -6,6 +6,9 @@ import java.util.Random;
  * Singleton class representing a die with two six-sided dice.
  * Uses lazy initialization to ensure only one instance is created when needed.
  * Uses Singleton in order to ensure non-biased dice rolls.
+ *
+ * @author Mihailo Hranisavljevic
+ * @version 07.02.2025
  */
 public class Dice {
   private static Dice instance;
@@ -48,7 +51,7 @@ public class Dice {
    * @param diceRoll an array of two integers representing the dice roll
    * @return true if both dice have the same value, false otherwise
    */
-  public boolean isDouble(int[] diceRoll) {
+  public boolean areDiceEqual(int[] diceRoll) {
     return diceRoll[0] == diceRoll[1];
   }
 
