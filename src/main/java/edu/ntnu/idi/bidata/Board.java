@@ -9,7 +9,7 @@ import java.util.List;
  * predefined set of tiles.
  *
  * @author Mihailo Hranisavljevic
- * @version 07.02.2025
+ * @version 2025.02.07
  */
 public class Board {
   /**
