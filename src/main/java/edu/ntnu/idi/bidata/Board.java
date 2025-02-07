@@ -48,4 +48,14 @@ public class Board {
     }
     return tiles.get(position);
   }
+  /**
+   * Returns the total number of tiles.
+   *
+   * @return the number of tiles
+   */
+  public int getNumberOfTiles(){
+    return tiles.size();
+  }
+
+
 }
