@@ -1,27 +1,44 @@
 package edu.ntnu.idi.bidata;
 
+/**
+ * The {@code Tiles} class represents a tile on the board.
+ * Each tile has a unique position and a name.
+ *
+ * @author Mihailo
+ * @version 07.02.2025
+ */
 public class Tiles {
-  int x;
-  int y;
+  // The name of the tile.
+  private String name;
+  // The position of the tile on the board.
+  private int position;
 
-  public Tiles(int x, int y){
-    this.x = x;
-    this.y = y;
+  /**
+   * Constructs a new tile with a position and a name.
+   *
+   * @param position the position of the tile
+   * @param name the name of the tile
+   */
+  public Tiles(int position, String name) {
+   setName(name);
+   setPosition(position);
   }
 
-  public int getY() {
-    return y;
+  // Getters and setters
+
+  public int getPosition() {
+    return position;
   }
 
-  public void setY(int y) {
-    this.y = y;
+  public void setPosition(int position) {
+    this.position = position;
   }
 
-  public int getX() {
-    return x;
+  public String getName() {
+    return name;
   }
 
-  public void setX(int x) {
-    this.x = x;
+  public void setName(String name) {
+      this.name = name;
   }
 }
