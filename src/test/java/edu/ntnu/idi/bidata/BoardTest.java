@@ -1,5 +1,7 @@
 package edu.ntnu.idi.bidata;
 
+import edu.ntnu.idi.bidata.core.Board;
+import edu.ntnu.idi.bidata.core.Tile;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,12 +18,12 @@ class BoardTest {
   @Test
   void getTile() {
     Board board = new Board();
-    Tiles tile = board.getTile(0);
+    Tile tile = board.getTile(0);
     assertNotNull(tile);
     assertEquals(0, tile.getPosition());
     assertEquals("Start", tile.getName());
 
-    Tiles tileLast = board.getTile(89);
+    Tile tileLast = board.getTile(89);
     assertNotNull(tileLast);
     assertEquals(89, tileLast.getPosition());
     assertEquals("Tile 90", tileLast.getName());

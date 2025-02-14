@@ -1,5 +1,6 @@
 package edu.ntnu.idi.bidata;
 
+import edu.ntnu.idi.bidata.core.Dice;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -15,9 +16,8 @@ class DiceTest {
   @Test
   void testRollWithinRange() {
     Dice dice = Dice.getInstance();
-    int[] roll = dice.roll();
-    assertTrue(roll[0] >= 1 && roll[0] <= 6);
-    assertTrue(roll[1] >= 1 && roll[1] <= 6);
+    int roll = dice.roll();
+    assertTrue(roll >= 2 && roll <= 12);
   }
 
   @Test

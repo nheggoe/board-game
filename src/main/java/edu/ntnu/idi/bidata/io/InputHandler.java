@@ -8,7 +8,7 @@ import java.util.Scanner;
  * using a singleton design pattern to ensure a single instance of the class.
  *
  * @author Nick Heggø
- * @version 2025.01.29
+ * @version 2025.02.07
  */
 public class InputHandler {
 
@@ -24,6 +24,13 @@ public class InputHandler {
     this(new Scanner(System.in));
   }
 
+  /**
+   * Constructs an instance of the InputHandler with a specified Scanner object.
+   * This constructor is used for testing purposes to provide a mock Scanner object
+   * for input simulation.
+   *
+   * @param scanner The Scanner object to use for reading input.
+   */
   public InputHandler(Scanner scanner) {
     this.scanner = scanner;
   }
@@ -56,9 +63,7 @@ public class InputHandler {
    */
   public String nextLine() {
     assertEmptyLine();
-    String input = scanner.nextLine().strip();
-    assertInput(input);
-    return input;
+    return scanner.nextLine().strip();
   }
 
   private void assertEmptyLine() {

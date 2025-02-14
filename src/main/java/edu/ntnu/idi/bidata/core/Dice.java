@@ -1,4 +1,4 @@
-package edu.ntnu.idi.bidata;
+package edu.ntnu.idi.bidata.core;
 
 import java.util.Random;
 
@@ -39,10 +39,10 @@ public class Dice {
    *
    * @return an array containing two integers representing the dice roll
    */
-  public int[] roll() {
+  public int roll() {
     int die1 = random.nextInt(6) + 1;
     int die2 = random.nextInt(6) + 1;
-    return new int[]{die1, die2};
+    return getTotal(new int[]{die1, die2});
   }
 
   /**
