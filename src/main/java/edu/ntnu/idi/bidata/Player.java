@@ -45,7 +45,7 @@ public class Player {
    * @param steps the number of steps to move forward
    */
   public void move(int steps) {
-    int newPosition = Math.clamp((int) ((long) currentTile.getPosition() + steps), 0, board.getNumberOfTiles() - 1);
+    int newPosition = Math.clamp((currentTile.getPosition() + steps), 0, board.getNumberOfTiles() - 1);
     Tiles newTile = board.getTile(newPosition);
     placeOnTile(newTile);
     newTile.landPlayer(this);
