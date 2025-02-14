@@ -38,6 +38,7 @@ public class Board {
     tiles.get(10).setLandAction(new SnakeAction());
     tiles.get(25).setLandAction(new LadderAction());
     tiles.get(30).setLandAction(new SnakeAction());
+    tiles.get(89).setLandAction(new ResetAction());
 
   }
 
