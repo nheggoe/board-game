@@ -8,7 +8,7 @@ import java.util.Scanner;
  * using a singleton design pattern to ensure a single instance of the class.
  *
  * @author Nick Heggø
- * @version 2025.01.29
+ * @version 2025.02.07
  */
 public class InputHandler {
 
@@ -56,9 +56,7 @@ public class InputHandler {
    */
   public String nextLine() {
     assertEmptyLine();
-    String input = scanner.nextLine().strip();
-    assertInput(input);
-    return input;
+    return scanner.nextLine().strip();
   }
 
   private void assertEmptyLine() {

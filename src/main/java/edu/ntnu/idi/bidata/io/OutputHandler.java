@@ -10,7 +10,7 @@ package edu.ntnu.idi.bidata.io;
  * management of output operations.
  *
  * @author Nick Heggø
- * @version 2025.01.29
+ * @version 2025.02.07
  */
 public class OutputHandler {
 
@@ -28,10 +28,20 @@ public class OutputHandler {
     System.out.println(s);
   }
 
+  /**
+   * Prints the specified string to the standard output stream without a newline.
+   *
+   * @param s The string to be printed to the console.
+   */
   public void print(String s) {
     System.out.print(s);
   }
 
+  /**
+   * Prints a prompt symbol ("> ") to the standard output stream.
+   * This is typically used to indicate that the system is ready to receive input
+   * from the user.
+   */
   public void printInputPrompt() {
     print("> ");
   }

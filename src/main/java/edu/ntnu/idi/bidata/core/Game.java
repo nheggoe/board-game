@@ -1,6 +1,8 @@
 package edu.ntnu.idi.bidata.core;
 
+import edu.ntnu.idi.bidata.Board;
 import edu.ntnu.idi.bidata.Dice;
+import edu.ntnu.idi.bidata.Player;
 import edu.ntnu.idi.bidata.io.InputHandler;
 import edu.ntnu.idi.bidata.io.OutputHandler;
 
@@ -16,13 +18,22 @@ import java.util.List;
  * @version 2025.02.07
  */
 public class Game {
-  private boolean running = true;
+
   private final InputHandler inputHandler;
   private final OutputHandler outputHandler;
+  private final List<Player> players;
+  private final Board board;
+  private final Dice dice;
+
+  private boolean running = true;
+  private int roundNumber = 1;
 
   public Game() {
     inputHandler = new InputHandler();
     outputHandler = new OutputHandler();
+    players = new ArrayList<>();
+    board = new Board();
+    dice = Dice.getInstance();
   }
 
   public void run() {
@@ -32,17 +43,15 @@ public class Game {
 
   private void gameStartSetup() {
     outputHandler.println("Please enter the amount of player that are playing the game:");
+    outputHandler.printInputPrompt();
     int numberOfPlayers = Integer.parseInt(inputHandler.nextLine());
-    List<String> nameOfPlayers = new ArrayList<>();
     for (int i = 0; i < numberOfPlayers; i++) {
       outputHandler.println("Please enter the name for player %d:".formatted(i + 1));
       outputHandler.printInputPrompt();
-      nameOfPlayers.add(inputHandler.collectValidString());
+      players.add(new Player(inputHandler.collectValidString(), board));
     }
     outputHandler.println("The following players are playing the game");
-    for (String name : nameOfPlayers) {
-      outputHandler.println("Player: %s".formatted(name));
-    }
+    printPlayerLocation();
   }
 
   private boolean validateExitString(String s) {
@@ -72,10 +81,12 @@ public class Game {
   private void engine() {
     while (running) {
       try {
-        outputHandler.println("Press enter to go to the next round");
-        inputHandler.nextLine();
-        if (!validateExitString(inputHandler.nextLine())) {
-          Dice.getInstance().roll();
+        outputHandler.println("Press enter to go to the next round or exit to exit");
+        String input = inputHandler.nextLine();
+        if (!validateExitString(input)) {
+          outputHandler.println("Round %d:".formatted(roundNumber++));
+          players.forEach(player -> player.move(dice.roll()));
+          printPlayerLocation();
         } else {
           this.terminate();
         }
@@ -83,5 +94,15 @@ public class Game {
         System.out.println(e.getMessage());
       }
     }
+  }
+
+  private void printPlayerLocation() {
+    players.stream()
+      .map(player -> "Player %s on tile %d"
+        .formatted(
+          player.getName(),
+          player.getCurrentTile().getPosition() + 1
+        )
+      ).forEach(outputHandler::println);
   }
 }
