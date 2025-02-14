@@ -17,7 +17,6 @@ class DiceTest {
     Dice dice = Dice.getInstance();
     int roll = dice.roll();
     assertTrue(roll >= 2 && roll <= 12);
-    assertTrue(roll >= 2 && roll <= 12);
   }
 
   @Test

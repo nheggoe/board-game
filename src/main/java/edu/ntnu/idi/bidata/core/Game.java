@@ -85,7 +85,7 @@ public class Game {
         String input = inputHandler.nextLine();
         if (!validateExitString(input)) {
           outputHandler.println("Round %d:".formatted(roundNumber++));
-          players.forEach(player -> player.move(dice.roll()));
+          players.forEach(player -> player.move(dice.roll(), board));
           printPlayerLocation();
         } else {
           this.terminate();
@@ -105,4 +105,5 @@ public class Game {
         )
       ).forEach(outputHandler::println);
   }
+
 }

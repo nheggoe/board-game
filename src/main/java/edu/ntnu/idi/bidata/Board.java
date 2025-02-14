@@ -9,7 +9,7 @@ import java.util.List;
  * predefined set of tiles.
  *
  * @author Mihailo Hranisavljevic
- * @version 2025.02.07
+ * @version 2025.02.14
  */
 public class Board {
   /**
@@ -34,10 +34,10 @@ public class Board {
       tiles.add(new Tiles(i, i == 0 ? "Start" : "Tile " + (i+1)));
     }
 
-    tiles.get(5).setLandAction(new LadderAction(tiles.get(5)));
-    tiles.get(10).setLandAction(new SnakeAction(tiles.get(10)));
-    tiles.get(25).setLandAction(new LadderAction(tiles.get(25)));
-    tiles.get(30).setLandAction(new SnakeAction(tiles.get(30)));
+    tiles.get(5).setLandAction(new LadderAction());
+    tiles.get(10).setLandAction(new SnakeAction());
+    tiles.get(25).setLandAction(new LadderAction());
+    tiles.get(30).setLandAction(new SnakeAction());
 
   }
 

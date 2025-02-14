@@ -43,9 +43,9 @@ public class Tiles {
    *
    * @param player the player landing on the tile
    */
-  public void landPlayer(Player player) {
+  public void landPlayer(Player player, Board board) {
     if (landAction != null) {
-      landAction.perform(player);
+      landAction.perform(player, board);
       player.placeOnTile(this);
     }
   }

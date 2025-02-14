@@ -5,8 +5,8 @@ package edu.ntnu.idi.bidata;
  * when a player gets to a specific tile on the board.
  *
  * @author Mihailo Hranisavljevic
- * @version 2025.02.13
+ * @version 2025.02.14
  */
 public interface TileAction {
-  void perform(Player player);
+  void perform(Player player, Board board);
 }
