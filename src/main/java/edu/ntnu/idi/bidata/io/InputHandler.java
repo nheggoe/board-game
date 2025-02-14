@@ -24,6 +24,13 @@ public class InputHandler {
     this(new Scanner(System.in));
   }
 
+  /**
+   * Constructs an instance of the InputHandler with a specified Scanner object.
+   * This constructor is used for testing purposes to provide a mock Scanner object
+   * for input simulation.
+   *
+   * @param scanner The Scanner object to use for reading input.
+   */
   public InputHandler(Scanner scanner) {
     this.scanner = scanner;
   }

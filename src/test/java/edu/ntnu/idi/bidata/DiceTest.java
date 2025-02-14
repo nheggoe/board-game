@@ -1,5 +1,6 @@
 package edu.ntnu.idi.bidata;
 
+import edu.ntnu.idi.bidata.core.Dice;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 

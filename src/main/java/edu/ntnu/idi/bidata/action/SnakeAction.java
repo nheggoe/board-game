@@ -1,4 +1,7 @@
-package edu.ntnu.idi.bidata;
+package edu.ntnu.idi.bidata.action;
+
+import edu.ntnu.idi.bidata.core.Board;
+import edu.ntnu.idi.bidata.core.Player;
 
 /**
  * The {@code SnakeAction} class represents an action that moves the player 10 tiles backwards.
@@ -7,14 +10,17 @@ package edu.ntnu.idi.bidata;
  * @author Mihailo Hranisavljevic
  * @version 2025.02.14
  */
-public class SnakeAction implements TileAction{
+public class SnakeAction implements TileAction {
 
+  /**
+   * Constructs a new SnakeAction.
+   */
   public SnakeAction() {
     // default constructor
   }
 
   /**
-   * Moves the player 10 tiles backwards
+   * Moves the player 10 tiles backwards.
    *
    * @param player the player landing on the tile
    */

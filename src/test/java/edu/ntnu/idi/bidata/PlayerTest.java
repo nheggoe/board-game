@@ -1,5 +1,7 @@
 package edu.ntnu.idi.bidata;
 
+import edu.ntnu.idi.bidata.core.Board;
+import edu.ntnu.idi.bidata.core.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

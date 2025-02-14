@@ -4,7 +4,7 @@ package edu.ntnu.idi.bidata.io;
  * The OutputHandler class is responsible for outputting messages to the standard
  * output stream. It currently acts as a temporary solution for handling console-based
  * output and may transition to a graphical user interface (GUI) in the future.
- *
+ * <p>
  * This class employs the singleton design pattern to ensure that only one instance
  * of OutputHandler exists throughout the application. This ensures centralized
  * management of output operations.
