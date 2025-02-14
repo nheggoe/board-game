@@ -13,7 +13,7 @@ public class Player {
   // The tile where the player is currently located
   private Tiles currentTile;
   // The board on which the player is moving
-  private final Board board;
+  private final Board board = new Board();
 
   /**
    * Constructs a new player with the specified name and places them
@@ -24,7 +24,6 @@ public class Player {
    */
   public Player(String name, Board board) {
     setName(name);
-    this.board = board;
     // Place the player on the "start" tile
     placeOnTile(board.getTile(0));
   }
@@ -45,7 +44,7 @@ public class Player {
    * @param steps the number of steps to move forward
    */
   public void move(int steps) {
-    int newPosition = Math.clamp((int) ((long) currentTile.getPosition() + steps), 0, board.getNumberOfTiles() - 1);
+    int newPosition = Math.clamp((int)(long)currentTile.getPosition() + steps, 0, board.getNumberOfTiles() - 1);
     Tiles newTile = board.getTile(newPosition);
     placeOnTile(newTile);
     newTile.landPlayer(this);
@@ -69,9 +68,6 @@ public class Player {
     return currentTile;
   }
 
-  public Board getBoard() {
-    return board;
-  }
 
 
 }
