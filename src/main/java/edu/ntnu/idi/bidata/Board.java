@@ -34,8 +34,11 @@ public class Board {
       tiles.add(new Tiles(i, i == 0 ? "Start" : "Tile " + (i+1)));
     }
 
-    new LadderAction(tiles.get(5));
-    new LadderAction(tiles.get(25));
+    tiles.get(5).setLandAction(new LadderAction(tiles.get(5)));
+    tiles.get(10).setLandAction(new SnakeAction(tiles.get(10)));
+    tiles.get(25).setLandAction(new LadderAction(tiles.get(25)));
+    tiles.get(30).setLandAction(new SnakeAction(tiles.get(30)));
+
   }
 
 

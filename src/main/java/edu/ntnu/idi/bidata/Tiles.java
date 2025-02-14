@@ -44,10 +44,12 @@ public class Tiles {
    * @param player the player landing on the tile
    */
   public void landPlayer(Player player) {
-    if(landAction != null){
+    if (landAction != null) {
       landAction.perform(player);
+      player.placeOnTile(this);
     }
   }
+
 
   // Getters and setters
 

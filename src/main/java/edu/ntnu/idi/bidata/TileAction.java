@@ -3,6 +3,9 @@ package edu.ntnu.idi.bidata;
 /**
  * The {@code TileAction} interface represents an action that can be performed
  * when a player gets to a specific tile on the board.
+ *
+ * @author Mihailo Hranisavljevic
+ * @version 2025.02.13
  */
 public interface TileAction {
   void perform(Player player);

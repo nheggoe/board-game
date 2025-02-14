@@ -40,20 +40,17 @@ public class Player {
 
   /**
    * Moves the player forward by the number of steps.
+   * Activates the action of the tile where the player lands.
    *
    * @param steps the number of steps to move forward
    */
   public void move(int steps) {
-    int newPosition = currentTile.getPosition() + steps;
-
-    if (newPosition >= board.getNumberOfTiles()) {
-      newPosition = board.getNumberOfTiles() - 1;
-    } else if (newPosition < 0) {
-      newPosition = 0;
-    }
-
-    placeOnTile(board.getTile(newPosition));
+    int newPosition = Math.clamp((int) ((long) currentTile.getPosition() + steps), 0, board.getNumberOfTiles() - 1);
+    Tiles newTile = board.getTile(newPosition);
+    placeOnTile(newTile);
+    newTile.landPlayer(this);
   }
+
 
 
   public String getName() {
