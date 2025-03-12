@@ -45,17 +45,26 @@ public class Game {
   }
 
   private void gameStartSetup() {
-    outputHandler.println("Please enter the amount of player that are playing the game:");
+    outputHandler.println("Please enter the number of players:");
     outputHandler.printInputPrompt();
     int numberOfPlayers = Integer.parseInt(inputHandler.nextLine());
+
     for (int i = 0; i < numberOfPlayers; i++) {
       outputHandler.println("Please enter the name for player %d:".formatted(i + 1));
       outputHandler.printInputPrompt();
-      players.add(new Player(inputHandler.collectValidString(), board));
+      String name = inputHandler.collectValidString();
+
+      outputHandler.println("Please choose a figure for player %d:".formatted(i + 1));
+      outputHandler.printInputPrompt();
+      String figure = inputHandler.collectValidString();
+
+      players.add(new Player(name, board, figure));
     }
+
     outputHandler.println("The following players are playing the game");
     printPlayerLocation();
   }
+
 
   private boolean validateExitString(String s) {
     return s.equalsIgnoreCase("exit");
