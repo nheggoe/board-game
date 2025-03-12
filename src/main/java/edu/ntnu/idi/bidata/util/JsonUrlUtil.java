@@ -24,7 +24,9 @@ public class JsonUrlUtil {
     if (obj == null) {
       throw new IllegalArgumentException("Object cannot be null");
     }
-    return "src/main/resources/json/%s.json".formatted(obj.getClass().getSimpleName());
+    return isTest
+        ? "src/test/resources/json/%s.json".formatted(obj.getClass().getSimpleName())
+        : "src/main/resources/json/%s.json".formatted(obj.getClass().getSimpleName());
   }
 
   /**
@@ -35,6 +37,8 @@ public class JsonUrlUtil {
    * @return the file path to the JSON resource corresponding to the class name
    */
   public static <T> String getJsonFilePath(Class<T> clazz, boolean isTest) {
-    return "src/main/resources/json/%s.json".formatted(clazz.getSimpleName());
+    return isTest
+        ? "src/test/resources/json/%s.json".formatted(clazz.getSimpleName())
+        : "src/main/resources/json/%s.json".formatted(clazz.getSimpleName());
   }
 }
