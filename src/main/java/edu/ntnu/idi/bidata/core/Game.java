@@ -7,9 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The {@code Game} class represents a simple text-based interactive game.
- * The game continuously runs in a loop until the user decides to exit by providing
- * specific input ("yes" or "y").
+ * The {@link Game} class represents a simple text-based interactive game. The game continuously
+ * runs in a loop until the user decides to exit by providing specific input ("yes" or "y").
  *
  * @author Nick Heggø
  * @version 2025.02.14
@@ -25,9 +24,7 @@ public class Game {
   private boolean running = true;
   private int roundNumber = 1;
 
-  /**
-   * Constructs a new game with an input handler, output handler, and a list of players.
-   */
+  /** Constructs a new game with an input handler, output handler, and a list of players. */
   public Game() {
     inputHandler = new InputHandler();
     outputHandler = new OutputHandler();
@@ -36,9 +33,7 @@ public class Game {
     dice = Dice.getInstance();
   }
 
-  /**
-  * The public interface of the program, main entry.
-  */
+  /** The public interface of the program, main entry. */
   public void run() {
     gameStartSetup();
     engine();
@@ -62,24 +57,24 @@ public class Game {
   }
 
   /**
-   * Terminates the current game loop by setting the {@code running} flag to {@code false}.
-   * This effectively signals the game engine to stop processing further iterations.
+   * Terminates the current game loop by setting the {@code running} flag to {@code false}. This
+   * effectively signals the game engine to stop processing further iterations.
    */
   private void terminate() {
     running = false;
   }
 
   /**
-   * Represents the core loop of the game engine that continuously processes user input
-   * until a termination condition is met. The loop reads input from the user, validates it,
-   * and terminates the game if the input matches the exit condition.
-   * <p>
-   * If an invalid input is detected during the validation process, an appropriate error
-   * message is displayed to the user.
-   * <p>
-   * The method relies on:
-   * - {@code validateExitString(String)} to determine if the termination condition is met.
-   * - {@code terminate()} to stop the game loop by setting the {@code running} flag to false.
+   * Represents the core loop of the game engine that continuously processes user input until a
+   * termination condition is met. The loop reads input from the user, validates it, and terminates
+   * the game if the input matches the exit condition.
+   *
+   * <p>If an invalid input is detected during the validation process, an appropriate error message
+   * is displayed to the user.
+   *
+   * <p>The method relies on: - {@code validateExitString(String)} to determine if the termination
+   * condition is met. - {@code terminate()} to stop the game loop by setting the {@code running}
+   * flag to false.
    */
   private void engine() {
     while (running) {
@@ -95,47 +90,48 @@ public class Game {
           this.terminate();
         }
       } catch (IllegalArgumentException e) {
-        System.out.println(e.getMessage());
+        outputHandler.println(e.getMessage());
       }
     }
   }
 
   /**
-  * Check if the player has reached the winning tile,
-  * if yes, announce the winner and end the game.
-  */
+   * Check if the player has reached the winning tile, if yes, announce the winner and end the game.
+   */
   private void checkWinningStatus() {
-    players.forEach(player -> {
-      if (player.getCurrentTile().equals(board.getWinningTile())) {
-        outputHandler.println("%s has won the game!".formatted(player.getName()));
-        running = false;
-      }
-    });
+    players.forEach(
+        player -> {
+          if (player.getCurrentTile().equals(board.getWinningTile())) {
+            outputHandler.println("%s has won the game!".formatted(player.getName()));
+            running = false;
+          }
+        });
   }
 
-  /**
-  * Updates the player position, and ran the tile actions.
-  */
+  /** Updates the player position and ran the tile actions. */
   private void updatePlayerPosition() {
     players.forEach(player -> player.move(dice.roll(), board));
-    players.forEach(player -> {
-      TileAction action = player.getCurrentTile().getLandAction();
-      if (action != null) {
-        action.perform(player, board);
-      }
-    });
+    players.forEach(
+        player -> {
+          TileAction action = player.getCurrentTile().getLandAction();
+          if (action != null) {
+            action.perform(player, board);
+          }
+        });
   }
 
   /**
-  * Print the current player position using the {@link OutputHandler}
-  */
+   * Prints the current location of all players in the game. Gets the player's name and its current
+   * position on the board.
+   */
   private void printPlayerLocation() {
     players.stream()
-        .map(player -> "Player %s on tile %d"
-            .formatted(
-                player.getName(),
-                player.getCurrentTile().getPosition() + 1
-            )
-        ).forEach(outputHandler::println);
+        .map(
+            player ->
+                "Player %s on tile %d"
+                    .formatted(
+                        player.getName(),
+                        player.getCurrentTile().getPosition() + 1)) // human index start at 1
+        .forEach(outputHandler::println);
   }
 }

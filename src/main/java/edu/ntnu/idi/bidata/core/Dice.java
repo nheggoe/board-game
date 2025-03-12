@@ -3,9 +3,8 @@ package edu.ntnu.idi.bidata.core;
 import java.util.Random;
 
 /**
- * Singleton class representing a die with two six-sided dice.
- * Uses lazy initialization to ensure only one instance is created when needed.
- * Uses Singleton in order to ensure non-biased dice rolls.
+ * Singleton class representing a die with two six-sided dice. Uses lazy initialization to ensure
+ * only one instance is created when needed. Uses Singleton to ensure non-biased dice rolls.
  *
  * @author Mihailo Hranisavljevic
  * @version 2025.02.07
@@ -14,10 +13,7 @@ public class Dice {
   private static Dice instance;
   private final Random random;
 
-  /**
-   * Private constructor to prevent instantiation.
-   * Initializes a Random instance.
-   */
+  /** Private constructor to prevent instantiation. Initializes a Random instance. */
   private Dice() {
     this.random = new Random();
   }
@@ -35,14 +31,14 @@ public class Dice {
   }
 
   /**
-   * Rolls two dice and returns the result as an array.
+   * Rolls two dice at the same time
    *
-   * @return an array containing two integers representing the dice roll
+   * @return the result as an array of integers.
    */
   public int roll() {
     int die1 = random.nextInt(6) + 1;
     int die2 = random.nextInt(6) + 1;
-    return getTotal(new int[]{die1, die2});
+    return getTotal(new int[] {die1, die2});
   }
 
   /**

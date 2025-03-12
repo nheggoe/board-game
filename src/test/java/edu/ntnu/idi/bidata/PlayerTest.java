@@ -1,11 +1,11 @@
 package edu.ntnu.idi.bidata;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import edu.ntnu.idi.bidata.core.Board;
 import edu.ntnu.idi.bidata.core.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class PlayerTest {
   private Player player;
@@ -40,5 +40,4 @@ class PlayerTest {
     player.move(-3, new Board());
     assertEquals(0, player.getCurrentTile().getPosition());
   }
-
 }
