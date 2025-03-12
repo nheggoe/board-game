@@ -58,12 +58,12 @@ public class CSVHandler {
           writer.newLine();
           System.out.println("Saved: " + line);
         } catch (IOException e) {
-          logger.log(Level.SEVERE, "Error writing player data to CSV file: " + filename);
+          logger.log(Level.SEVERE, () -> "Error writing player data to CSV file: " + filename);
         }
       });
 
     } catch (IOException e) {
-      logger.log(Level.SEVERE, "Error opening CSV file for writing: " + filename);
+      logger.log(Level.SEVERE, () -> "Error opening CSV file for writing: " + filename);
     }
   }
 
@@ -94,7 +94,7 @@ public class CSVHandler {
         }
       }
     } catch (IOException e) {
-      logger.log(Level.SEVERE, "Error reading CSV file: " + filename);
+      logger.log(Level.SEVERE, () -> "Error reading CSV file: " + filename);
     }
     return playerStreamBuilder.build();
   }

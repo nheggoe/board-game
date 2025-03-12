@@ -5,7 +5,7 @@ package edu.ntnu.idi.bidata.core;
  * Each player has a name and a current tile position on the board.
  *
  * @author Mihailo Hranisavljevic
- * @version 2025.02.14
+ * @version 2025.03.12
  */
 public class Player {
   // Name of the player
