@@ -16,6 +16,9 @@ public class Tile {
   private int position;
   private TileAction landAction;
 
+  /** no-arguments constructor for the Jackson JSON library. */
+  private Tile() {}
+
   /**
    * Constructs a new tile with a position, a name, and an action.
    *

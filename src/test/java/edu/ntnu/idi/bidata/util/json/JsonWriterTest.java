@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 class JsonWriterTest {
 
-  static final JsonWriter testJsonWriter = new JsonWriter(Player.class, true);
+  private static final JsonWriter testJsonWriter = new JsonWriter(Player.class, true);
 
   @Test
   void testWriteFile() {

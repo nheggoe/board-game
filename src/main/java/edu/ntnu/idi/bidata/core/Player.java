@@ -15,6 +15,9 @@ public class Player {
   // The board on which the player is moving
   private String figure;
 
+  /** no-arguments constructor for the Jackson JSON library. */
+  private Player() {}
+
   /**
    * Constructs a new player with the specified name and places them at the start tile (position 0)
    * of the board.

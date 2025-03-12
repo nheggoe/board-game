@@ -1,11 +1,11 @@
 package edu.ntnu.idi.bidata.io;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.time.Duration;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -13,39 +13,52 @@ import org.junit.jupiter.api.Test;
  * to ensure the correctness of various methods associated with handling and processing input.
  *
  * @author Nick Heggø
- * @version 2025.01.30
+ * @version 2025.03.12
  */
 class InputHandlerTest {
 
-  InputHandler inputHandler;
+  private final InputStream originalIn = System.in;
 
   @AfterEach
   void restoreSystemIn() {
-    System.setIn(System.in); // restore System.in after each test
+    System.setIn(originalIn); // restore System.in after each test
   }
 
-  /**
-   * Tests the nextLine method of the InputHandler class. Verifies that the method throws an
-   * IllegalArgumentException when attempting to read an empty input line. This test sets the
-   * standard input stream to a ByteArrayInputStream with empty input. It ensures that the nextLine
-   * method correctly validates and rejects empty input by throwing the expected exception.
-   */
   @Test
-  @Disabled("Allowed for enter only (empty line)")
   void emptyLineNegativeTest() {
-    System.setIn(new ByteArrayInputStream("".getBytes()));
-    InputHandler inputHandler = new InputHandler();
-    assertThrows(IllegalArgumentException.class, inputHandler::nextLine);
-    restoreSystemIn();
-    System.setIn(new ByteArrayInputStream("    ".getBytes()));
-    inputHandler = new InputHandler();
-    assertThrows(IllegalArgumentException.class, inputHandler::nextLine);
+    assertTimeoutPreemptively(
+        Duration.ofSeconds(1),
+        () -> {
+          String multiLineData =
+              """
+                     \s
+                           \s
+                                 \s
+                         \s
+                                   \s""";
+          System.setIn(new ByteArrayInputStream(multiLineData.getBytes()));
+          InputHandler inHandler = new InputHandler();
+          for (int i = 0; i < 5; i++) {
+            assertDoesNotThrow(inHandler::nextLine);
+          }
+        });
   }
 
   @Test
   void nextLine2() {
-    System.setIn(new ByteArrayInputStream("  test ".getBytes()));
-    InputHandler inputHandler = new InputHandler();
-    assertEquals("test", inputHandler.nextLine());
+    assertTimeoutPreemptively(
+        Duration.ofSeconds(1),
+        () -> {
+          String multiLineData =
+              """
+                                 s         \s
+              test   \s
+                   test     \s""";
+          System.setIn(new ByteArrayInputStream(multiLineData.getBytes()));
+          InputHandler inHandler = new InputHandler();
+          assertEquals("s", inHandler.nextLine());
+          assertEquals("test", inHandler.nextLine());
+          assertEquals("test", inHandler.nextLine());
+        });
   }
 }

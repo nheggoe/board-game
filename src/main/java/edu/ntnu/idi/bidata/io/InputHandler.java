@@ -69,16 +69,4 @@ public class InputHandler {
       throw new IllegalArgumentException("The is problem");
     }
   }
-
-  /**
-   * Validates that the given string is not null or blank.
-   *
-   * @param s The input string to validate.
-   * @throws IllegalArgumentException If the input is null or blank.
-   */
-  private void assertInput(String s) {
-    if (s == null || s.isBlank()) {
-      throw new IllegalArgumentException("Input cannot be empty!");
-    }
-  }
 }

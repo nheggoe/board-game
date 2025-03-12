@@ -7,12 +7,11 @@ import edu.ntnu.idi.bidata.core.Player;
 import java.io.IOException;
 import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 class JsonServiceTest {
 
-  static final JsonService testPlayerJsonService = new JsonService(Player.class, true);
+  private static final JsonService testPlayerJsonService = new JsonService(Player.class, true);
 
   @BeforeAll
   static void setUp() throws IOException {
@@ -26,7 +25,6 @@ class JsonServiceTest {
   }
 
   @Test
-  @Disabled("TODO")
   void testReadPlayers() {
     List<Player> players;
     try {
