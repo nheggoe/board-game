@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>edu.ntnu.idi.bidata</groupId>
-    <artifactId>IDATG2003-Mappe-Boardgame-Gr16</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <artifactId>board-game</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -48,49 +48,6 @@
 
     <build>
         <plugins>
-            <!-- $ mvn compile -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.14.0</version>
-                <configuration>
-                    <target>${java.version}</target>
-                    <source>${java.version}</source>
-                </configuration>
-            </plugin>
-            <!-- $ mvn test -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.5.2</version>
-            </plugin>
-            <!-- maven shade plugin to create a runnable jar -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.6.0</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <!-- Maven JAR Plugin to specify the Main class -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.4.2</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>${mainClass}</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
             <!-- $ mvn exec:java -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
