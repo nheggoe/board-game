@@ -19,7 +19,7 @@ class JsonUrlTest {
 
   @Test
   void testGeneratedUrlFromClassInstance() {
-    Player player = new Player("Player1", new Board());
+    Player player = new Player("Player1", new Board(), "red");
     Path expectedTestPath = Path.of("src/test/resources/json/Player.json");
     Path expectedMainPath = Path.of("src/main/resources/json/Player.json");
     assertEquals(expectedTestPath, JsonUrl.getJsonFilePath(player, true));

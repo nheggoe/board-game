@@ -17,9 +17,9 @@ class JsonWriterTest {
     Board board = new Board();
     var players =
         List.of(
-            new Player("Player1", board),
-            new Player("Player2", board),
-            new Player("Player3", board));
+            new Player("Player1", board, "red"),
+            new Player("Player2", board, "blue"),
+            new Player("Player3", board, "pink"));
     try {
       testJsonWriter.writeJsonFile(players);
     } catch (IOException e) {

@@ -39,3 +39,5 @@ build/
 .DS_Store
 /src/test/resources/json/
 /src/main/resources/json/
+/data/
+*.csv
