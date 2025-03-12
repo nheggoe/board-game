@@ -22,11 +22,11 @@ public class Player {
    * @param name  the name of the player
    * @param board the board on which the player will move
    */
-  public Player(String name, Board board) {
+  public Player(String name, Board board, String figure) {
     setName(name);
     // Place the player on the "start" tile
     placeOnTile(board.getTile(0));
-    setFigure(null);
+    setFigure(figure);
   }
 
   /**
