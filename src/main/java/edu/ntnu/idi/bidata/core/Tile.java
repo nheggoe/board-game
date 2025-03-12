@@ -3,8 +3,8 @@ package edu.ntnu.idi.bidata.core;
 import edu.ntnu.idi.bidata.action.TileAction;
 
 /**
- * The {@code Tile} class represents a tile on the board.
- * Each tile has a unique position, name and an action in some cases.
+ * The {@code Tile} class represents a tile on the board. Each tile has a unique position, name and
+ * an action in some cases.
  *
  * @author Mihailo
  * @version 2025.02.07
@@ -16,12 +16,11 @@ public class Tile {
   private int position;
   private TileAction landAction;
 
-
   /**
    * Constructs a new tile with a position, a name, and an action.
    *
-   * @param position   the position of the tile
-   * @param name       the name of the tile
+   * @param position the position of the tile
+   * @param name the name of the tile
    * @param landAction the action performed when a player lands on this tile.
    */
   public Tile(int position, String name, TileAction landAction) {
@@ -34,7 +33,7 @@ public class Tile {
    * Constructs a new tile with a position and a name (without an action).
    *
    * @param position the position of the tile
-   * @param name     the name of the tile
+   * @param name the name of the tile
    */
   public Tile(int position, String name) {
     this(position, name, null);
@@ -51,7 +50,6 @@ public class Tile {
       player.placeOnTile(this);
     }
   }
-
 
   // Getters and setters
 

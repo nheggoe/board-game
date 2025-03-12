@@ -4,17 +4,15 @@ import edu.ntnu.idi.bidata.core.Board;
 import edu.ntnu.idi.bidata.core.Player;
 
 /**
- * The {@code LadderAction} moves a player 10 tiles forward.
- * It automatically assigns itself to the given tile during construction.
+ * The {@code LadderAction} moves a player 10 tiles forward. It automatically assigns itself to the
+ * given tile during construction.
  *
  * @author Mihailo
  * @version 2025.02.14
  */
 public class LadderAction implements TileAction {
 
-  /**
-   * Constructs a new ladder action.
-   */
+  /** Constructs a new ladder action. */
   public LadderAction() {
     // default constructor
   }
