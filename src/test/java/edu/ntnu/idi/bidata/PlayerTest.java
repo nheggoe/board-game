@@ -21,6 +21,7 @@ class PlayerTest {
     assertEquals("Nick", player.getName());
     assertEquals(0, player.getCurrentTile().getPosition());
     assertEquals("Start", player.getCurrentTile().getName());
+    assertEquals("X", player.getFigure());
   }
 
   @Test

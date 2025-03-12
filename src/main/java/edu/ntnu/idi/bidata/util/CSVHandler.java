@@ -47,21 +47,26 @@ public class CSVHandler {
    * @param playersStream A Stream of Player objects to save.
    */
   public void savePlayers(Stream<Player> playersStream) {
-    try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, false))) { // Overwrites the file
       writer.write("Name,Figure");
       writer.newLine();
+
       playersStream.forEach(player -> {
         try {
-          writer.write(player.getName() + "," + player.getFigure());
+          String line = player.getName() + "," + player.getFigure();
+          writer.write(line);
           writer.newLine();
+          System.out.println("Saved: " + line);
         } catch (IOException e) {
-          logger.log(Level.SEVERE, () -> "Error writing player data to CSV file: " + filename);
+          logger.log(Level.SEVERE, "Error writing player data to CSV file: " + filename);
         }
       });
+
     } catch (IOException e) {
-      logger.log(Level.SEVERE, () -> "Error opening CSV file for writing: " + filename);
+      logger.log(Level.SEVERE, "Error opening CSV file for writing: " + filename);
     }
   }
+
 
   /**
    * Loads players from the CSV file and returns them as a Stream.
@@ -70,17 +75,28 @@ public class CSVHandler {
    */
   public Stream<Player> loadPlayers(Board board) {
     Stream.Builder<Player> playerStreamBuilder = Stream.builder();
+
     try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
       String line;
+      boolean firstLine = true;
+
       while ((line = reader.readLine()) != null) {
+        if (firstLine) {
+          firstLine = false;
+          continue;
+        }
+
         String[] data = line.split(",");
         if (data.length == 2) {
-          playerStreamBuilder.add(new Player(data[0], board, data[1]));
+          Player player = new Player(data[0], board, data[1]);
+          playerStreamBuilder.add(player);
+          System.out.println("Loaded player: " + data[0] + " - " + data[1]); // ✅ Debugging message
         }
       }
     } catch (IOException e) {
-      logger.log(Level.SEVERE, () -> "Error reading CSV file: " + filename);
+      logger.log(Level.SEVERE, "Error reading CSV file: " + filename);
     }
     return playerStreamBuilder.build();
   }
+
 }

@@ -5,6 +5,7 @@ import edu.ntnu.idi.bidata.io.InputHandler;
 import edu.ntnu.idi.bidata.io.OutputHandler;
 import java.util.ArrayList;
 import java.util.List;
+import edu.ntnu.idi.bidata.util.CSVHandler;
 
 /**
  * The {@code Game} class represents a simple text-based interactive game.
@@ -21,6 +22,7 @@ public class Game {
   private final List<Player> players;
   private final Board board;
   private final Dice dice;
+  private final CSVHandler csvHandler;
 
   private boolean running = true;
   private int roundNumber = 1;
@@ -34,7 +36,9 @@ public class Game {
     players = new ArrayList<>();
     board = new Board();
     dice = Dice.getInstance();
+    csvHandler = new CSVHandler("players.csv");
   }
+
 
   /**
   * The public interface of the program, main entry.
@@ -44,26 +48,67 @@ public class Game {
     engine();
   }
 
+
+  /**
+   * Sets up the game by either loading existing players from a CSV file or
+   * allowing the user to create new players.
+   * <p>
+   * If saved players exist in the CSV file, the user is prompted to choose
+   * whether they want to use the existing players or create new ones.
+   * If no saved players are found, the user is required to enter new player details.
+   * </p>
+   *
+   * <p>Steps:
+   * <ul>
+   *   <li>Check if a CSV file with saved players exists.</li>
+   *   <li>Ask the user whether they want to use saved players or create new ones.</li>
+   *   <li>If using saved players, load them from the CSV file.</li>
+   *   <li>If creating new players, prompt the user for player names and figures.</li>
+   *   <li>Display the list of players who will participate in the game.</li>
+   * </ul>
+   * </p>
+   *
+   * @throws NumberFormatException if the user inputs a non-integer value for the number of players.
+   */
   private void gameStartSetup() {
-    outputHandler.println("Please enter the number of players:");
-    outputHandler.printInputPrompt();
-    int numberOfPlayers = Integer.parseInt(inputHandler.nextLine());
+    List<Player> loadedPlayers = csvHandler.loadPlayers(board).toList();
 
-    for (int i = 0; i < numberOfPlayers; i++) {
-      outputHandler.println("Please enter the name for player %d:".formatted(i + 1));
+    if (!loadedPlayers.isEmpty()) {
+      outputHandler.println("Existing players found. Do you want to use them? (yes/no)");
       outputHandler.printInputPrompt();
-      String name = inputHandler.collectValidString();
+      String choice = inputHandler.collectValidString().toLowerCase();
 
-      outputHandler.println("Please choose a figure for player %d:".formatted(i + 1));
-      outputHandler.printInputPrompt();
-      String figure = inputHandler.collectValidString();
-
-      players.add(new Player(name, board, figure));
+      if (choice.equals("yes") || choice.equals("y")) {
+        players.addAll(loadedPlayers);
+        outputHandler.println("Loaded existing players:");
+        printPlayerLocation();
+      }
     }
 
-    outputHandler.println("The following players are playing the game");
+    if (players.isEmpty()) {
+      outputHandler.println("Please enter the number of players:");
+      outputHandler.printInputPrompt();
+      int numberOfPlayers = Integer.parseInt(inputHandler.nextLine());
+
+      for (int i = 0; i < numberOfPlayers; i++) {
+        outputHandler.println("Please enter the name for player %d:".formatted(i + 1));
+        outputHandler.printInputPrompt();
+        String name = inputHandler.collectValidString();
+
+        outputHandler.println("Please choose a figure for player %d:".formatted(i + 1));
+        outputHandler.printInputPrompt();
+        String figure = inputHandler.collectValidString();
+
+        players.add(new Player(name, board, figure));
+      }
+      csvHandler.savePlayers(players.stream());
+
+    }
+
+    outputHandler.println("The following players are playing the game:");
     printPlayerLocation();
   }
+
 
 
   private boolean validateExitString(String s) {
@@ -73,10 +118,12 @@ public class Game {
   /**
    * Terminates the current game loop by setting the {@code running} flag to {@code false}.
    * This effectively signals the game engine to stop processing further iterations.
+   * Before terminating saves the current players to the CSV file.
    */
   private void terminate() {
     running = false;
   }
+
 
   /**
    * Represents the core loop of the game engine that continuously processes user input
