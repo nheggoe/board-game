@@ -5,7 +5,7 @@ package edu.ntnu.idi.bidata.core;
  * Each player has a name and a current tile position on the board.
  *
  * @author Mihailo Hranisavljevic
- * @version 2025.02.14
+ * @version 2025.03.12
  */
 public class Player {
   // Name of the player
@@ -13,6 +13,7 @@ public class Player {
   // The tile where the player is currently located
   private Tile currentTile;
   // The board on which the player is moving
+  private String figure;
 
   /**
    * Constructs a new player with the specified name and places them
@@ -21,10 +22,11 @@ public class Player {
    * @param name  the name of the player
    * @param board the board on which the player will move
    */
-  public Player(String name, Board board) {
+  public Player(String name, Board board, String figure) {
     setName(name);
     // Place the player on the "start" tile
     placeOnTile(board.getTile(0));
+    setFigure(figure);
   }
 
   /**
@@ -67,5 +69,17 @@ public class Player {
     return currentTile;
   }
 
+  /**
+   * Returns the figure of the player.
+   *
+   * @return the figure of the player
+   */
+  @SuppressWarnings("unused")
+  public String getFigure() {
+    return figure;
+  }
+  public void setFigure(String figure) {
+    this.figure = figure;
+  }
 
 }

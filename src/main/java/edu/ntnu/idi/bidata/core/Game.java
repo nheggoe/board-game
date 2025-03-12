@@ -5,6 +5,7 @@ import edu.ntnu.idi.bidata.io.InputHandler;
 import edu.ntnu.idi.bidata.io.OutputHandler;
 import java.util.ArrayList;
 import java.util.List;
+import edu.ntnu.idi.bidata.util.CSVHandler;
 
 /**
  * The {@code Game} class represents a simple text-based interactive game.
@@ -12,7 +13,7 @@ import java.util.List;
  * specific input ("yes" or "y").
  *
  * @author Nick Heggø
- * @version 2025.02.14
+ * @version 2025.03.12
  */
 public class Game {
 
@@ -21,6 +22,7 @@ public class Game {
   private final List<Player> players;
   private final Board board;
   private final Dice dice;
+  private final CSVHandler csvHandler;
 
   private boolean running = true;
   private int roundNumber = 1;
@@ -34,7 +36,9 @@ public class Game {
     players = new ArrayList<>();
     board = new Board();
     dice = Dice.getInstance();
+    csvHandler = new CSVHandler("players.csv");
   }
+
 
   /**
   * The public interface of the program, main entry.
@@ -44,18 +48,94 @@ public class Game {
     engine();
   }
 
+  /**
+   * Sets up the game by either loading existing players from a CSV file or
+   * allowing the user to create new players.
+   * <p>
+   * If saved players exist in the CSV file, the user is prompted to choose
+   * whether they want to use the existing players or create new ones.
+   * If no saved players are found, the user is required to enter new player details.
+   * </p>
+   *
+   * @throws NumberFormatException if the user inputs a non-integer value for the number of players.
+   */
   private void gameStartSetup() {
-    outputHandler.println("Please enter the amount of player that are playing the game:");
+    if (loadExistingPlayers()) {
+      return;
+    }
+    createNewPlayers();
+  }
+
+  /**
+   * Loads existing players from the CSV file and asks the user if they want to use them.
+   * If the user chooses to use them, they are added to the game.
+   *
+   * @return {@code true} if players were loaded and chosen; {@code false} otherwise.
+   */
+  private boolean loadExistingPlayers() {
+    boolean playersLoaded = false;
+    List<Player> loadedPlayers = csvHandler.loadPlayers(board).toList();
+
+    if (!loadedPlayers.isEmpty()) {
+      outputHandler.println("Existing players found. Do you want to use them? (yes/no)");
+      outputHandler.printInputPrompt();
+      String choice = inputHandler.collectValidString().toLowerCase();
+
+      if (choice.equals("yes") || choice.equals("y")) {
+        players.addAll(loadedPlayers);
+        outputHandler.println("Loaded existing players:");
+        printPlayerLocation();
+        playersLoaded = true;
+      }
+    }
+    return playersLoaded;
+  }
+
+  /**
+   * Creates new players by asking for their details and then saving them to the CSV file.
+   */
+  private void createNewPlayers() {
+    outputHandler.println("Please enter the number of players:");
     outputHandler.printInputPrompt();
     int numberOfPlayers = Integer.parseInt(inputHandler.nextLine());
+
     for (int i = 0; i < numberOfPlayers; i++) {
-      outputHandler.println("Please enter the name for player %d:".formatted(i + 1));
-      outputHandler.printInputPrompt();
-      players.add(new Player(inputHandler.collectValidString(), board));
+      players.add(promptUserForPlayers(i + 1));
     }
-    outputHandler.println("The following players are playing the game");
+
+    saveNewPlayers();
+  }
+
+  /**
+   * Prompts the user to enter details for a new player.
+   *
+   * @param playerNumber The player's number in sequence.
+   * @return The newly created Player object.
+   */
+  private Player promptUserForPlayers(int playerNumber) {
+    outputHandler.println("Please enter the name for player %d:".formatted(playerNumber));
+    outputHandler.printInputPrompt();
+    String name = inputHandler.collectValidString();
+
+    outputHandler.println("Please choose a figure for player %d:".formatted(playerNumber));
+    outputHandler.printInputPrompt();
+    String figure = inputHandler.collectValidString();
+
+    return new Player(name, board, figure);
+  }
+
+  /**
+   * Saves newly created players to the CSV file.
+   */
+  private void saveNewPlayers() {
+    csvHandler.savePlayers(players.stream());
+    outputHandler.println("Players saved successfully!");
+    outputHandler.println("The following players are playing the game:");
     printPlayerLocation();
   }
+
+
+
 
   private boolean validateExitString(String s) {
     return s.equalsIgnoreCase("exit");
@@ -68,6 +148,7 @@ public class Game {
   private void terminate() {
     running = false;
   }
+
 
   /**
    * Represents the core loop of the game engine that continuously processes user input

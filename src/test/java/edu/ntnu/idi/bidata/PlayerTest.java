@@ -13,7 +13,7 @@ class PlayerTest {
   @BeforeEach
   void setUp() {
     Board board = new Board();
-    player = new Player("Nick", board);
+    player = new Player("Nick", board, "X");
   }
 
   @Test
@@ -21,6 +21,7 @@ class PlayerTest {
     assertEquals("Nick", player.getName());
     assertEquals(0, player.getCurrentTile().getPosition());
     assertEquals("Start", player.getCurrentTile().getName());
+    assertEquals("X", player.getFigure());
   }
 
   @Test
