@@ -13,6 +13,7 @@ public class Player {
   // The tile where the player is currently located
   private Tile currentTile;
   // The board on which the player is moving
+  private String figure;
 
   /**
    * Constructs a new player with the specified name and places them
@@ -25,6 +26,7 @@ public class Player {
     setName(name);
     // Place the player on the "start" tile
     placeOnTile(board.getTile(0));
+    setFigure(null);
   }
 
   /**
@@ -67,5 +69,17 @@ public class Player {
     return currentTile;
   }
 
+  /**
+   * Returns the figure of the player.
+   *
+   * @return the figure of the player
+   */
+  @SuppressWarnings("unused")
+  public String getFigure() {
+    return figure;
+  }
+  public void setFigure(String figure) {
+    this.figure = figure;
+  }
 
 }
