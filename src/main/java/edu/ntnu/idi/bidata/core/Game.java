@@ -73,6 +73,7 @@ public class Game {
    * @return {@code true} if players were loaded and chosen; {@code false} otherwise.
    */
   private boolean loadExistingPlayers() {
+    boolean playersLoaded = false;
     List<Player> loadedPlayers = csvHandler.loadPlayers(board).toList();
 
     if (!loadedPlayers.isEmpty()) {
@@ -84,10 +85,10 @@ public class Game {
         players.addAll(loadedPlayers);
         outputHandler.println("Loaded existing players:");
         printPlayerLocation();
-        return true;
+        playersLoaded = true;
       }
     }
-    return false;
+    return playersLoaded;
   }
 
   /**
@@ -143,7 +144,6 @@ public class Game {
   /**
    * Terminates the current game loop by setting the {@code running} flag to {@code false}.
    * This effectively signals the game engine to stop processing further iterations.
-   * Before terminating saves the current players to the CSV file.
    */
   private void terminate() {
     running = false;
