@@ -10,9 +10,12 @@ import java.nio.file.Path;
  * @author Nick Heggø
  * @version 2025.03.12
  */
-public class JsonUrl {
+public class JsonPathUtil {
 
-  private JsonUrl() {}
+  private static final String JSON_DIR_TEMPLATE = "data/json/%s.json";
+  private static final String TEST_JSON_DIR_TEMPLATE = "src/test/resources/json/%s.json";
+
+  private JsonPathUtil() {}
 
   /**
    * Generates the file path for a JSON resource based on the class name of the provided object.
@@ -27,8 +30,8 @@ public class JsonUrl {
       throw new IllegalArgumentException("Object cannot be null");
     }
     return isTest
-        ? Path.of("src/test/resources/json/%s.json".formatted(obj.getClass().getSimpleName()))
-        : Path.of("src/main/resources/json/%s.json".formatted(obj.getClass().getSimpleName()));
+        ? Path.of(TEST_JSON_DIR_TEMPLATE.formatted(obj.getClass().getSimpleName()))
+        : Path.of(JSON_DIR_TEMPLATE.formatted(obj.getClass().getSimpleName()));
   }
 
   /**
@@ -40,7 +43,7 @@ public class JsonUrl {
    */
   public static <T> Path getJsonFilePath(Class<T> targetClass, boolean isTest) {
     return isTest
-        ? Path.of("src/test/resources/json/%s.json".formatted(targetClass.getSimpleName()))
-        : Path.of("src/main/resources/json/%s.json".formatted(targetClass.getSimpleName()));
+        ? Path.of(TEST_JSON_DIR_TEMPLATE.formatted(targetClass.getSimpleName()))
+        : Path.of(JSON_DIR_TEMPLATE.formatted(targetClass.getSimpleName()));
   }
 }

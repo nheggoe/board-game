@@ -21,7 +21,7 @@ public class JsonWriter {
   }
 
   public <T> void writeJsonFile(List<T> collection) throws IOException {
-    Path jsonFilePath = JsonUrl.getJsonFilePath(targetClass, isTest);
+    Path jsonFilePath = JsonPathUtil.getJsonFilePath(targetClass, isTest);
     File file = jsonFilePath.toFile();
     File parentDir = file.getParentFile();
     if (!parentDir.exists()) {

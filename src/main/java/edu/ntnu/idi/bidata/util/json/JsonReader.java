@@ -23,7 +23,7 @@ public class JsonReader {
   }
 
   public <T> List<T> parseJsonFile() throws IOException {
-    Path jsonFilePath = JsonUrl.getJsonFilePath(targetClass, isTest);
+    Path jsonFilePath = JsonPathUtil.getJsonFilePath(targetClass, isTest);
     File file = jsonFilePath.toFile();
     File parentDir = file.getParentFile();
     if (!parentDir.exists() && !parentDir.mkdirs()) {
