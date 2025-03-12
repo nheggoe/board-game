@@ -3,9 +3,9 @@ package edu.ntnu.idi.bidata.core;
 import edu.ntnu.idi.bidata.action.TileAction;
 import edu.ntnu.idi.bidata.io.InputHandler;
 import edu.ntnu.idi.bidata.io.OutputHandler;
+import edu.ntnu.idi.bidata.util.CSVHandler;
 import java.util.ArrayList;
 import java.util.List;
-import edu.ntnu.idi.bidata.util.CSVHandler;
 
 /**
  * The {@code Game} class represents a simple text-based interactive game.

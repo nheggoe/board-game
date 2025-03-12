@@ -1,17 +1,16 @@
 package edu.ntnu.idi.bidata;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import edu.ntnu.idi.bidata.core.Board;
 import edu.ntnu.idi.bidata.core.Player;
 import edu.ntnu.idi.bidata.util.CSVHandler;
-import org.junit.jupiter.api.*;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.*;
 
 class CSVHandlerTest {
 
@@ -38,13 +37,10 @@ class CSVHandlerTest {
 
   @Test
   void testSavePlayers() {
-    List<Player> players = List.of(
-        new Player("Misha", board, "Figure1"),
-        new Player("Nick", board, "Figure2")
-    );
+    List<Player> players =
+        List.of(new Player("Misha", board, "Figure1"), new Player("Nick", board, "Figure2"));
 
     csvHandler.savePlayers(players.stream());
-
 
     try {
       List<String> lines = Files.readAllLines(new File(TEST_CSV_FILE).toPath());
@@ -60,11 +56,9 @@ class CSVHandlerTest {
   @Test
   void testLoadPlayers() {
     try {
-      Files.write(new File(TEST_CSV_FILE).toPath(), List.of(
-          "Name,Figure",
-          "Misha,Figure1",
-          "Nick,Figure2"
-      ));
+      Files.write(
+          new File(TEST_CSV_FILE).toPath(),
+          List.of("Name,Figure", "Misha,Figure1", "Nick,Figure2"));
     } catch (IOException e) {
       fail("Failed to set up test CSV file.");
     }

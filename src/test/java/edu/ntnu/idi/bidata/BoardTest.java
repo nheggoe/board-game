@@ -1,9 +1,10 @@
 package edu.ntnu.idi.bidata;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import edu.ntnu.idi.bidata.core.Board;
 import edu.ntnu.idi.bidata.core.Tile;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 
 class BoardTest {
 
