@@ -1,14 +1,14 @@
 package edu.ntnu.idi.bidata.util;
 
-import edu.ntnu.idi.bidata.core.Board;
+import static org.junit.jupiter.api.Assertions.*;
+
 import edu.ntnu.idi.bidata.action.LadderAction;
 import edu.ntnu.idi.bidata.action.SnakeAction;
+import edu.ntnu.idi.bidata.core.Board;
 import edu.ntnu.idi.bidata.util.json.JsonService;
-import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 class BoardGameFactoryTest {
 

@@ -12,15 +12,12 @@ import edu.ntnu.idi.bidata.core.Player;
  * @author Mihailo Hranisavljevic
  * @version 2025.02.14
  */
-
-/*
- The @JsonTypeInfo annotation is used to include the type information in the JSON output.
- */
+// The @JsonTypeInfo annotation is used to include the type information in the JSON output.
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "@class")
 @JsonSubTypes({
-    @JsonSubTypes.Type(value = LadderAction.class, name = "LadderAction"),
-    @JsonSubTypes.Type(value = SnakeAction.class, name = "SnakeAction"),
-    @JsonSubTypes.Type(value = ResetAction.class, name = "ResetAction")
+  @JsonSubTypes.Type(value = LadderAction.class, name = "LadderAction"),
+  @JsonSubTypes.Type(value = SnakeAction.class, name = "SnakeAction"),
+  @JsonSubTypes.Type(value = ResetAction.class, name = "ResetAction")
 })
 public interface TileAction {
   void perform(Player player, Board board);

@@ -1,6 +1,5 @@
 package edu.ntnu.idi.bidata.action;
 
-
 import edu.ntnu.idi.bidata.core.Board;
 import edu.ntnu.idi.bidata.core.Player;
 
