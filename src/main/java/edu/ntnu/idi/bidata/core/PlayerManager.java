@@ -69,9 +69,23 @@ public class PlayerManager {
    * @return A list of newly created players.
    */
   private List<Player> createNewPlayers() {
-    outputHandler.println("Enter number of players:");
-    outputHandler.printInputPrompt();
-    int numberOfPlayers = Integer.parseInt(inputHandler.nextLine());
+    int numberOfPlayers = -1;
+
+    while (numberOfPlayers < 1) {
+      try {
+        outputHandler.println("Enter number of players:");
+        outputHandler.printInputPrompt();
+        String input = inputHandler.nextLine();
+
+        numberOfPlayers = Integer.parseInt(input);
+
+        if (numberOfPlayers < 1) {
+          outputHandler.println("Number of players must be at least 1. Try again.");
+        }
+      } catch (NumberFormatException e) {
+        outputHandler.println("Invalid input. Please enter a valid number.");
+      }
+    }
 
     List<Player> players = new ArrayList<>();
     for (int i = 0; i < numberOfPlayers; i++) {
@@ -80,6 +94,7 @@ public class PlayerManager {
     saveNewPlayers(players);
     return players;
   }
+
 
   /**
    * Saves the list of players to the CSV file and prints a confirmation message.
