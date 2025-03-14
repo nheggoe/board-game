@@ -13,8 +13,8 @@ class JsonPathUtilTest {
   void testGeneratedUrlFromClass() {
     Path expectedTestPath = Path.of("src/test/resources/json/Player.json");
     Path expectedMainPath = Path.of("data/json/Player.json");
-    assertEquals(expectedTestPath, JsonPathUtil.getJsonFilePath(Player.class, true));
-    assertEquals(expectedMainPath, JsonPathUtil.getJsonFilePath(Player.class, false));
+    assertEquals(expectedTestPath, JsonPathUtil.generateJsonPath(Player.class, true));
+    assertEquals(expectedMainPath, JsonPathUtil.generateJsonPath(Player.class, false));
   }
 
   @Test
@@ -22,7 +22,7 @@ class JsonPathUtilTest {
     Player player = new Player("Player1", new Board(), "red");
     Path expectedTestPath = Path.of("src/test/resources/json/Player.json");
     Path expectedMainPath = Path.of("data/json/Player.json");
-    assertEquals(expectedTestPath, JsonPathUtil.getJsonFilePath(player, true));
-    assertEquals(expectedMainPath, JsonPathUtil.getJsonFilePath(player, false));
+    assertEquals(expectedTestPath, JsonPathUtil.generateJsonPath(player, true));
+    assertEquals(expectedMainPath, JsonPathUtil.generateJsonPath(player, false));
   }
 }
