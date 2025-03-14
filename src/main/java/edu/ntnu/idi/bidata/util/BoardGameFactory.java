@@ -3,13 +3,12 @@ package edu.ntnu.idi.bidata.util;
 import edu.ntnu.idi.bidata.action.*;
 import edu.ntnu.idi.bidata.core.*;
 import edu.ntnu.idi.bidata.util.json.JsonService;
-
 import java.io.IOException;
 import java.util.stream.Stream;
 
 /**
- * The {@code BoardGameFactory} class is a factory class that creates different types of boards.
- * It also is able to read a board from a file.
+ * The {@code BoardGameFactory} class is a factory class that creates different types of boards. It
+ * also is able to read a board from a file.
  *
  * @author Mihailo Hranisavljevic
  * @version 2025.03.14
@@ -51,7 +50,7 @@ public class BoardGameFactory {
    *
    * @return a new board with ladders
    */
-  public static Board createEasyBoard(){
+  public static Board createEasyBoard() {
     Board board = new Board();
     board.getTile(5).setLandAction(new LadderAction());
     board.getTile(15).setLandAction(new LadderAction());
@@ -65,8 +64,6 @@ public class BoardGameFactory {
     return board;
   }
 
-
-
   /**
    * Loads a board configuration from a JSON file.
    *
@@ -74,7 +71,7 @@ public class BoardGameFactory {
    * @throws IOException if an error occurs while reading the file
    */
   public static Board loadBoardFromJson() throws IOException {
-   Stream<Board> boards = boardService.loadJsonAsStream();
+    Stream<Board> boards = boardService.loadJsonAsStream();
     return boards.findFirst().orElse(null);
   }
 
@@ -85,6 +82,6 @@ public class BoardGameFactory {
    * @throws IOException if an error occurs during writing
    */
   public static void saveBoardToJson(Board board) throws IOException {
-       boardService.writeCollection(Stream.of(board));
+    boardService.writeCollection(Stream.of(board));
   }
 }

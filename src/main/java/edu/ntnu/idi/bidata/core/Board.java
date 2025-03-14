@@ -15,7 +15,7 @@ import java.util.Objects;
  * @author Mihailo Hranisavljevic, Nick Heggø
  * @version 2025.03.14
  */
-//ChatGPT
+// ChatGPT
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Board {
   /** The list of tiles that make up the board. */
@@ -27,10 +27,9 @@ public class Board {
     initializeBoard();
   }
 
-
   /**
-   * Returns the list of tiles that make up the board.
-   * This method was added to utilize jackson serialization.
+   * Returns the list of tiles that make up the board. This method was added to utilize jackson
+   * serialization.
    *
    * @return the list of tiles
    */
