@@ -13,7 +13,7 @@ import java.util.Objects;
  * unique position and a name. The board is initialized with a predefined set of tiles.
  *
  * @author Mihailo Hranisavljevic, Nick Heggø
- * @version 2025.02.14
+ * @version 2025.03.14
  */
 //ChatGPT
 @JsonIgnoreProperties(ignoreUnknown = true)
