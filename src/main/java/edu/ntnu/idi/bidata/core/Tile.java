@@ -8,7 +8,7 @@ import edu.ntnu.idi.bidata.action.TileAction;
  * an action in some cases.
  *
  * @author Mihailo
- * @version 2025.02.07
+ * @version 2025.03.14
  */
 public class Tile {
   // The name of the tile.
