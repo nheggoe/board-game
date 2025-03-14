@@ -5,7 +5,6 @@ import edu.ntnu.idi.bidata.core.*;
 import edu.ntnu.idi.bidata.util.json.JsonService;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.stream.Stream;
 
 /**

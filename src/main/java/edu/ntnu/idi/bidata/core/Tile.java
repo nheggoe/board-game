@@ -1,5 +1,6 @@
 package edu.ntnu.idi.bidata.core;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import edu.ntnu.idi.bidata.action.TileAction;
 
 /**
@@ -14,6 +15,8 @@ public class Tile {
   private String name;
   // The position of the tile on the board.
   private int position;
+
+  @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "@class")
   private TileAction landAction;
 
   /** no-arguments constructor for the Jackson JSON library. */
