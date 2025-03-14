@@ -1,5 +1,7 @@
 package edu.ntnu.idi.bidata.action;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import edu.ntnu.idi.bidata.core.Board;
 import edu.ntnu.idi.bidata.core.Player;
 

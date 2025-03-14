@@ -1,5 +1,7 @@
 package edu.ntnu.idi.bidata.core;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import edu.ntnu.idi.bidata.action.LadderAction;
 import edu.ntnu.idi.bidata.action.ResetAction;
 import edu.ntnu.idi.bidata.action.SnakeAction;
@@ -14,16 +16,23 @@ import java.util.Objects;
  * @author Mihailo Hranisavljevic, Nick Heggø
  * @version 2025.02.14
  */
+//ChatGPT
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Board {
   /** The list of tiles that make up the board. */
   private final List<Tile> tiles;
+  private final Tile winningTile;
 
   /** Constructs a new board with predefined tiles. */
   public Board() {
     tiles = new ArrayList<>();
     initializeBoard();
+    winningTile = getWinningTile();
   }
-
+  @JsonProperty("tiles")  // Ensure that the tiles field is serialized
+  public List<Tile> getTiles() {
+    return tiles;
+  }
   /**
    * # IntelliJ generated Used to compare if the current matches the winning tile.
    *
