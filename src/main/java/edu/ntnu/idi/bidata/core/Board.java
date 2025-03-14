@@ -3,36 +3,29 @@ package edu.ntnu.idi.bidata.core;
 import edu.ntnu.idi.bidata.action.LadderAction;
 import edu.ntnu.idi.bidata.action.ResetAction;
 import edu.ntnu.idi.bidata.action.SnakeAction;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 /**
- * The {@code Board} class represents a game board consisting of a list of tiles.
- * Each tile has a unique position and a name. The board is initialized with a
- * predefined set of tiles.
+ * The {@code Board} class represents a game board consisting of a list of tiles. Each tile has a
+ * unique position and a name. The board is initialized with a predefined set of tiles.
  *
  * @author Mihailo Hranisavljevic, Nick Heggø
  * @version 2025.02.14
  */
 public class Board {
-  /**
-   * The list of tiles that make up the board.
-   */
+  /** The list of tiles that make up the board. */
   private final List<Tile> tiles;
 
-  /**
-   * Constructs a new board with predefined tiles.
-   */
+  /** Constructs a new board with predefined tiles. */
   public Board() {
     tiles = new ArrayList<>();
     initializeBoard();
   }
 
   /**
-   * # IntelliJ generated
-   * Used to compare if the current matches the winning tile.
+   * # IntelliJ generated Used to compare if the current matches the winning tile.
    *
    * @param o the object that will be passed in for comparison
    */
@@ -44,25 +37,33 @@ public class Board {
     return Objects.equals(tiles, board.tiles);
   }
 
-  /**
-   * IntelliJ generated
-   * Must change {@code hashCode()} when {@code equals()} is changed.
-   */
+  /** IntelliJ generated Must change {@code hashCode()} when {@code equals()} is changed. */
   @Override
   public int hashCode() {
     return Objects.hashCode(tiles);
   }
 
   /**
-   * returns the winning tile of the board.
+   * Get the starting position for the game, which is used to place players on the starting point.
+   *
+   * @return the staring point of the game
+   */
+  public Tile getStartingTile() {
+    return tiles.getFirst();
+  }
+
+  /**
+   * Get the winning tile, it is used to see if the player has reached the finished line.
+   *
+   * @return the winning tile of the game
    */
   public Tile getWinningTile() {
     return tiles.getLast();
   }
 
   /**
-   * Initializes the board by adding 90 tiles.
-   * The first tile is named "Start", and the rest go sequentially.
+   * Initializes the board by adding 90 tiles. The first tile is named "Start", and the rest go
+   * sequentially.
    */
   private void initializeBoard() {
     for (int i = 0; i < 90; i++) {
