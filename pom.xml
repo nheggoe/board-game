@@ -14,7 +14,7 @@
         <javafx.version>23.0.2</javafx.version>
         <junit.version>5.12.0</junit.version>
         <jackson.version>2.18.3</jackson.version>
-        <mainClass>edu.ntnu.idi.bidata.Launcher</mainClass>
+        <mainClass>edu.ntnu.idi.bidata.boardgame.Launcher</mainClass>
     </properties>
 
     <dependencies>
@@ -25,16 +25,11 @@
             <version>${javafx.version}</version>
         </dependency>
 
-        <!-- Jackson JSON Library  -->
+        <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>${jackson.version}</version>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.12.1</version>
         </dependency>
 
         <!-- Junit 5 for automated unit testing -->

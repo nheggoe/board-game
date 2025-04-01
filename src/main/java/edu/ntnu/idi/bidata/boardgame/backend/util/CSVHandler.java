@@ -1,9 +1,9 @@
-package edu.ntnu.idi.bidata.util;
+package edu.ntnu.idi.bidata.boardgame.backend.util;
 
-import edu.ntnu.idi.bidata.core.Board;
-import edu.ntnu.idi.bidata.core.Player;
+import edu.ntnu.idi.bidata.boardgame.backend.core.Board;
+import edu.ntnu.idi.bidata.boardgame.backend.core.Player;
 import java.io.*;
-import java.util.logging.Level;
+import java.nio.file.Path;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
@@ -16,11 +16,16 @@ import java.util.stream.Stream;
  * @version 2025.03.12
  */
 public class CSVHandler {
-  private static final Logger logger = Logger.getLogger(CSVHandler.class.getName());
-  private final String filename;
+  private static final Logger LOGGER = Logger.getLogger(CSVHandler.class.getName());
+  private final Path filePath;
 
   public CSVHandler(String filename) {
-    this.filename = filename;
+    this.filePath = FileUtil.generateFilePath(filename, "csv");
+    initializeFile();
+  }
+
+  public CSVHandler(Path filePath) {
+    this.filePath = filePath;
     initializeFile();
   }
 
@@ -29,13 +34,14 @@ public class CSVHandler {
    * header row with the columns "Name" and "Figure". If the file already exists, nothing is done.
    */
   private void initializeFile() {
-    File file = new File(filename);
+    File file = filePath.toFile();
+    FileUtil.ensureFileAndDirectoryExists(file);
     if (!file.exists()) {
       try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
         writer.write("Name,Figure");
         writer.newLine();
       } catch (IOException e) {
-        logger.log(Level.SEVERE, () -> "Error creating CSV file: " + filename);
+        LOGGER.severe(() -> "Error creating CSV file: " + filePath);
       }
     }
   }
@@ -47,7 +53,7 @@ public class CSVHandler {
    */
   public void savePlayers(Stream<Player> playersStream) {
     try (BufferedWriter writer =
-        new BufferedWriter(new FileWriter(filename, false))) { // Overwrites the file
+        new BufferedWriter(new FileWriter(filePath.toFile(), false))) { // Overwrites the file
       writer.write("Name,Figure");
       writer.newLine();
 
@@ -59,12 +65,12 @@ public class CSVHandler {
               writer.newLine();
               System.out.println("Saved: " + line);
             } catch (IOException e) {
-              logger.log(Level.SEVERE, () -> "Error writing player data to CSV file: " + filename);
+              LOGGER.severe(() -> "Error writing to CSV file: " + filePath);
             }
           });
 
     } catch (IOException e) {
-      logger.log(Level.SEVERE, () -> "Error opening CSV file for writing: " + filename);
+      LOGGER.severe(() -> "Error writing to CSV file: " + filePath);
     }
   }
 
@@ -76,7 +82,7 @@ public class CSVHandler {
   public Stream<Player> loadPlayers(Board board) {
     Stream.Builder<Player> playerStreamBuilder = Stream.builder();
 
-    try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+    try (BufferedReader reader = new BufferedReader(new FileReader(filePath.toFile()))) {
       String line;
       boolean firstLine = true;
 
@@ -90,11 +96,11 @@ public class CSVHandler {
         if (data.length == 2) {
           Player player = new Player(data[0], board, data[1]);
           playerStreamBuilder.add(player);
-          System.out.println("Loaded player: " + data[0] + " - " + data[1]); // ✅ Debugging message
+          System.out.println("Loaded player: " + data[0] + " - " + data[1]);
         }
       }
     } catch (IOException e) {
-      logger.log(Level.SEVERE, () -> "Error reading CSV file: " + filename);
+      LOGGER.severe(() -> "Error reading from CSV file: " + filePath);
     }
     return playerStreamBuilder.build();
   }

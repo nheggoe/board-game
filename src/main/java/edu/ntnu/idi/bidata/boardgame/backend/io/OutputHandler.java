@@ -1,4 +1,4 @@
-package edu.ntnu.idi.bidata.io;
+package edu.ntnu.idi.bidata.boardgame.backend.io;
 
 /**
  * The OutputHandler class is responsible for outputting messages to the standard output stream. It

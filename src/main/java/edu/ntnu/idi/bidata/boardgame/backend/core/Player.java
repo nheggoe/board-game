@@ -1,4 +1,6 @@
-package edu.ntnu.idi.bidata.core;
+package edu.ntnu.idi.bidata.boardgame.backend.core;
+
+import java.util.Objects;
 
 /**
  * The {@code Player} class represents a player in the board game. Each player has a name and a
@@ -14,9 +16,6 @@ public class Player {
   private Tile currentTile;
   // The board on which the player is moving
   private String figure;
-
-  /** no-arguments constructor for the Jackson JSON library. */
-  private Player() {}
 
   /**
    * Constructs a new player with the specified name and places them at the start tile (position 0)
@@ -84,5 +83,21 @@ public class Player {
 
   public void setFigure(String figure) {
     this.figure = figure;
+  }
+
+  @Override
+  public final boolean equals(Object o) {
+    if (!(o instanceof Player player)) {
+      return false;
+    }
+
+    return Objects.equals(name, player.name) && Objects.equals(figure, player.figure);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = Objects.hashCode(name);
+    result = 31 * result + Objects.hashCode(figure);
+    return result;
   }
 }
