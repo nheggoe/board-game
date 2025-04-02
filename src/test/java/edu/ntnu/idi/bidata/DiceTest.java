@@ -2,7 +2,7 @@ package edu.ntnu.idi.bidata;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import edu.ntnu.idi.bidata.boardgame.backend.core.Dice;
+import edu.ntnu.idi.bidata.boardgame.backend.model.Dice;
 import org.junit.jupiter.api.Test;
 
 class DiceTest {

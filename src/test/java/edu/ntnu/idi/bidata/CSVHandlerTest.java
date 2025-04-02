@@ -2,10 +2,10 @@ package edu.ntnu.idi.bidata;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import edu.ntnu.idi.bidata.boardgame.backend.core.Board;
-import edu.ntnu.idi.bidata.boardgame.backend.core.Player;
-import edu.ntnu.idi.bidata.boardgame.backend.util.CSVHandler;
-import edu.ntnu.idi.bidata.boardgame.backend.util.FileUtil;
+import edu.ntnu.idi.bidata.boardgame.backend.io.CSVHandler;
+import edu.ntnu.idi.bidata.boardgame.backend.io.FileUtil;
+import edu.ntnu.idi.bidata.boardgame.backend.model.Board;
+import edu.ntnu.idi.bidata.boardgame.backend.model.Player;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;

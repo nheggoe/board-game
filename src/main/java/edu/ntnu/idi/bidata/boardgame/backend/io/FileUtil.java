@@ -1,4 +1,4 @@
-package edu.ntnu.idi.bidata.boardgame.backend.util;
+package edu.ntnu.idi.bidata.boardgame.backend.io;
 
 import java.io.File;
 import java.io.IOException;

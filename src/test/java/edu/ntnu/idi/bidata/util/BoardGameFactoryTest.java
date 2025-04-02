@@ -4,9 +4,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import edu.ntnu.idi.bidata.boardgame.backend.action.LadderAction;
 import edu.ntnu.idi.bidata.boardgame.backend.action.SnakeAction;
-import edu.ntnu.idi.bidata.boardgame.backend.core.Board;
+import edu.ntnu.idi.bidata.boardgame.backend.io.json.JsonService;
+import edu.ntnu.idi.bidata.boardgame.backend.model.Board;
 import edu.ntnu.idi.bidata.boardgame.backend.util.BoardGameFactory;
-import edu.ntnu.idi.bidata.boardgame.backend.util.json.JsonService;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 

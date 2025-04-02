@@ -2,8 +2,8 @@ package edu.ntnu.idi.bidata.util.json;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import edu.ntnu.idi.bidata.boardgame.backend.core.Player;
-import edu.ntnu.idi.bidata.boardgame.backend.util.FileUtil;
+import edu.ntnu.idi.bidata.boardgame.backend.io.FileUtil;
+import edu.ntnu.idi.bidata.boardgame.backend.model.Player;
 import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
 

@@ -2,9 +2,9 @@ package edu.ntnu.idi.bidata.util.json;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import edu.ntnu.idi.bidata.boardgame.backend.core.Board;
-import edu.ntnu.idi.bidata.boardgame.backend.core.Player;
-import edu.ntnu.idi.bidata.boardgame.backend.util.json.JsonService;
+import edu.ntnu.idi.bidata.boardgame.backend.io.json.JsonService;
+import edu.ntnu.idi.bidata.boardgame.backend.model.Board;
+import edu.ntnu.idi.bidata.boardgame.backend.model.Player;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

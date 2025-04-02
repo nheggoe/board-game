@@ -1,4 +1,4 @@
-package edu.ntnu.idi.bidata.boardgame.backend.core;
+package edu.ntnu.idi.bidata.boardgame.backend.model;
 
 import edu.ntnu.idi.bidata.boardgame.backend.action.TileAction;
 

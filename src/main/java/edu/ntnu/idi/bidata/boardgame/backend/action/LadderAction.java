@@ -1,7 +1,7 @@
 package edu.ntnu.idi.bidata.boardgame.backend.action;
 
-import edu.ntnu.idi.bidata.boardgame.backend.core.Board;
-import edu.ntnu.idi.bidata.boardgame.backend.core.Player;
+import edu.ntnu.idi.bidata.boardgame.backend.model.Board;
+import edu.ntnu.idi.bidata.boardgame.backend.model.Player;
 
 /**
  * The {@code LadderAction} moves a player 10 tiles forward. It automatically assigns itself to the
