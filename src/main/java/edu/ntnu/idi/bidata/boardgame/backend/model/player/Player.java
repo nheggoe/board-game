@@ -1,5 +1,7 @@
-package edu.ntnu.idi.bidata.boardgame.backend.model;
+package edu.ntnu.idi.bidata.boardgame.backend.model.player;
 
+import edu.ntnu.idi.bidata.boardgame.backend.model.board.Board;
+import edu.ntnu.idi.bidata.boardgame.backend.model.tile.Tile;
 import java.util.Objects;
 
 /**

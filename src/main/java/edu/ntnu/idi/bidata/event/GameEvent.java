@@ -1,6 +1,6 @@
 package edu.ntnu.idi.bidata.event;
 
-import edu.ntnu.idi.bidata.core.Player;
+import edu.ntnu.idi.bidata.boardgame.backend.model.player.Player;
 
 public class GameEvent {
   private String eventType;

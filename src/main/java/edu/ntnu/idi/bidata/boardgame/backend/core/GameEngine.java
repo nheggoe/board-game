@@ -2,9 +2,9 @@ package edu.ntnu.idi.bidata.boardgame.backend.core;
 
 import edu.ntnu.idi.bidata.boardgame.backend.action.TileAction;
 import edu.ntnu.idi.bidata.boardgame.backend.io.OutputHandler;
-import edu.ntnu.idi.bidata.boardgame.backend.model.Board;
 import edu.ntnu.idi.bidata.boardgame.backend.model.Dice;
-import edu.ntnu.idi.bidata.boardgame.backend.model.Player;
+import edu.ntnu.idi.bidata.boardgame.backend.model.board.Board;
+import edu.ntnu.idi.bidata.boardgame.backend.model.player.Player;
 import java.util.List;
 
 /**

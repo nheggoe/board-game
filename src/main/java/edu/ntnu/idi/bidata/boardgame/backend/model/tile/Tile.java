@@ -1,6 +1,8 @@
-package edu.ntnu.idi.bidata.boardgame.backend.model;
+package edu.ntnu.idi.bidata.boardgame.backend.model.tile;
 
 import edu.ntnu.idi.bidata.boardgame.backend.action.TileAction;
+import edu.ntnu.idi.bidata.boardgame.backend.model.board.Board;
+import edu.ntnu.idi.bidata.boardgame.backend.model.player.Player;
 
 /**
  * The {@code Tile} class represents a tile on the board. Each tile has a unique position, name and

@@ -1,10 +1,10 @@
 package edu.ntnu.idi.bidata.boardgame.backend.core;
 
-import edu.ntnu.idi.bidata.boardgame.backend.io.CSVHandler;
 import edu.ntnu.idi.bidata.boardgame.backend.io.InputHandler;
 import edu.ntnu.idi.bidata.boardgame.backend.io.OutputHandler;
-import edu.ntnu.idi.bidata.boardgame.backend.model.Board;
-import edu.ntnu.idi.bidata.boardgame.backend.model.Player;
+import edu.ntnu.idi.bidata.boardgame.backend.io.csv.CSVHandler;
+import edu.ntnu.idi.bidata.boardgame.backend.model.board.Board;
+import edu.ntnu.idi.bidata.boardgame.backend.model.player.Player;
 import java.util.ArrayList;
 import java.util.List;
 
