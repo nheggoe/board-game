@@ -7,6 +7,9 @@ import java.util.List;
  * The EventManager class is responsible for managing and notifying a list of event listeners. It
  * allows for the addition of listeners and ensures that all registered listeners are updated when
  * the update method is invoked.
+ *
+ * @author Nick Heggø
+ * @version 2025.04.02
  */
 public class EventManager {
   private final List<EventListener> listeners;

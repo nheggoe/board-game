@@ -10,7 +10,7 @@ public class SceneSwitcher {
   public enum AppScene {
     MAIN_MENU,
     GAME_VIEW,
-    DEMO_VIEW;
+    DEMO_VIEW
   }
 
   public SceneSwitcher(Stage primaryStage) {

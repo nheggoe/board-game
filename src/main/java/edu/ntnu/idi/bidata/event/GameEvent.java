@@ -3,7 +3,7 @@ package edu.ntnu.idi.bidata.event;
 import edu.ntnu.idi.bidata.boardgame.backend.model.player.Player;
 
 public class GameEvent {
-  private String eventType;
+  private final String eventType;
   private Player player;
   private Object data;
 
