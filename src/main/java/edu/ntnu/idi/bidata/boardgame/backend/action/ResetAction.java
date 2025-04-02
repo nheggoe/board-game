@@ -1,7 +1,7 @@
-package edu.ntnu.idi.bidata.action;
+package edu.ntnu.idi.bidata.boardgame.backend.action;
 
-import edu.ntnu.idi.bidata.core.Board;
-import edu.ntnu.idi.bidata.core.Player;
+import edu.ntnu.idi.bidata.boardgame.backend.core.Board;
+import edu.ntnu.idi.bidata.boardgame.backend.core.Player;
 
 /**
  * The {@code ResetAction} class represents an action that moves the player to the starting tile. It

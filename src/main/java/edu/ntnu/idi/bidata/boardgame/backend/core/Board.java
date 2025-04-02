@@ -1,8 +1,8 @@
-package edu.ntnu.idi.bidata.core;
+package edu.ntnu.idi.bidata.boardgame.backend.core;
 
-import edu.ntnu.idi.bidata.action.LadderAction;
-import edu.ntnu.idi.bidata.action.ResetAction;
-import edu.ntnu.idi.bidata.action.SnakeAction;
+import edu.ntnu.idi.bidata.boardgame.backend.action.LadderAction;
+import edu.ntnu.idi.bidata.boardgame.backend.action.ResetAction;
+import edu.ntnu.idi.bidata.boardgame.backend.action.SnakeAction;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -12,7 +12,7 @@ import java.util.Objects;
  * unique position and a name. The board is initialized with a predefined set of tiles.
  *
  * @author Mihailo Hranisavljevic, Nick Heggø
- * @version 2025.02.14
+ * @version 2025.03.14
  */
 public class Board {
   /** The list of tiles that make up the board. */
@@ -22,6 +22,16 @@ public class Board {
   public Board() {
     tiles = new ArrayList<>();
     initializeBoard();
+  }
+
+  /**
+   * Returns the list of tiles that make up the board. This method was added to utilize jackson
+   * serialization.
+   *
+   * @return the list of tiles
+   */
+  public List<Tile> getTiles() {
+    return tiles;
   }
 
   /**

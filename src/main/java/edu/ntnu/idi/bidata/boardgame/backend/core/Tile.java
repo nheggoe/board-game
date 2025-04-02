@@ -1,23 +1,21 @@
-package edu.ntnu.idi.bidata.core;
+package edu.ntnu.idi.bidata.boardgame.backend.core;
 
-import edu.ntnu.idi.bidata.action.TileAction;
+import edu.ntnu.idi.bidata.boardgame.backend.action.TileAction;
 
 /**
  * The {@code Tile} class represents a tile on the board. Each tile has a unique position, name and
  * an action in some cases.
  *
  * @author Mihailo
- * @version 2025.02.07
+ * @version 2025.03.14
  */
 public class Tile {
   // The name of the tile.
   private String name;
   // The position of the tile on the board.
   private int position;
-  private TileAction landAction;
 
-  /** no-arguments constructor for the Jackson JSON library. */
-  private Tile() {}
+  private TileAction landAction;
 
   /**
    * Constructs a new tile with a position, a name, and an action.
