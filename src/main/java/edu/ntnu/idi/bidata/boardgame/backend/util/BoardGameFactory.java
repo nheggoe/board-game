@@ -1,10 +1,10 @@
-package edu.ntnu.idi.bidata.util;
+package edu.ntnu.idi.bidata.boardgame.backend.util;
 
-import edu.ntnu.idi.bidata.action.*;
-import edu.ntnu.idi.bidata.core.*;
-import edu.ntnu.idi.bidata.util.json.JsonService;
-import java.io.IOException;
-import java.util.stream.Stream;
+import edu.ntnu.idi.bidata.boardgame.backend.action.LadderAction;
+import edu.ntnu.idi.bidata.boardgame.backend.action.ResetAction;
+import edu.ntnu.idi.bidata.boardgame.backend.action.SnakeAction;
+import edu.ntnu.idi.bidata.boardgame.backend.core.Board;
+import edu.ntnu.idi.bidata.boardgame.backend.util.json.JsonService;
 
 /**
  * The {@code BoardGameFactory} class is a factory class that creates different types of boards. It
@@ -15,7 +15,7 @@ import java.util.stream.Stream;
  */
 public class BoardGameFactory {
 
-  private static final JsonService boardService = new JsonService(Board.class);
+  private static final JsonService<Board> boardService = new JsonService<>(Board.class);
 
   /**
    * Creates a regular board.
@@ -68,20 +68,20 @@ public class BoardGameFactory {
    * Loads a board configuration from a JSON file.
    *
    * @return a new instance of {@code Board} based on the JSON contents
-   * @throws IOException if an error occurs while reading the file
    */
-  public static Board loadBoardFromJson() throws IOException {
-    Stream<Board> boards = boardService.loadJsonAsStream();
-    return boards.findFirst().orElse(null);
+  public static Board loadBoardFromJson() {
+    return boardService
+        .loadJsonAsStream()
+        .findFirst()
+        .orElseThrow(() -> new IllegalStateException("No board found"));
   }
 
   /**
    * Saves the current board configuration to a JSON file.
    *
    * @param board the board instance to be saved
-   * @throws IOException if an error occurs during writing
    */
-  public static void saveBoardToJson(Board board) throws IOException {
-    boardService.writeCollection(Stream.of(board));
+  public static void saveBoardToJson(Board board) {
+    boardService.addItem(board);
   }
 }

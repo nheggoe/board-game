@@ -1,7 +1,6 @@
-package edu.ntnu.idi.bidata.core;
+package edu.ntnu.idi.bidata.boardgame.backend.core;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import edu.ntnu.idi.bidata.action.TileAction;
+import edu.ntnu.idi.bidata.boardgame.backend.action.TileAction;
 
 /**
  * The {@code Tile} class represents a tile on the board. Each tile has a unique position, name and
@@ -16,11 +15,7 @@ public class Tile {
   // The position of the tile on the board.
   private int position;
 
-  @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "@class")
   private TileAction landAction;
-
-  /** no-arguments constructor for the Jackson JSON library. */
-  private Tile() {}
 
   /**
    * Constructs a new tile with a position, a name, and an action.

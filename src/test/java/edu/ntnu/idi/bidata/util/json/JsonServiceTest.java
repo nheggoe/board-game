@@ -2,22 +2,23 @@ package edu.ntnu.idi.bidata.util.json;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import edu.ntnu.idi.bidata.core.Board;
-import edu.ntnu.idi.bidata.core.Player;
-import java.io.IOException;
-import java.util.stream.Stream;
+import edu.ntnu.idi.bidata.boardgame.backend.core.Board;
+import edu.ntnu.idi.bidata.boardgame.backend.core.Player;
+import edu.ntnu.idi.bidata.boardgame.backend.util.json.JsonService;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 class JsonServiceTest {
 
-  private static final JsonService testPlayerJsonService = new JsonService(Player.class, true);
+  private static final JsonService<Player> testPlayerJsonService =
+      new JsonService<>(Player.class, true);
 
   @BeforeAll
-  static void setUp() throws IOException {
+  static void setUp() {
     Board board = new Board();
     var players =
-        Stream.of(
+        Set.of(
             new Player("Player1", board, "red"),
             new Player("Player2", board, "blue"),
             new Player("Player3", board, "pink"));
@@ -26,11 +27,7 @@ class JsonServiceTest {
 
   @Test
   void testReadPlayers() {
-    try {
-      assertFalse(testPlayerJsonService.loadJsonAsStream().findAny().isEmpty());
-      assertEquals(3, testPlayerJsonService.loadJsonAsStream().count());
-    } catch (IOException e) {
-      fail(e);
-    }
+    assertFalse(testPlayerJsonService.loadJsonAsStream().findAny().isEmpty());
+    assertEquals(3, testPlayerJsonService.loadJsonAsStream().count());
   }
 }

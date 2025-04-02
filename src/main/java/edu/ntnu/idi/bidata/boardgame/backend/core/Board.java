@@ -1,9 +1,8 @@
-package edu.ntnu.idi.bidata.core;
+package edu.ntnu.idi.bidata.boardgame.backend.core;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import edu.ntnu.idi.bidata.action.LadderAction;
-import edu.ntnu.idi.bidata.action.ResetAction;
-import edu.ntnu.idi.bidata.action.SnakeAction;
+import edu.ntnu.idi.bidata.boardgame.backend.action.LadderAction;
+import edu.ntnu.idi.bidata.boardgame.backend.action.ResetAction;
+import edu.ntnu.idi.bidata.boardgame.backend.action.SnakeAction;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -15,8 +14,6 @@ import java.util.Objects;
  * @author Mihailo Hranisavljevic, Nick Heggø
  * @version 2025.03.14
  */
-// ChatGPT
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Board {
   /** The list of tiles that make up the board. */
   private final List<Tile> tiles;

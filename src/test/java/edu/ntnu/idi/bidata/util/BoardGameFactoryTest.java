@@ -2,11 +2,11 @@ package edu.ntnu.idi.bidata.util;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import edu.ntnu.idi.bidata.action.LadderAction;
-import edu.ntnu.idi.bidata.action.SnakeAction;
-import edu.ntnu.idi.bidata.core.Board;
-import edu.ntnu.idi.bidata.util.json.JsonService;
-import java.io.IOException;
+import edu.ntnu.idi.bidata.boardgame.backend.action.LadderAction;
+import edu.ntnu.idi.bidata.boardgame.backend.action.SnakeAction;
+import edu.ntnu.idi.bidata.boardgame.backend.core.Board;
+import edu.ntnu.idi.bidata.boardgame.backend.util.BoardGameFactory;
+import edu.ntnu.idi.bidata.boardgame.backend.util.json.JsonService;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 
@@ -36,14 +36,15 @@ class BoardGameFactoryTest {
   }
 
   @Test
-  void testSaveAndLoadBoardJson() throws IOException {
+  void testSaveAndLoadBoardJson() {
     Board originalBoard = new Board();
     assertNotNull(originalBoard);
-    JsonService boardService = new JsonService(Board.class);
-    boardService.writeCollection(Stream.of(originalBoard));
+    JsonService<Board> boardService = new JsonService<>(Board.class);
+    boardService.addItem(originalBoard);
 
     Stream<Board> loadedBoards = boardService.loadJsonAsStream();
-    Board loadedBoard = loadedBoards.findFirst().orElse(null);
+    Board loadedBoard =
+        loadedBoards.findFirst().orElseThrow(() -> new IllegalStateException("No board loaded"));
 
     assertNotNull(loadedBoard);
     assertEquals(originalBoard.getNumberOfTiles(), loadedBoard.getNumberOfTiles());

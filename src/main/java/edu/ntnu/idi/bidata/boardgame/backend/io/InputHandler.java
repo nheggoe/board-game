@@ -1,4 +1,4 @@
-package edu.ntnu.idi.bidata.io;
+package edu.ntnu.idi.bidata.boardgame.backend.io;
 
 import java.util.Scanner;
 

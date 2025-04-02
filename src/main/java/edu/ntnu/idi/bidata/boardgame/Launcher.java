@@ -1,6 +1,6 @@
-package edu.ntnu.idi.bidata;
+package edu.ntnu.idi.bidata.boardgame;
 
-import edu.ntnu.idi.bidata.core.BoardGame;
+import edu.ntnu.idi.bidata.boardgame.backend.core.BoardGame;
 
 /**
  * The {@link Launcher} class is the entry point of the program. It creates a new instance of the

@@ -1,7 +1,7 @@
-package edu.ntnu.idi.bidata.core;
+package edu.ntnu.idi.bidata.boardgame.backend.core;
 
-import edu.ntnu.idi.bidata.io.InputHandler;
-import edu.ntnu.idi.bidata.io.OutputHandler;
+import edu.ntnu.idi.bidata.boardgame.backend.io.InputHandler;
+import edu.ntnu.idi.bidata.boardgame.backend.io.OutputHandler;
 import java.util.List;
 
 /**

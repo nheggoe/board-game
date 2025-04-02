@@ -1,8 +1,8 @@
-package edu.ntnu.idi.bidata.core;
+package edu.ntnu.idi.bidata.boardgame.backend.core;
 
-import edu.ntnu.idi.bidata.io.InputHandler;
-import edu.ntnu.idi.bidata.io.OutputHandler;
-import edu.ntnu.idi.bidata.util.CSVHandler;
+import edu.ntnu.idi.bidata.boardgame.backend.io.InputHandler;
+import edu.ntnu.idi.bidata.boardgame.backend.io.OutputHandler;
+import edu.ntnu.idi.bidata.boardgame.backend.util.CSVHandler;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +34,7 @@ public class PlayerManager {
     this.inputHandler = inputHandler;
     this.outputHandler = outputHandler;
     this.board = board;
-    this.csvHandler = new CSVHandler("players.csv");
+    this.csvHandler = new CSVHandler("/data/csv/players.csv");
   }
 
   /**
@@ -94,7 +94,6 @@ public class PlayerManager {
     saveNewPlayers(players);
     return players;
   }
-
 
   /**
    * Saves the list of players to the CSV file and prints a confirmation message.
