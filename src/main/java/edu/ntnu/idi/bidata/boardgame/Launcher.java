@@ -1,6 +1,7 @@
 package edu.ntnu.idi.bidata.boardgame;
 
 import edu.ntnu.idi.bidata.boardgame.backend.core.BoardGame;
+import edu.ntnu.idi.bidata.boardgame.frontend.MonopolyApp;
 
 /**
  * The {@link Launcher} class is the entry point of the program. It creates a new instance of the
@@ -12,6 +13,6 @@ import edu.ntnu.idi.bidata.boardgame.backend.core.BoardGame;
 public class Launcher {
   /** The main method creates a new instance of the Game class and runs it. */
   public static void main(String[] args) {
-    new BoardGame().start();
+    MonopolyApp.main(args);
   }
 }
