@@ -1,4 +1,4 @@
-package edu.ntnu.idi.bidata.boardgame.backend.util.json;
+package edu.ntnu.idi.bidata.boardgame.backend.io.json;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

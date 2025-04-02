@@ -1,4 +1,4 @@
-package edu.ntnu.idi.bidata.boardgame.backend.util.json;
+package edu.ntnu.idi.bidata.boardgame.backend.io.json;
 
 /**
  * Custom exception used to indicate errors related to JSON handling operations. This exception is

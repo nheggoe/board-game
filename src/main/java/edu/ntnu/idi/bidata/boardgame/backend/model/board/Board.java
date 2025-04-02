@@ -1,8 +1,9 @@
-package edu.ntnu.idi.bidata.boardgame.backend.core;
+package edu.ntnu.idi.bidata.boardgame.backend.model.board;
 
 import edu.ntnu.idi.bidata.boardgame.backend.action.LadderAction;
 import edu.ntnu.idi.bidata.boardgame.backend.action.ResetAction;
 import edu.ntnu.idi.bidata.boardgame.backend.action.SnakeAction;
+import edu.ntnu.idi.bidata.boardgame.backend.model.tile.Tile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;

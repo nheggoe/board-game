@@ -1,7 +1,7 @@
-package edu.ntnu.idi.bidata.boardgame.backend.util.json;
+package edu.ntnu.idi.bidata.boardgame.backend.io.json;
 
 import com.google.gson.Gson;
-import edu.ntnu.idi.bidata.boardgame.backend.util.FileUtil;
+import edu.ntnu.idi.bidata.boardgame.backend.io.FileUtil;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;

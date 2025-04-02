@@ -1,7 +1,8 @@
-package edu.ntnu.idi.bidata.boardgame.backend.util;
+package edu.ntnu.idi.bidata.boardgame.backend.io.csv;
 
-import edu.ntnu.idi.bidata.boardgame.backend.core.Board;
-import edu.ntnu.idi.bidata.boardgame.backend.core.Player;
+import edu.ntnu.idi.bidata.boardgame.backend.io.FileUtil;
+import edu.ntnu.idi.bidata.boardgame.backend.model.board.Board;
+import edu.ntnu.idi.bidata.boardgame.backend.model.player.Player;
 import java.io.*;
 import java.nio.file.Path;
 import java.util.logging.Logger;

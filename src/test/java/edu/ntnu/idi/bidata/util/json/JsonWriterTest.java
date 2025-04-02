@@ -1,8 +1,8 @@
 package edu.ntnu.idi.bidata.util.json;
 
-import edu.ntnu.idi.bidata.boardgame.backend.core.Board;
-import edu.ntnu.idi.bidata.boardgame.backend.core.Player;
-import edu.ntnu.idi.bidata.boardgame.backend.util.json.JsonWriter;
+import edu.ntnu.idi.bidata.boardgame.backend.io.json.JsonWriter;
+import edu.ntnu.idi.bidata.boardgame.backend.model.board.Board;
+import edu.ntnu.idi.bidata.boardgame.backend.model.player.Player;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 

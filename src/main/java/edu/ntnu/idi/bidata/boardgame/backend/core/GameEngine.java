@@ -2,6 +2,9 @@ package edu.ntnu.idi.bidata.boardgame.backend.core;
 
 import edu.ntnu.idi.bidata.boardgame.backend.action.TileAction;
 import edu.ntnu.idi.bidata.boardgame.backend.io.OutputHandler;
+import edu.ntnu.idi.bidata.boardgame.backend.model.Dice;
+import edu.ntnu.idi.bidata.boardgame.backend.model.board.Board;
+import edu.ntnu.idi.bidata.boardgame.backend.model.player.Player;
 import java.util.List;
 
 /**
@@ -9,7 +12,7 @@ import java.util.List;
  * processes each game round, moves players, checks for tile actions, and determines if a player has
  * won.
  *
- * <p>This class interacts with the {@code Board}, {@code Dice}, and {@code Player} objects to
+ * <p>This class interacts with the {@link Board}, {@link Dice}, and {@link Player} objects to
  * facilitate game progression.
  *
  * @author Nick Heggø

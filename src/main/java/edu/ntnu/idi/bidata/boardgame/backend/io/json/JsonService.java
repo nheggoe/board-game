@@ -1,4 +1,4 @@
-package edu.ntnu.idi.bidata.boardgame.backend.util.json;
+package edu.ntnu.idi.bidata.boardgame.backend.io.json;
 
 import java.util.Set;
 import java.util.stream.Collectors;
