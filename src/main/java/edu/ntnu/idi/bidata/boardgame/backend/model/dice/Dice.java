@@ -1,4 +1,4 @@
-package edu.ntnu.idi.bidata.boardgame.backend.model;
+package edu.ntnu.idi.bidata.boardgame.backend.model.dice;
 
 import java.util.Random;
 

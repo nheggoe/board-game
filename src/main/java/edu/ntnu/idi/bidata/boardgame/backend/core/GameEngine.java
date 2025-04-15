@@ -1,8 +1,8 @@
 package edu.ntnu.idi.bidata.boardgame.backend.core;
 
-import edu.ntnu.idi.bidata.boardgame.backend.model.Dice;
 import edu.ntnu.idi.bidata.boardgame.backend.model.board.Board;
 import edu.ntnu.idi.bidata.boardgame.backend.model.board.BoardGameFactory;
+import edu.ntnu.idi.bidata.boardgame.backend.model.dice.Dice;
 import edu.ntnu.idi.bidata.boardgame.backend.model.game.Game;
 import edu.ntnu.idi.bidata.boardgame.backend.model.player.Player;
 import edu.ntnu.idi.bidata.boardgame.backend.model.tile.TileAction;

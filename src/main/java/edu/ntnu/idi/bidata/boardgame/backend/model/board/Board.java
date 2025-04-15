@@ -1,5 +1,6 @@
 package edu.ntnu.idi.bidata.boardgame.backend.model.board;
 
+import edu.ntnu.idi.bidata.boardgame.backend.model.tile.IllegalTilePositionException;
 import edu.ntnu.idi.bidata.boardgame.backend.model.tile.Tile;
 import java.util.List;
 
@@ -28,7 +29,11 @@ public record Board(List<Tile> tiles) {
    * @return the {@link Tile} the player lands on after moving the specified number of steps
    */
   public Tile getTileAfterSteps(Tile currentTile, int steps) {
-    int nextIndex = (currentTile.getTilePosition() + steps) % (tiles.size() - 1);
+    if (currentTile.getTilePosition() < 0) {
+      throw new IllegalTilePositionException(
+          currentTile.getTilePosition(), currentTile.getTileName());
+    }
+    int nextIndex = (currentTile.getTilePosition() + steps) % tiles.size();
     return tiles.get(Math.max(nextIndex, 0));
   }
 

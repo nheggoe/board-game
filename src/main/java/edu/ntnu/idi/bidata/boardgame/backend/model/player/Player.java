@@ -89,7 +89,7 @@ public class Player {
    * @return the current tile of the player
    */
   public Tile getCurrentTile() {
-    return currentTile;
+    return currentTile != null ? currentTile : new Tile(-1, "INVALID", unused -> {}) {};
   }
 
   public void setCurrentTile(Tile tile) {

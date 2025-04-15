@@ -91,8 +91,8 @@ public class BoardGameFactory {
 
   private static List<Tile> generateTiles(int numberOfTiles) {
     List<Tile> tmp = new ArrayList<>();
-    for (int i = 1; i <= numberOfTiles - 2; i++) {
-      final int finalI = i + 1;
+    for (int i = 1; i < numberOfTiles - 1; i++) {
+      final int finalI = i;
       tmp.add(
           new Tile(
               i,
@@ -106,7 +106,7 @@ public class BoardGameFactory {
             player -> System.out.println(player.getName() + " is on the first tile")) {});
     tmp.addLast(
         new Tile(
-            tmp.size() - 1,
+            tmp.size(),
             "End",
             player -> System.out.println(player.getName() + " is on the last tile")) {});
     return tmp;

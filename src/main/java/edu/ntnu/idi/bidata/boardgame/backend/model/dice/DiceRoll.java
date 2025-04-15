@@ -1,4 +1,4 @@
-package edu.ntnu.idi.bidata.boardgame.backend.model;
+package edu.ntnu.idi.bidata.boardgame.backend.model.dice;
 
 import java.util.Arrays;
 
@@ -14,8 +14,11 @@ public record DiceRoll(int... rolls) {
 
   public DiceRoll {
     for (int roll : rolls) {
-      if (roll > 1) {
+      if (roll < 1) {
         throw new IllegalArgumentException("Face value of dice cannot be less than 1");
+      }
+      if (roll > 6) {
+        throw new IllegalArgumentException("Face value of dice cannot exceed 6");
       }
     }
     rolls = Arrays.copyOf(rolls, rolls.length);
