@@ -1,7 +1,7 @@
 package edu.ntnu.idi.bidata.boardgame.backend.io.csv;
 
 import edu.ntnu.idi.bidata.boardgame.backend.io.FileUtil;
-import edu.ntnu.idi.bidata.boardgame.backend.model.board.Board;
+import edu.ntnu.idi.bidata.boardgame.backend.model.player.Figure;
 import edu.ntnu.idi.bidata.boardgame.backend.model.player.Player;
 import java.io.*;
 import java.nio.file.Path;
@@ -80,7 +80,7 @@ public class CSVHandler {
    *
    * @return A Stream of Player objects loaded from the CSV file.
    */
-  public Stream<Player> loadPlayers(Board board) {
+  public Stream<Player> loadPlayers() {
     Stream.Builder<Player> playerStreamBuilder = Stream.builder();
 
     try (BufferedReader reader = new BufferedReader(new FileReader(filePath.toFile()))) {
@@ -95,7 +95,7 @@ public class CSVHandler {
 
         String[] data = line.split(",");
         if (data.length == 2) {
-          Player player = new Player(data[0], board, data[1]);
+          Player player = new Player(data[0], Figure.valueOf(data[1]));
           playerStreamBuilder.add(player);
           System.out.println("Loaded player: " + data[0] + " - " + data[1]);
         }

@@ -10,7 +10,7 @@ import java.util.logging.Logger;
  * specified file and its parent directories exist, creating them if necessary.
  *
  * @author Nick Heggø
- * @version 2025.03.25
+ * @version 2025.04.15
  */
 public class FileUtil {
 
@@ -40,13 +40,9 @@ public class FileUtil {
     }
     String fileNameFormatted = fileName.strip();
     String fileExtensionFormatted = fileExtension.toLowerCase().strip();
-    return isTest
-        ? Path.of(
-            TEST_FILE_PATH_TEMPLATE.formatted(
-                fileExtensionFormatted, fileNameFormatted, fileExtensionFormatted))
-        : Path.of(
-            FILE_PATH_TEMPLATE.formatted(
-                fileExtensionFormatted, fileNameFormatted, fileExtensionFormatted));
+    return Path.of(
+        (isTest ? TEST_FILE_PATH_TEMPLATE : FILE_PATH_TEMPLATE)
+            .formatted(fileExtensionFormatted, fileNameFormatted, fileExtensionFormatted));
   }
 
   /**

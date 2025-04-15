@@ -23,13 +23,13 @@ class TileTest {
   @Test
   void testGetName() {
     Tile tile = new Tile(1, "A");
-    assertEquals("A", tile.getName());
+    assertEquals("A", tile.getTileName());
   }
 
   @Test
   void testSetName() {
     Tile tile = new Tile(1, "A");
-    tile.setName("B");
-    assertEquals("B", tile.getName());
+    tile.setTileName("B");
+    assertEquals("B", tile.getTileName());
   }
 }

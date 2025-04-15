@@ -1,11 +1,14 @@
 package edu.ntnu.idi.bidata.boardgame.backend.core;
 
-import edu.ntnu.idi.bidata.boardgame.backend.action.TileAction;
-import edu.ntnu.idi.bidata.boardgame.backend.io.OutputHandler;
 import edu.ntnu.idi.bidata.boardgame.backend.model.Dice;
 import edu.ntnu.idi.bidata.boardgame.backend.model.board.Board;
+import edu.ntnu.idi.bidata.boardgame.backend.model.board.BoardGameFactory;
+import edu.ntnu.idi.bidata.boardgame.backend.model.game.Game;
 import edu.ntnu.idi.bidata.boardgame.backend.model.player.Player;
-import java.util.List;
+import edu.ntnu.idi.bidata.boardgame.backend.model.tile.TileAction;
+import edu.ntnu.idi.bidata.boardgame.backend.util.InputHandler;
+import edu.ntnu.idi.bidata.boardgame.backend.util.OutputHandler;
+import java.util.SequencedCollection;
 
 /**
  * The {@code GameEngine} class is responsible for managing the core game loop and logic. It
@@ -16,11 +19,14 @@ import java.util.List;
  * facilitate game progression.
  *
  * @author Nick Heggø
- * @version 2025.03.14
+ * @version 2025.04.15
  */
 public class GameEngine {
+
+  private static GameEngine instance;
+
   private final OutputHandler outputHandler;
-  private final Board board;
+  private final Game game;
   private final Dice dice;
   private boolean running = true;
   private int roundNumber = 1;
@@ -29,31 +35,42 @@ public class GameEngine {
    * Constructs a {@code GameEngine} with the required dependencies.
    *
    * @param outputHandler Handles output to the user.
-   * @param board The game board containing tiles and game elements.
+   * @param game The game board containing tiles and game elements.
    * @param dice The dice object used for rolling moves.
    */
-  public GameEngine(OutputHandler outputHandler, Board board, Dice dice) {
+  private GameEngine(OutputHandler outputHandler, Game game, Dice dice) {
     this.outputHandler = outputHandler;
-    this.board = board;
+    this.game = game;
     this.dice = dice;
   }
 
-  /**
-   * Starts and manages the game loop, allowing players to take turns until the game ends.
-   *
-   * @param players The list of players participating in the game.
-   */
-  public void run(List<Player> players) {
+  public static synchronized GameEngine getInstance() {
+    if (instance == null) {
+      instance =
+          new GameEngine(
+              OutputHandler.getInstance(),
+              new Game(BoardGameFactory.generateBoard(BoardGameFactory.Layout.UNFAIR)),
+              Dice.getInstance());
+    }
+    return instance;
+  }
+
+  public void setup(SequencedCollection<Player> players) {
+    game.addPlayers(players);
+  }
+
+  /** Starts and manages the game loop, allowing players to take turns until the game ends. */
+  public void run() {
     outputHandler.println("Game has started! Initial player positions:");
-    printPlayerLocations(players);
+    printPlayerLocations();
 
     while (running) {
       outputHandler.println("Press enter to play round or 'exit' to quit:");
-      String input = new java.util.Scanner(System.in).nextLine();
+      String input = InputHandler.getInstance().nextLine();
       if (input.equalsIgnoreCase("exit")) {
         running = false;
       } else {
-        playRound(players);
+        playRound();
       }
     }
   }
@@ -61,16 +78,13 @@ public class GameEngine {
   /**
    * Executes a game round by rolling the dice, moving players, checking tile actions, and
    * determining if any player has won.
-   *
-   * @param players The list of players taking turns in the game.
    */
-  private void playRound(List<Player> players) {
+  private void playRound() {
     try {
       outputHandler.println("Round %d:".formatted(roundNumber++));
-      players.forEach(player -> player.move(dice.roll(), board));
-      players.forEach(this::checkTileAction);
-      printPlayerLocations(players);
-      checkWinningStatus(players);
+      game.forEach(player -> player.move(dice.roll(2).getTotal()));
+      game.forEach(this::executeTileAction);
+      checkWinningStatus();
     } catch (Exception e) {
       outputHandler.println("An error occurred during the round: " + e.getMessage());
     }
@@ -81,24 +95,24 @@ public class GameEngine {
    *
    * @param player The player whose current tile is checked for an action.
    */
-  private void checkTileAction(Player player) {
-    TileAction action = player.getCurrentTile().getLandAction();
+  private void executeTileAction(Player player) {
+    TileAction action = player.getCurrentTile().getTileAction();
     if (action != null) {
-      action.perform(player, board);
+      action.performAction(player);
     }
   }
 
-  /**
-   * Prints the current locations of all players.
-   *
-   * @param players The list of players whose positions are displayed.
-   */
-  private void printPlayerLocations(List<Player> players) {
-    players.forEach(
+  /** Prints the current locations of all players. */
+  private void printPlayerLocations() {
+    game.forEach(
         player ->
             outputHandler.println(
                 "Player %s is on tile %d"
-                    .formatted(player.getName(), player.getCurrentTile().getPosition() + 1)));
+                    .formatted(
+                        player.getName(),
+                        player.getCurrentTile() == null
+                            ? 1
+                            : player.getCurrentTile().getTilePosition() + 1)));
   }
 
   /**
@@ -106,12 +120,19 @@ public class GameEngine {
    *
    * @param players The list of players in the game.
    */
-  private void checkWinningStatus(List<Player> players) {
-    for (Player player : players) {
-      if (player.getCurrentTile().equals(board.getWinningTile())) {
-        outputHandler.println(player.getName() + " has won the game!");
-        running = false;
-      }
-    }
+  private void checkWinningStatus() {
+    game.forEach(
+        player -> {
+          if (player.getCurrentTile().equals(game.getBoard().tiles().getLast())) {
+            outputHandler.println(player.getName() + " has won the game!");
+            running = false;
+          }
+        });
+  }
+
+  // ------------------------  getters and setters  ------------------------
+
+  public Game getGame() {
+    return game;
   }
 }

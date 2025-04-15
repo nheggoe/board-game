@@ -20,7 +20,7 @@ class PlayerTest {
   void testPlayerInitialization() {
     assertEquals("Nick", player.getName());
     assertEquals(0, player.getCurrentTile().getPosition());
-    assertEquals("Start", player.getCurrentTile().getName());
+    assertEquals("Start", player.getCurrentTile().getTileName());
     assertEquals("X", player.getFigure());
   }
 

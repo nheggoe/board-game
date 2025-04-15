@@ -1,4 +1,4 @@
-package edu.ntnu.idi.bidata.boardgame.backend.io;
+package edu.ntnu.idi.bidata.boardgame.backend.util;
 
 /**
  * The OutputHandler class is responsible for outputting messages to the standard output stream. It
@@ -10,12 +10,19 @@ package edu.ntnu.idi.bidata.boardgame.backend.io;
  * operations.
  *
  * @author Nick Heggø
- * @version 2025.02.07
+ * @version 2025.04.15
  */
 public class OutputHandler {
 
-  public OutputHandler() {
-    // default constructor
+  private static OutputHandler instance;
+
+  private OutputHandler() {}
+
+  public static synchronized OutputHandler getInstance() {
+    if (instance == null) {
+      instance = new OutputHandler();
+    }
+    return instance;
   }
 
   /**

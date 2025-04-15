@@ -21,18 +21,18 @@ class MonopolyFacadeFactoryTest {
 
   @Test
   void testCreateUnfairBoard() {
-    Board board = BoardGameFactory.createUnfairBoard();
+    Board board = BoardGameFactory.generateUnfiarBoard();
     assertNotNull(board);
     assertEquals(90, board.getNumberOfTiles());
-    assertInstanceOf(SnakeAction.class, board.getTile(5).getLandAction());
+    assertInstanceOf(SnakeAction.class, board.getTile(5).getTileAction());
   }
 
   @Test
   void testCreateEasyBoard() {
-    Board board = BoardGameFactory.createEasyBoard();
+    Board board = BoardGameFactory.generateEasyBoard();
     assertNotNull(board);
     assertEquals(90, board.getNumberOfTiles());
-    assertInstanceOf(LadderAction.class, board.getTile(5).getLandAction());
+    assertInstanceOf(LadderAction.class, board.getTile(5).getTileAction());
   }
 
   @Test

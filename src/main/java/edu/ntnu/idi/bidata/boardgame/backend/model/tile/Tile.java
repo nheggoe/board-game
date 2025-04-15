@@ -1,82 +1,58 @@
 package edu.ntnu.idi.bidata.boardgame.backend.model.tile;
 
-import edu.ntnu.idi.bidata.boardgame.backend.action.TileAction;
-import edu.ntnu.idi.bidata.boardgame.backend.model.board.Board;
 import edu.ntnu.idi.bidata.boardgame.backend.model.player.Player;
 
 /**
  * The {@code Tile} class represents a tile on the board. Each tile has a unique position, name and
  * an action in some cases.
  *
- * @author Mihailo
- * @version 2025.03.14
+ * @author Mihailo and Nick Heggø
+ * @version 2025.04.15
  */
-public class Tile {
-  // The name of the tile.
-  private String name;
-  // The position of the tile on the board.
-  private int position;
+public abstract class Tile {
 
-  private TileAction landAction;
+  private final int tilePosition;
+
+  private String tileName;
+  private TileAction tileAction;
 
   /**
    * Constructs a new tile with a position, a name, and an action.
    *
-   * @param position the position of the tile
-   * @param name the name of the tile
-   * @param landAction the action performed when a player lands on this tile.
+   * @param tileName the name of the tile
+   * @param tileAction the action performed when a player lands on this tile.
    */
-  public Tile(int position, String name, TileAction landAction) {
-    setPosition(position);
-    setName(name);
-    setLandAction(landAction);
+  public Tile(int tilePosition, String tileName, TileAction tileAction) {
+    this.tilePosition = tilePosition;
+    setTileName(tileName);
+    setTileAction(tileAction);
   }
 
-  /**
-   * Constructs a new tile with a position and a name (without an action).
-   *
-   * @param position the position of the tile
-   * @param name the name of the tile
-   */
-  public Tile(int position, String name) {
-    this(position, name, null);
+  // ------------------------  APIs  ------------------------
+
+  public void performAction(Player player) {
+    tileAction.performAction(player);
   }
 
-  /**
-   * Performs the action when a player lands on this tile.
-   *
-   * @param player the player landing on the tile
-   */
-  public void landPlayer(Player player, Board board) {
-    if (landAction != null) {
-      landAction.perform(player, board);
-      player.placeOnTile(this);
-    }
+  // ------------------------  getters and setters  ------------------------
+
+  public int getTilePosition() {
+    return tilePosition;
   }
 
-  // Getters and setters
-
-  public int getPosition() {
-    return position;
+  public String getTileName() {
+    return tileName;
   }
 
-  public void setPosition(int position) {
-    this.position = position;
+  public void setTileName(String tileName) {
+    this.tileName = tileName;
   }
 
-  public String getName() {
-    return name;
+  public void setTileAction(TileAction action) {
+    this.tileAction = action;
   }
 
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public void setLandAction(TileAction action) {
-    this.landAction = action;
-  }
-
-  public TileAction getLandAction() {
-    return landAction;
+  public TileAction getTileAction() {
+    return tileAction;
   }
 }

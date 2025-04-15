@@ -2,7 +2,7 @@ package edu.ntnu.idi.bidata.io;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import edu.ntnu.idi.bidata.boardgame.backend.io.InputHandler;
+import edu.ntnu.idi.bidata.boardgame.backend.util.InputHandler;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.time.Duration;

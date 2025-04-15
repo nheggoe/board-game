@@ -1,59 +1,75 @@
 package edu.ntnu.idi.bidata.boardgame.backend.model.player;
 
-import edu.ntnu.idi.bidata.boardgame.backend.model.board.Board;
+import edu.ntnu.idi.bidata.boardgame.backend.core.GameEngine;
 import edu.ntnu.idi.bidata.boardgame.backend.model.tile.Tile;
-import java.util.Objects;
+import java.util.UUID;
 
 /**
  * The {@code Player} class represents a player in the board game. Each player has a name and a
  * current tile position on the board.
  *
- * @author Mihailo Hranisavljevic
- * @version 2025.03.12
+ * @author Mihailo Hranisavljevic and Nick Heggø
+ * @version 2025.04.15
  */
 public class Player {
-  // Name of the player
-  private String name;
-  // The tile where the player is currently located
+
+  // game state
+  private UUID gameId;
   private Tile currentTile;
-  // The board on which the player is moving
-  private String figure;
+
+  // player info
+  private String name;
+  private Figure figure;
+  private int balance;
 
   /**
    * Constructs a new player with the specified name and places them at the start tile (position 0)
    * of the board.
    *
    * @param name the name of the player
-   * @param board the board on which the player will move
+   * @param figure the figure player has chosen to play as
    */
-  public Player(String name, Board board, String figure) {
+  public Player(String name, Figure figure) {
     setName(name);
-    // Place the player on the "start" tile
-    placeOnTile(board.getTile(0));
     setFigure(figure);
   }
 
-  /**
-   * Places the player on a tile.
-   *
-   * @param tile the tile to place the player on
-   */
-  public void placeOnTile(Tile tile) {
-    this.currentTile = tile;
-  }
+  // ------------------------  APIs  ------------------------
 
   /**
-   * Moves the player forward by the number of steps. Activates the action of the tile where the
-   * player lands.
+   * Moves the player forward by the number of steps.
    *
    * @param steps the number of steps to move forward
    */
-  public void move(int steps, Board board) {
-    int newPosition =
-        Math.clamp((currentTile.getPosition() + steps), 0, board.getNumberOfTiles() - 1);
-    Tile newTile = board.getTile(newPosition);
-    placeOnTile(newTile);
-    newTile.landPlayer(this, board);
+  public void move(int steps) {
+    GameEngine.getInstance().getGame().movePlayer(this, steps);
+  }
+
+  public void addBalance(int amount) {
+    if (amount < 0) {
+      throw new IllegalArgumentException("Amount to add cannot be negative!");
+    }
+    this.balance += amount;
+  }
+
+  public void deductBalance(int amount) {
+    if (amount > balance) {
+      throw new IllegalArgumentException("Available balance is less than the purchase amount.");
+    }
+    balance -= amount;
+  }
+
+  // ------------------------  getters and setters  ------------------------
+
+  public UUID getGameId() {
+    return gameId;
+  }
+
+  public void setGameId(UUID gameId) {
+    if (gameId == null) {
+      throw new IllegalArgumentException("Game ID cannot be null!");
+    }
+    this.gameId = gameId;
   }
 
   public String getName() {
@@ -61,6 +77,9 @@ public class Player {
   }
 
   public void setName(String name) {
+    if (name == null || name.isBlank()) {
+      throw new IllegalArgumentException("Name cannot be empty!");
+    }
     this.name = name;
   }
 
@@ -73,33 +92,30 @@ public class Player {
     return currentTile;
   }
 
+  public void setCurrentTile(Tile tile) {
+    if (tile == null) {
+      throw new IllegalArgumentException("Tile cannot be null!");
+    }
+    this.currentTile = tile;
+  }
+
   /**
    * Returns the figure of the player.
    *
    * @return the figure of the player
    */
-  @SuppressWarnings("unused")
-  public String getFigure() {
+  public Figure getFigure() {
     return figure;
   }
 
-  public void setFigure(String figure) {
+  public void setFigure(Figure figure) {
+    if (figure == null) {
+      throw new IllegalArgumentException("Invalid figure, please try again.");
+    }
     this.figure = figure;
   }
 
-  @Override
-  public final boolean equals(Object o) {
-    if (!(o instanceof Player player)) {
-      return false;
-    }
-
-    return Objects.equals(name, player.name) && Objects.equals(figure, player.figure);
-  }
-
-  @Override
-  public int hashCode() {
-    int result = Objects.hashCode(name);
-    result = 31 * result + Objects.hashCode(figure);
-    return result;
+  public int getBalance() {
+    return balance;
   }
 }

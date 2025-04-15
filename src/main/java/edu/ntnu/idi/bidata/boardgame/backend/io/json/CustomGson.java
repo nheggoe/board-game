@@ -12,8 +12,6 @@ import com.google.gson.JsonSerializer;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import edu.ntnu.idi.bidata.boardgame.backend.action.TileAction;
-import edu.ntnu.idi.bidata.boardgame.backend.action.TileActionAdapter;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.time.LocalDate;
@@ -45,7 +43,6 @@ public class CustomGson {
           new GsonBuilder()
               .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
               .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
-              .registerTypeAdapter(TileAction.class, new TileActionAdapter())
               .setPrettyPrinting()
               .create();
     }
