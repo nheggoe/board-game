@@ -60,7 +60,7 @@ public abstract class Property {
     return owner;
   }
 
-  public void setOwner(Owner owner) {
+  private void setOwner(Owner owner) {
     this.owner = owner;
   }
 }

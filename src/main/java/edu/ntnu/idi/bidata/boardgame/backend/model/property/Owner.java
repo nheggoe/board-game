@@ -48,7 +48,7 @@ public abstract class Owner {
 
   public void deductBalance(int amount) {
     if (amount > balance) {
-      throw new IllegalArgumentException("Available balance is less than the purchase amount.");
+      throw new InsufficientFundsException(amount, balance);
     }
     balance -= amount;
   }
