@@ -1,6 +1,7 @@
 package edu.ntnu.idi.bidata.boardgame.backend.model.tile;
 
 import edu.ntnu.idi.bidata.boardgame.backend.model.property.Property;
+import edu.ntnu.idi.bidata.boardgame.backend.util.OutputHandler;
 
 /**
  * The {@link PropertyTile} class is a specialized type of {@link Tile} that represents a property
@@ -20,6 +21,12 @@ public class PropertyTile extends Tile {
   public PropertyTile(int position, Property property) {
     super(position, property.getName());
     setProperty(property);
+    setTileAction(
+        player ->
+            OutputHandler.getInstance()
+                .println(
+                    "Do you want to purchase %s for %d amount?"
+                        .formatted(getProperty().getName(), getProperty().getValue())));
   }
 
   public Property getProperty() {
