@@ -1,7 +1,6 @@
 package edu.ntnu.idi.bidata.boardgame.backend.model.tile;
 
 import edu.ntnu.idi.bidata.boardgame.backend.model.player.Player;
-import org.jspecify.annotations.NullMarked;
 
 /**
  * The {@code Tile} class represents a tile on the board. Each tile has a unique position, name and
@@ -10,7 +9,6 @@ import org.jspecify.annotations.NullMarked;
  * @author Mihailo and Nick Heggø
  * @version 2025.04.18
  */
-@NullMarked
 public abstract class Tile {
 
   private final int tilePosition;

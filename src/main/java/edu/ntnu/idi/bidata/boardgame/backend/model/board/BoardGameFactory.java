@@ -5,7 +5,6 @@ import edu.ntnu.idi.bidata.boardgame.backend.model.tile.Tile;
 import edu.ntnu.idi.bidata.boardgame.backend.model.tile.TileAction;
 import java.util.ArrayList;
 import java.util.List;
-import org.jspecify.annotations.NullMarked;
 
 /**
  * The {@code BoardGameFactory} class is a factory class that creates different types of boards. It
@@ -14,7 +13,6 @@ import org.jspecify.annotations.NullMarked;
  * @author Mihailo Hranisavljevic and Nick Heggø
  * @version 2025.04.18
  */
-@NullMarked
 public class BoardGameFactory {
 
   // temporary for compatibility issues

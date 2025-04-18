@@ -4,8 +4,6 @@ import edu.ntnu.idi.bidata.boardgame.backend.core.GameEngine;
 import edu.ntnu.idi.bidata.boardgame.backend.model.property.Owner;
 import edu.ntnu.idi.bidata.boardgame.backend.model.tile.Tile;
 import java.util.UUID;
-import org.jspecify.annotations.NullMarked;
-import org.jspecify.annotations.Nullable;
 
 /**
  * The {@code Player} class represents a player in the board game. Each player has a name and a
@@ -14,12 +12,11 @@ import org.jspecify.annotations.Nullable;
  * @author Mihailo Hranisavljevic and Nick Heggø
  * @version 2025.04.18
  */
-@NullMarked
 public class Player extends Owner {
 
   // game state
-  @Nullable private UUID gameId;
-  @Nullable private Tile currentTile;
+  private UUID gameId;
+  private Tile currentTile;
 
   // player info
   private Figure figure;

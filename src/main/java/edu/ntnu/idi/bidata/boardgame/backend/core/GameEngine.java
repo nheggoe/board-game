@@ -1,7 +1,6 @@
 package edu.ntnu.idi.bidata.boardgame.backend.core;
 
 import edu.ntnu.idi.bidata.boardgame.backend.model.board.Board;
-import edu.ntnu.idi.bidata.boardgame.backend.model.board.BoardGameFactory;
 import edu.ntnu.idi.bidata.boardgame.backend.model.dice.Dice;
 import edu.ntnu.idi.bidata.boardgame.backend.model.game.Game;
 import edu.ntnu.idi.bidata.boardgame.backend.model.player.Player;
@@ -46,11 +45,7 @@ public class GameEngine {
 
   public static synchronized GameEngine getInstance() {
     if (instance == null) {
-      instance =
-          new GameEngine(
-              OutputHandler.getInstance(),
-              new Game(BoardGameFactory.generateBoard(BoardGameFactory.Layout.UNFAIR)),
-              Dice.getInstance());
+      instance = new GameEngine(OutputHandler.getInstance(), new Game(null), Dice.getInstance());
     }
     return instance;
   }

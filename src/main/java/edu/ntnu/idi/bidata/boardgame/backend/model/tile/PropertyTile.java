@@ -1,7 +1,6 @@
 package edu.ntnu.idi.bidata.boardgame.backend.model.tile;
 
 import edu.ntnu.idi.bidata.boardgame.backend.model.property.Property;
-import org.jspecify.annotations.NullMarked;
 
 /**
  * The {@link PropertyTile} class is a specialized type of {@link Tile} that represents a property
@@ -14,7 +13,6 @@ import org.jspecify.annotations.NullMarked;
  * @author Nick Heggø
  * @version 2025.04.18
  */
-@NullMarked
 public class PropertyTile extends Tile {
 
   private Property property;

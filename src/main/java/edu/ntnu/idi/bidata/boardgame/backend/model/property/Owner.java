@@ -1,8 +1,5 @@
 package edu.ntnu.idi.bidata.boardgame.backend.model.property;
 
-import org.jspecify.annotations.NullMarked;
-
-@NullMarked
 public abstract class Owner {
 
   private String name;

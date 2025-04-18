@@ -1,7 +1,5 @@
 package edu.ntnu.idi.bidata.boardgame.backend.model.property;
 
-import org.jspecify.annotations.NullMarked;
-
 /**
  * The {@link Property} class represents an abstraction of a property in a board game. Each property
  * has a name, a monetary value, and an owner. It provides functionality to manage ownership
@@ -10,7 +8,6 @@ import org.jspecify.annotations.NullMarked;
  * @author Nick Heggø
  * @version 2025.04.18
  */
-@NullMarked
 public abstract class Property {
 
   private final String name;
