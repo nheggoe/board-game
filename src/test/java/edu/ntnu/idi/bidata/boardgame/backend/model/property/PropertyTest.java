@@ -8,11 +8,29 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class PropertyTest {
+
   private Property property;
+  private Player player;
 
   @BeforeEach
   void setup() {
-    property = new Property("Test property", 100) {};
+    property = new Property("Test property", 100) {}; // value property 100
+    player = new Player("Duke", Figure.CAT); // player start with balance 0
+  }
+
+  @Test
+  void testInvalidData() {
+    assertThatThrownBy(() -> new Property("test", -1) {})
+        .withFailMessage("Property with negative value should not be created")
+        .isInstanceOf(IllegalArgumentException.class);
+
+    assertThatThrownBy(() -> new Property("", 10) {})
+        .withFailMessage("Property with empty name should not be created")
+        .isInstanceOf(IllegalArgumentException.class);
+
+    assertThatThrownBy(() -> new Property(null, 0) {})
+        .withFailMessage("Property name cannot be null")
+        .isInstanceOf(IllegalArgumentException.class);
   }
 
   @Test
@@ -23,18 +41,19 @@ class PropertyTest {
 
   @Test
   void testPurchaseProperty() {
-    Player player = new Player("Duke", Figure.CAT);
     player.addBalance(100);
+
     assertThatCode(() -> property.transferOwnership(player, property.getValue()))
         .doesNotThrowAnyException();
+
     assertThat(player.getBalance()).isZero();
   }
 
   @Test
   void testPurchasePropertyWithInefficientBalance() {
-    Player player = new Player("Duke", Figure.CAT);
     assertThatThrownBy(() -> property.transferOwnership(player, property.getValue()))
         .isInstanceOf(InsufficientFundsException.class);
+
     assertThat(player.getBalance()).isZero();
   }
 }
