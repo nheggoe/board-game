@@ -17,7 +17,7 @@ import java.util.List;
  * seamless way to load saved players or create new ones.
  *
  * @author Mihailo Hranisavljevic and Nick Heggø
- * @version 2025.04.15
+ * @version 2025.04.18
  */
 public class PlayerManager {
   private final InputHandler inputHandler;
@@ -111,9 +111,14 @@ public class PlayerManager {
     String name = inputHandler.collectValidString();
 
     outputHandler.println("Choose a figure for player %d:".formatted(playerNumber));
-    outputHandler.printInputPrompt();
-    Figure figure = Figure.valueOf(inputHandler.collectValidString());
-
-    return new Player(name, figure);
+    while (true) {
+      try {
+        outputHandler.printInputPrompt("Available figures: " + Figure.getAvailableFigures());
+        Figure figure = Figure.valueOf(inputHandler.collectValidString().strip().toUpperCase());
+        return new Player(name, figure);
+      } catch (IllegalArgumentException e) {
+        outputHandler.println("Please choose a valid figure:");
+      }
+    }
   }
 }

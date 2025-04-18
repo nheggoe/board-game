@@ -45,7 +45,7 @@ class BoardTest {
 
   @Test
   void testGetInvalidPosition() {
-    Tile errorTile = new Tile(-1, "ERROR", unused -> {}) {};
+    Tile errorTile = new Tile(-1, "ERROR") {};
     assertThatThrownBy(() -> board.getTileAfterSteps(errorTile, 2))
         .isInstanceOf(IllegalTilePositionException.class);
   }
@@ -63,23 +63,10 @@ class BoardTest {
   private List<Tile> generateTiles(int numberOfTiles) {
     List<Tile> tmp = new ArrayList<>();
     for (int i = 1; i < numberOfTiles - 1; i++) {
-      final int finalI = i;
-      tmp.add(
-          new Tile(
-              i,
-              "Tile",
-              player -> System.out.println(player.getName() + " is safe on tile " + finalI)) {});
+      tmp.add(new Tile(i, "Tile") {});
     }
-    tmp.addFirst(
-        new Tile(
-            0,
-            "Start",
-            player -> System.out.println(player.getName() + " is on the first tile")) {});
-    tmp.addLast(
-        new Tile(
-            tmp.size(),
-            "End",
-            player -> System.out.println(player.getName() + " is on the last tile")) {});
+    tmp.addFirst(new Tile(0, "Start") {});
+    tmp.addLast(new Tile(tmp.size(), "End") {});
     return tmp;
   }
 }

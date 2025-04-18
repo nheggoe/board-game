@@ -51,4 +51,13 @@ public class OutputHandler {
   public void printInputPrompt() {
     print("> ");
   }
+
+  /**
+   * Prints a message and a prompt symbol ("> ") to the standard output stream. This is typically
+   * used to indicate that the system is ready to receive input from the user.
+   */
+  public void printInputPrompt(String message) {
+    println(message);
+    print("> ");
+  }
 }

@@ -5,14 +5,16 @@ import edu.ntnu.idi.bidata.boardgame.backend.model.tile.Tile;
 import edu.ntnu.idi.bidata.boardgame.backend.model.tile.TileAction;
 import java.util.ArrayList;
 import java.util.List;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * The {@code BoardGameFactory} class is a factory class that creates different types of boards. It
  * also is able to read a board from a file.
  *
  * @author Mihailo Hranisavljevic and Nick Heggø
- * @version 2025.04.15
+ * @version 2025.04.18
  */
+@NullMarked
 public class BoardGameFactory {
 
   // temporary for compatibility issues
@@ -93,22 +95,18 @@ public class BoardGameFactory {
     List<Tile> tmp = new ArrayList<>();
     for (int i = 1; i < numberOfTiles - 1; i++) {
       final int finalI = i;
-      tmp.add(
-          new Tile(
-              i,
-              "Tile",
-              player -> System.out.println(player.getName() + " is safe on tile " + finalI)) {});
+      var tile = new Tile(i, "Tile") {};
+      tile.setTileAction(
+          player -> System.out.println(player.getName() + " is safe on tile " + finalI));
+      tmp.add(tile);
     }
-    tmp.addFirst(
-        new Tile(
-            0,
-            "Start",
-            player -> System.out.println(player.getName() + " is on the first tile")) {});
-    tmp.addLast(
-        new Tile(
-            tmp.size(),
-            "End",
-            player -> System.out.println(player.getName() + " is on the last tile")) {});
+    Tile tile = new Tile(0, "Start") {};
+    tile.setTileAction(player -> System.out.println(player.getName() + " is on the first tile"));
+    tmp.addFirst(tile);
+
+    tile = new Tile(tmp.size(), "End") {};
+    tile.setTileAction(player -> System.out.println(player.getName() + " is on the last tile"));
+    tmp.addLast(tile);
     return tmp;
   }
 

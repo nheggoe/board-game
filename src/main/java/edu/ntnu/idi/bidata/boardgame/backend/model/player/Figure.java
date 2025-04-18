@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
  * human-readable version of the enum constant's name.
  *
  * @author Nick Heggø
- * @version 2025.04.15
+ * @version 2025.04.18
  */
 public enum Figure {
   HAT,
@@ -23,6 +23,12 @@ public enum Figure {
         Arrays.stream(name().split("_"))
             .map(word -> Character.toUpperCase(word.charAt(0)) + word.substring(1).toLowerCase())
             .collect(Collectors.joining(" "));
+  }
+
+  public static String getAvailableFigures() {
+    return Arrays.stream(Figure.values())
+        .map(Figure::getDisplayName)
+        .collect(Collectors.joining(", "));
   }
 
   /**

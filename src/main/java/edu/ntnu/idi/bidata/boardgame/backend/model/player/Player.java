@@ -9,7 +9,7 @@ import java.util.UUID;
  * current tile position on the board.
  *
  * @author Mihailo Hranisavljevic and Nick Heggø
- * @version 2025.04.15
+ * @version 2025.04.18
  */
 public class Player {
 
@@ -89,7 +89,7 @@ public class Player {
    * @return the current tile of the player
    */
   public Tile getCurrentTile() {
-    return currentTile != null ? currentTile : new Tile(-1, "INVALID", unused -> {}) {};
+    return currentTile != null ? currentTile : new Tile(-1, "INVALID") {};
   }
 
   public void setCurrentTile(Tile tile) {

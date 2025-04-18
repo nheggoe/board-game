@@ -3,6 +3,7 @@ package edu.ntnu.idi.bidata.boardgame.backend.model.board;
 import edu.ntnu.idi.bidata.boardgame.backend.model.tile.IllegalTilePositionException;
 import edu.ntnu.idi.bidata.boardgame.backend.model.tile.Tile;
 import java.util.List;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Represents a game board consisting of a list of tiles. Each tile has a unique position and can
@@ -14,6 +15,7 @@ import java.util.List;
  * @author Mihailo Hranisavljevic and Nick Heggø
  * @version 2025.04.15
  */
+@NullMarked
 public record Board(List<Tile> tiles) {
 
   public Board {

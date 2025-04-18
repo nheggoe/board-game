@@ -2,13 +2,15 @@ package edu.ntnu.idi.bidata.boardgame.backend.model.property;
 
 import edu.ntnu.idi.bidata.boardgame.backend.model.player.Player;
 
+import java.util.Optional;
+
 /**
  * The {@link Property} class represents an abstraction of a property in a board game. Each property
  * has a name, a monetary value, and an owner. It provides functionality to manage ownership
  * transfers of the property.
  *
  * @author Nick Heggø
- * @version 2025.04.15
+ * @version 2025.04.18
  */
 public abstract class Property {
 
@@ -48,7 +50,7 @@ public abstract class Property {
     return value;
   }
 
-  public Player getOwner() {
-    return owner;
+  public Optional<Player> getOwner() {
+    return Optional.ofNullable(owner);
   }
 }

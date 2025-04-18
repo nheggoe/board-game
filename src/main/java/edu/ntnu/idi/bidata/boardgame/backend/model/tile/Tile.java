@@ -1,31 +1,32 @@
 package edu.ntnu.idi.bidata.boardgame.backend.model.tile;
 
 import edu.ntnu.idi.bidata.boardgame.backend.model.player.Player;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * The {@code Tile} class represents a tile on the board. Each tile has a unique position, name and
  * an action in some cases.
  *
  * @author Mihailo and Nick Heggø
- * @version 2025.04.15
+ * @version 2025.04.18
  */
+@NullMarked
 public abstract class Tile {
 
   private final int tilePosition;
 
   private String tileName;
-  private TileAction tileAction;
+  private TileAction tileAction = unused -> {};
 
   /**
-   * Constructs a new tile with a position, a name, and an action.
+   * Constructs a new tile with a position and a name.
    *
+   * @param tilePosition the position of the tile from index 0
    * @param tileName the name of the tile
-   * @param tileAction the action performed when a player lands on this tile.
    */
-  public Tile(int tilePosition, String tileName, TileAction tileAction) {
+  public Tile(int tilePosition, String tileName) {
     this.tilePosition = tilePosition;
     setTileName(tileName);
-    setTileAction(tileAction);
   }
 
   // ------------------------  APIs  ------------------------
