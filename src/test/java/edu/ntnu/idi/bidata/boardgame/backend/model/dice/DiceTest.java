@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 class DiceTest {
-  private Dice dice = Dice.getInstance();
+  private final Dice dice = Dice.getInstance();
 
   @Test
   void testRollDice() {

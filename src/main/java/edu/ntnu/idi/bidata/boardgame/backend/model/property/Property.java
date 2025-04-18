@@ -1,8 +1,6 @@
 package edu.ntnu.idi.bidata.boardgame.backend.model.property;
 
-import edu.ntnu.idi.bidata.boardgame.backend.model.player.Player;
-
-import java.util.Optional;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * The {@link Property} class represents an abstraction of a property in a board game. Each property
@@ -12,12 +10,13 @@ import java.util.Optional;
  * @author Nick Heggø
  * @version 2025.04.18
  */
+@NullMarked
 public abstract class Property {
 
   private final String name;
   private final int value;
 
-  protected Player owner;
+  protected Owner owner = new Owner("Bank") {};
 
   protected Property(String name, int value) {
     if (name == null || name.isBlank()) {
@@ -32,12 +31,22 @@ public abstract class Property {
 
   // ------------------------  APIs  ------------------------
 
-  public void transferOwnership(Player newOwner, int agreedAmount) {
+  /**
+   * Transfers the ownership of a property to a new owner after establishing the agreed monetary
+   * transaction. Validates the parameters and ensures the ownership is updated accordingly.
+   *
+   * @param newOwner the {@code Owner} who will assume ownership of the property.
+   * @param agreedAmount the monetary value agreed upon for the transfer. This value will be
+   *     deducted from the buyer's balance and credited to the current owner's balance.
+   * @throws IllegalArgumentException if {@code newOwner} is null or if the transaction fails due to
+   *     other validation constraints.
+   */
+  public void transferOwnership(Owner newOwner, int agreedAmount) {
     if (newOwner == null) {
       throw new IllegalArgumentException("New owner of the property cannot be null!");
     }
-    newOwner.deductBalance(agreedAmount);
-    this.owner = newOwner;
+    getOwner().transferProperty(newOwner, agreedAmount);
+    setOwner(newOwner);
   }
 
   // ------------------------  Getters and Setters  ------------------------
@@ -50,7 +59,11 @@ public abstract class Property {
     return value;
   }
 
-  public Optional<Player> getOwner() {
-    return Optional.ofNullable(owner);
+  public Owner getOwner() {
+    return owner;
+  }
+
+  public void setOwner(Owner owner) {
+    this.owner = owner;
   }
 }

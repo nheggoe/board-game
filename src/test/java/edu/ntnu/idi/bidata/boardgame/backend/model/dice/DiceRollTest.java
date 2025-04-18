@@ -19,9 +19,9 @@ class DiceRollTest {
 
   @Test
   void testIdenticalRolls() {
-    assertThat(new DiceRoll(1, 1, 1).areDiceEqual()).isEqualTo(true);
-    assertThat(new DiceRoll(2, 2, 2, 2, 2, 2, 2, 2).areDiceEqual()).isEqualTo(true);
-    assertThat(new DiceRoll(1, 3, 4, 5).areDiceEqual()).isEqualTo(false);
+    assertThat(new DiceRoll(1, 1, 1).areDiceEqual()).isTrue();
+    assertThat(new DiceRoll(2, 2, 2, 2, 2, 2, 2, 2).areDiceEqual()).isTrue();
+    assertThat(new DiceRoll(1, 3, 4, 5).areDiceEqual()).isFalse();
   }
 
   @Test

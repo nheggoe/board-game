@@ -1,8 +1,11 @@
 package edu.ntnu.idi.bidata.boardgame.backend.model.player;
 
 import edu.ntnu.idi.bidata.boardgame.backend.core.GameEngine;
+import edu.ntnu.idi.bidata.boardgame.backend.model.property.Owner;
 import edu.ntnu.idi.bidata.boardgame.backend.model.tile.Tile;
 import java.util.UUID;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * The {@code Player} class represents a player in the board game. Each player has a name and a
@@ -11,16 +14,15 @@ import java.util.UUID;
  * @author Mihailo Hranisavljevic and Nick Heggø
  * @version 2025.04.18
  */
-public class Player {
+@NullMarked
+public class Player extends Owner {
 
   // game state
-  private UUID gameId;
-  private Tile currentTile;
+  @Nullable private UUID gameId;
+  @Nullable private Tile currentTile;
 
   // player info
-  private String name;
   private Figure figure;
-  private int balance;
 
   /**
    * Constructs a new player with the specified name and places them at the start tile (position 0)
@@ -30,7 +32,7 @@ public class Player {
    * @param figure the figure player has chosen to play as
    */
   public Player(String name, Figure figure) {
-    setName(name);
+    super(name);
     setFigure(figure);
   }
 
@@ -45,20 +47,6 @@ public class Player {
     GameEngine.getInstance().getGame().movePlayer(this, steps);
   }
 
-  public void addBalance(int amount) {
-    if (amount < 0) {
-      throw new IllegalArgumentException("Amount to add cannot be negative!");
-    }
-    this.balance += amount;
-  }
-
-  public void deductBalance(int amount) {
-    if (amount > balance) {
-      throw new IllegalArgumentException("Available balance is less than the purchase amount.");
-    }
-    balance -= amount;
-  }
-
   // ------------------------  getters and setters  ------------------------
 
   public UUID getGameId() {
@@ -70,17 +58,6 @@ public class Player {
       throw new IllegalArgumentException("Game ID cannot be null!");
     }
     this.gameId = gameId;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    if (name == null || name.isBlank()) {
-      throw new IllegalArgumentException("Name cannot be empty!");
-    }
-    this.name = name;
   }
 
   /**
@@ -113,9 +90,5 @@ public class Player {
       throw new IllegalArgumentException("Invalid figure, please try again.");
     }
     this.figure = figure;
-  }
-
-  public int getBalance() {
-    return balance;
   }
 }
