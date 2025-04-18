@@ -80,4 +80,8 @@ public class Game implements Iterable<Player> {
   public Board getBoard() {
     return board;
   }
+
+  public UUID getGameId() {
+    return gameId;
+  }
 }
