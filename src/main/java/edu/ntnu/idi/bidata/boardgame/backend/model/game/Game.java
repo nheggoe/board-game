@@ -32,9 +32,10 @@ public class Game implements Iterable<Player> {
     this.players = new ArrayList<>();
   }
 
-  public Game(Board board) {
+  public Game(Board board, SequencedCollection<Player> players) {
     this();
     setBoard(board);
+    addPlayers(players);
   }
 
   // ------------------------  APIs  ------------------------
@@ -44,9 +45,13 @@ public class Game implements Iterable<Player> {
     return players.add(player);
   }
 
-  public boolean addPlayers(SequencedCollection<Player> players) {
-    players.forEach(player -> player.setGameId(gameId));
-    return this.players.addAll(players);
+  public void addPlayers(SequencedCollection<Player> players) {
+    players.forEach(
+        player -> {
+          player.setGameId(gameId);
+          player.setCurrentTile(getBoard().getStartingTile());
+        });
+    this.players.addAll(players);
   }
 
   public void movePlayer(Player player, int steps) {
@@ -57,6 +62,9 @@ public class Game implements Iterable<Player> {
 
   @Override
   public Iterator<Player> iterator() {
+    if (players.isEmpty()) {
+      throw new IllegalStateException("There is currently no players!");
+    }
     return players.iterator();
   }
 

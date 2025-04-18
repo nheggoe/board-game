@@ -7,7 +7,6 @@ import edu.ntnu.idi.bidata.boardgame.backend.model.player.Player;
 import edu.ntnu.idi.bidata.boardgame.backend.model.tile.TileAction;
 import edu.ntnu.idi.bidata.boardgame.backend.util.InputHandler;
 import edu.ntnu.idi.bidata.boardgame.backend.util.OutputHandler;
-import java.util.SequencedCollection;
 
 /**
  * The {@code GameEngine} class is responsible for managing the core game loop and logic. It
@@ -25,33 +24,32 @@ public class GameEngine {
   private static GameEngine instance;
 
   private final OutputHandler outputHandler;
-  private final Game game;
   private final Dice dice;
   private boolean running = true;
   private int roundNumber = 1;
+
+  private Game game;
 
   /**
    * Constructs a {@code GameEngine} with the required dependencies.
    *
    * @param outputHandler Handles output to the user.
-   * @param game The game board containing tiles and game elements.
    * @param dice The dice object used for rolling moves.
    */
-  private GameEngine(OutputHandler outputHandler, Game game, Dice dice) {
+  private GameEngine(OutputHandler outputHandler, Dice dice) {
     this.outputHandler = outputHandler;
-    this.game = game;
     this.dice = dice;
   }
 
   public static synchronized GameEngine getInstance() {
     if (instance == null) {
-      instance = new GameEngine(OutputHandler.getInstance(), new Game(null), Dice.getInstance());
+      instance = new GameEngine(OutputHandler.getInstance(), Dice.getInstance());
     }
     return instance;
   }
 
-  public void setup(SequencedCollection<Player> players) {
-    game.addPlayers(players);
+  public void setup(Game game) {
+    setGame(game);
   }
 
   /** Starts and manages the game loop, allowing players to take turns until the game ends. */
@@ -77,7 +75,7 @@ public class GameEngine {
   private void playRound() {
     try {
       outputHandler.println("Round %d:".formatted(roundNumber++));
-      game.forEach(player -> player.move(dice.roll(2).getTotal()));
+      game.forEach(player -> game.movePlayer(player, dice.roll(2).getTotal()));
       game.forEach(this::executeTileAction);
       checkWinningStatus();
     } catch (Exception e) {
@@ -110,11 +108,7 @@ public class GameEngine {
                             : player.getCurrentTile().getTilePosition() + 1)));
   }
 
-  /**
-   * Checks if any player has reached the winning tile and ends the game if a winner is found.
-   *
-   * @param players The list of players in the game.
-   */
+  /** Checks if any player has reached the winning tile and ends the game if a winner is found. */
   private void checkWinningStatus() {
     game.forEach(
         player -> {
@@ -129,5 +123,12 @@ public class GameEngine {
 
   public Game getGame() {
     return game;
+  }
+
+  private void setGame(Game game) {
+    if (game == null) {
+      throw new IllegalArgumentException("Game cannot be null!");
+    }
+    this.game = game;
   }
 }
