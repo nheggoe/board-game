@@ -27,8 +27,9 @@ public class Game implements Iterable<Player> {
 
   private final UUID gameId;
   private final List<Player> players;
-  private boolean isEnded;
 
+  private String saveName;
+  private boolean isEnded;
   private Board board;
 
   private Game() {
@@ -101,5 +102,13 @@ public class Game implements Iterable<Player> {
 
   public UUID getGameId() {
     return gameId;
+  }
+
+  public void setSaveName(String saveName) {
+    this.saveName = saveName;
+  }
+
+  public String getSaveName() {
+    return saveName;
   }
 }

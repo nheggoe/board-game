@@ -1,7 +1,7 @@
 package edu.ntnu.idi.bidata.boardgame.backend.io.json;
 
+import edu.ntnu.idi.bidata.boardgame.backend.io.DAO;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -15,7 +15,7 @@ import java.util.stream.Stream;
  * @author Nick Heggø
  * @version 2025.03.28
  */
-public class JsonService<T> {
+public class JsonService<T> implements DAO<T> {
 
   private final JsonReader<T> jsonReader;
   private final JsonWriter<T> jsonWriter;
@@ -62,7 +62,8 @@ public class JsonService<T> {
    * @return a stream of objects deserialized from the JSON file, or an empty stream if the file is
    *     newly created
    */
-  public Stream<T> loadJsonAsStream() {
+  @Override
+  public Stream<T> loadEntities() {
     return jsonReader.parseJsonStream();
   }
 
@@ -72,24 +73,10 @@ public class JsonService<T> {
    * production environment. The method ensures that the directory structure exists before writing.
    * It will update existing data if present
    *
-   * @param set the set of objects to be written into the JSON file
+   * @param entities the set of objects to be written into the JSON file
    */
-  public void writeCollection(Set<T> set) {
-    Set<T> existingData = loadJsonAsStream().collect(Collectors.toSet());
-    existingData.removeAll(set);
-    existingData.addAll(set);
-    jsonWriter.writeJsonFile(existingData);
-  }
-
-  /**
-   * Adds an item to the JSON collection by writing it to the JSON file. The provided item is
-   * wrapped in a stream and passed to the {@code writeCollection} method for writing. The location
-   * of the JSON file is determined dynamically based on the class type and the environment (test or
-   * production).
-   *
-   * @param item the object of the target type to be added to the JSON collection; must not be null
-   */
-  public void addItem(T item) {
-    writeCollection(Set.of(item));
+  @Override
+  public void persistEntities(Set<T> entities) {
+    jsonWriter.writeJsonFile(entities);
   }
 }

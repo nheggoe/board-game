@@ -1,7 +1,7 @@
 package edu.ntnu.idi.bidata.boardgame;
 
 import edu.ntnu.idi.bidata.boardgame.backend.MonopolyFacade;
-import edu.ntnu.idi.bidata.boardgame.backend.model.board.BoardFactory;
+import edu.ntnu.idi.bidata.boardgame.backend.repository.JsonGameRepository;
 
 /**
  * The {@link Launcher} class is the entry point of the program. It creates a new instance of the
@@ -13,6 +13,12 @@ import edu.ntnu.idi.bidata.boardgame.backend.model.board.BoardFactory;
 public class Launcher {
   /** The main method creates a new instance of the Game class and runs it. */
   public static void main(String[] args) {
-    BoardFactory.generateBoard(BoardFactory.Layout.NORMAL);
+    //    var game =
+    //        new Game(
+    //            BoardFactory.generateBoard(BoardFactory.Layout.NORMAL),
+    //            List.of(
+    //                new Player("Nick", Player.Figure.HAT),
+    //                new Player("Misha", Player.Figure.BATTLE_SHIP)));
+    JsonGameRepository.getInstance().getAll().forEach(System.out::println);
   }
 }
