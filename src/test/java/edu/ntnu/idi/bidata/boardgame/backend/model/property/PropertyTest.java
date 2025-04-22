@@ -2,8 +2,9 @@ package edu.ntnu.idi.bidata.boardgame.backend.model.property;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
+import edu.ntnu.idi.bidata.boardgame.backend.model.Player;
+import edu.ntnu.idi.bidata.boardgame.backend.model.ownable.InsufficientFundsException;
 import edu.ntnu.idi.bidata.boardgame.backend.model.player.Figure;
-import edu.ntnu.idi.bidata.boardgame.backend.model.player.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

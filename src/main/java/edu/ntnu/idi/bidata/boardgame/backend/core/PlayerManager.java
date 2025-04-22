@@ -1,12 +1,14 @@
 package edu.ntnu.idi.bidata.boardgame.backend.core;
 
 import edu.ntnu.idi.bidata.boardgame.backend.io.csv.CSVHandler;
-import edu.ntnu.idi.bidata.boardgame.backend.model.player.Figure;
-import edu.ntnu.idi.bidata.boardgame.backend.model.player.Player;
+import edu.ntnu.idi.bidata.boardgame.backend.model.Player;
 import edu.ntnu.idi.bidata.boardgame.backend.util.InputHandler;
 import edu.ntnu.idi.bidata.boardgame.backend.util.OutputHandler;
+import edu.ntnu.idi.bidata.boardgame.backend.util.StringFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * The {@code PlayerManager} class is responsible for handling player-related operations, including
@@ -113,12 +115,19 @@ public class PlayerManager {
     outputHandler.println("Choose a figure for player %d:".formatted(playerNumber));
     while (true) {
       try {
-        outputHandler.printInputPrompt("Available figures: " + Figure.getAvailableFigures());
-        Figure figure = Figure.valueOf(inputHandler.collectValidString().strip().toUpperCase());
+        outputHandler.printInputPrompt("Available figures: " + getAvailableFigures());
+        Player.Figure figure =
+            Player.Figure.valueOf(inputHandler.collectValidString().strip().toUpperCase());
         return new Player(name, figure);
       } catch (IllegalArgumentException e) {
         outputHandler.println("Please choose a valid figure:");
       }
     }
+  }
+
+  private static String getAvailableFigures() {
+    return Arrays.stream(Player.Figure.values())
+        .map(StringFormatter::formatEnum)
+        .collect(Collectors.joining(", "));
   }
 }

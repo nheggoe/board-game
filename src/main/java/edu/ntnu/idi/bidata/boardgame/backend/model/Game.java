@@ -1,12 +1,14 @@
-package edu.ntnu.idi.bidata.boardgame.backend.model.game;
+package edu.ntnu.idi.bidata.boardgame.backend.model;
 
 import edu.ntnu.idi.bidata.boardgame.backend.model.board.Board;
-import edu.ntnu.idi.bidata.boardgame.backend.model.player.Player;
+import edu.ntnu.idi.bidata.boardgame.backend.model.tile.JailTile;
 import edu.ntnu.idi.bidata.boardgame.backend.model.tile.Tile;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.SequencedCollection;
+import java.util.TreeMap;
 import java.util.UUID;
 
 /**
@@ -40,24 +42,33 @@ public class Game implements Iterable<Player> {
 
   // ------------------------  APIs  ------------------------
 
+  public Map.Entry<Integer, List<Player>> getWinners() {
+    var treeMap = new TreeMap<Integer, List<Player>>();
+    forEach(
+        player ->
+            treeMap.computeIfAbsent(player.getNetWorth(), unused -> new ArrayList<>()).add(player));
+    return treeMap.reversed().firstEntry();
+  }
+
   public boolean addPlayer(Player player) {
-    player.setGameId(gameId);
     return players.add(player);
   }
 
   public void addPlayers(SequencedCollection<Player> players) {
-    players.forEach(
-        player -> {
-          player.setGameId(gameId);
-          player.setCurrentTile(getBoard().getStartingTile());
-        });
     this.players.addAll(players);
   }
 
   public void movePlayer(Player player, int steps) {
-    Tile currentTile =
-        player.getCurrentTile() == null ? board.getStartingTile() : player.getCurrentTile();
-    player.setCurrentTile(board.getTileAfterSteps(currentTile, steps));
+    int newPosition = (player.getPosition() + steps) % board.size();
+    player.setPosition(newPosition);
+  }
+
+  public JailTile getJailTile() {
+    return board.getJailTile();
+  }
+
+  public Tile getTile(int position) {
+    return board.getTile(position);
   }
 
   @Override
@@ -75,10 +86,6 @@ public class Game implements Iterable<Player> {
       throw new IllegalArgumentException("Board cannot be null!");
     }
     this.board = board;
-  }
-
-  public Board getBoard() {
-    return board;
   }
 
   public UUID getGameId() {

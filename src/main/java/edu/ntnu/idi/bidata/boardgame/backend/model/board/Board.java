@@ -1,6 +1,7 @@
 package edu.ntnu.idi.bidata.boardgame.backend.model.board;
 
-import edu.ntnu.idi.bidata.boardgame.backend.model.tile.IllegalTilePositionException;
+import edu.ntnu.idi.bidata.boardgame.backend.model.tile.JailTile;
+import edu.ntnu.idi.bidata.boardgame.backend.model.tile.StartTile;
 import edu.ntnu.idi.bidata.boardgame.backend.model.tile.Tile;
 import java.util.List;
 
@@ -24,17 +25,16 @@ public record Board(List<Tile> tiles) {
    * Calculates the tile a player lands on after moving a specified number of steps from the
    * provided starting tile.
    *
-   * @param currentTile the starting {@link Tile} from which the steps are calculated
+   * @param currentPosition the starting {@link Tile} from which the steps are calculated
    * @param steps the number of steps to move forward from the starting tile
    * @return the {@link Tile} the player lands on after moving the specified number of steps
    */
-  public Tile getTileAfterSteps(Tile currentTile, int steps) {
-    if (currentTile.getTilePosition() < 0) {
-      throw new IllegalTilePositionException(
-          currentTile.getTilePosition(), currentTile.getTileName());
+  public Tile getTileAfterSteps(int currentPosition, int steps) {
+    if (currentPosition < 0) {
+      throw new IllegalTilePositionException();
     }
-    int nextIndex = (currentTile.getTilePosition() + steps) % tiles.size();
-    return tiles.get(Math.max(nextIndex, 0));
+    int nextIndex = (currentPosition + steps) % tiles.size();
+    return tiles.get(nextIndex);
   }
 
   /**
@@ -42,8 +42,24 @@ public record Board(List<Tile> tiles) {
    *
    * @return the staring point of the game
    */
-  public Tile getStartingTile() {
-    return tiles.getFirst();
+  public StartTile getStartingTile() {
+    return tiles.stream()
+        .filter(StartTile.class::isInstance)
+        .map(StartTile.class::cast)
+        .findAny()
+        .orElseThrow(InvalidBoardLayoutException::new);
+  }
+
+  public JailTile getJailTile() {
+    return tiles.stream()
+        .filter(JailTile.class::isInstance)
+        .map(JailTile.class::cast)
+        .findAny()
+        .orElseThrow(InvalidBoardLayoutException::new);
+  }
+
+  public int size() {
+    return tiles.size();
   }
 
   /**
