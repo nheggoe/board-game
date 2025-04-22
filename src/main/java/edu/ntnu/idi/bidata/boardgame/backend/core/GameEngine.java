@@ -82,11 +82,9 @@ public class GameEngine {
   private void playRound() {
     try {
       outputHandler.println("Round %d:".formatted(roundNumber++));
-      game.forEach(player -> game.movePlayer(player, dice.roll(2).getTotal()));
+      game.forEach(player -> game.movePlayer(player, dice.roll(2)));
       game.forEach(this::executeTileAction);
-      roundNumber += 1;
       if (roundNumber >= 20) {
-
         checkWinningStatus();
       }
     } catch (Exception e) {
@@ -133,10 +131,6 @@ public class GameEngine {
   }
 
   // ------------------------  getters and setters  ------------------------
-
-  public Game getGame() {
-    return game;
-  }
 
   private void setGame(Game game) {
     if (game == null) {

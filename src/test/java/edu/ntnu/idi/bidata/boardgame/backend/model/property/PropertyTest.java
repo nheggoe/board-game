@@ -4,7 +4,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 import edu.ntnu.idi.bidata.boardgame.backend.model.Player;
 import edu.ntnu.idi.bidata.boardgame.backend.model.ownable.InsufficientFundsException;
-import edu.ntnu.idi.bidata.boardgame.backend.model.player.Figure;
+import edu.ntnu.idi.bidata.boardgame.backend.model.ownable.Property;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,44 +15,42 @@ class PropertyTest {
 
   @BeforeEach
   void setup() {
-    property = new Property("Test property", 100) {}; // value property 100
-    player = new Player("Duke", Figure.CAT); // player start with balance 0
+    property = new Property("Test property", Property.Color.DARK_BLUE, 100); // value property 100
+    player = new Player("Duke", Player.Figure.CAT); // player start with balance 0
   }
 
   @Test
   void testInvalidData() {
-    assertThatThrownBy(() -> new Property("test", -1) {})
+    assertThatThrownBy(() -> new Property("test", Property.Color.BROWN, -1))
         .withFailMessage("Property with negative value should not be created")
         .isInstanceOf(IllegalArgumentException.class);
 
-    assertThatThrownBy(() -> new Property("", 10) {})
+    assertThatThrownBy(() -> new Property("", Property.Color.BROWN, 10))
         .withFailMessage("Property with empty name should not be created")
         .isInstanceOf(IllegalArgumentException.class);
 
-    assertThatThrownBy(() -> new Property(null, 0) {})
+    assertThatThrownBy(() -> new Property(null, Property.Color.BROWN, 0))
         .withFailMessage("Property name cannot be null")
         .isInstanceOf(IllegalArgumentException.class);
   }
 
   @Test
   void testBasic() {
-    assertThat(property.getName()).isEqualTo("Test property");
-    assertThat(property.getOwner().getName()).isEqualTo("Bank");
+    assertThat(property.name()).isEqualTo("Test property");
   }
 
   @Test
   void testPurchaseProperty() {
     player.addBalance(100);
 
-    assertThatCode(() -> property.transferOwnership(player, property.getValue()))
-        .doesNotThrowAnyException();
+    assertThatCode(() -> player.purchase(property)).doesNotThrowAnyException();
 
     assertThat(player.getBalance()).isZero();
   }
 
   @Test
   void testPurchasePropertyWithInefficientBalance() {
-    assertThatThrownBy(() -> property.transferOwnership(player, property.getValue()))
+    assertThatThrownBy(() -> player.purchase(property))
         .isInstanceOf(InsufficientFundsException.class);
 
     assertThat(player.getBalance()).isZero();

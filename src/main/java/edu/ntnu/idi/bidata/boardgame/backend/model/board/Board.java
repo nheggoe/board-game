@@ -13,7 +13,7 @@ import java.util.List;
  * <p>This class is immutable; once created, the tiles cannot be modified.
  *
  * @author Mihailo Hranisavljevic and Nick Heggø
- * @version 2025.04.15
+ * @version 2025.04.22
  */
 public record Board(List<Tile> tiles) {
 
@@ -60,6 +60,10 @@ public record Board(List<Tile> tiles) {
 
   public int size() {
     return tiles.size();
+  }
+
+  public int getTilePosition(Tile tile) {
+    return tiles.indexOf(tile);
   }
 
   /**

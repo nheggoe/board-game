@@ -1,6 +1,7 @@
 package edu.ntnu.idi.bidata.boardgame.backend.model;
 
 import edu.ntnu.idi.bidata.boardgame.backend.model.board.Board;
+import edu.ntnu.idi.bidata.boardgame.backend.model.dice.DiceRoll;
 import edu.ntnu.idi.bidata.boardgame.backend.model.tile.JailTile;
 import edu.ntnu.idi.bidata.boardgame.backend.model.tile.Tile;
 import java.util.ArrayList;
@@ -20,12 +21,13 @@ import java.util.UUID;
  * participating in the game.
  *
  * @author Nick Heggø
- * @version 2025.04.15
+ * @version 2025.04.22
  */
 public class Game implements Iterable<Player> {
 
   private final UUID gameId;
   private final List<Player> players;
+  private boolean isEnded;
 
   private Board board;
 
@@ -38,6 +40,7 @@ public class Game implements Iterable<Player> {
     this();
     setBoard(board);
     addPlayers(players);
+    isEnded = false;
   }
 
   // ------------------------  APIs  ------------------------
@@ -58,8 +61,8 @@ public class Game implements Iterable<Player> {
     this.players.addAll(players);
   }
 
-  public void movePlayer(Player player, int steps) {
-    int newPosition = (player.getPosition() + steps) % board.size();
+  public void movePlayer(Player player, DiceRoll roll) {
+    int newPosition = (player.getPosition() + roll.getTotal()) % board.size();
     player.setPosition(newPosition);
   }
 
@@ -69,6 +72,14 @@ public class Game implements Iterable<Player> {
 
   public Tile getTile(int position) {
     return board.getTile(position);
+  }
+
+  public boolean isEnded() {
+    return isEnded;
+  }
+
+  public void endGame() {
+    isEnded = true;
   }
 
   @Override
