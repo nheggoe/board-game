@@ -46,6 +46,10 @@ public class Game implements Iterable<Player> {
 
   // ------------------------  APIs  ------------------------
 
+  public void printTiles() {
+    board.tiles().forEach(System.out::println);
+  }
+
   public Map.Entry<Integer, List<Player>> getWinners() {
     var treeMap = new TreeMap<Integer, List<Player>>();
     forEach(

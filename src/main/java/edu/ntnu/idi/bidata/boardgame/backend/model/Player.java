@@ -66,4 +66,9 @@ public class Player extends Owner {
     DUCK,
     HAT
   }
+
+  @Override
+  public String toString() {
+    return "Player{name=" + getName() + ", position=" + position + ", figure=" + figure + '}';
+  }
 }

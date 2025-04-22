@@ -5,6 +5,7 @@ import edu.ntnu.idi.bidata.boardgame.backend.model.tile.JailTile;
 import edu.ntnu.idi.bidata.boardgame.backend.model.tile.StartTile;
 import edu.ntnu.idi.bidata.boardgame.backend.model.tile.Tile;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +25,7 @@ public record Board(List<Tile> tiles) {
 
   public Board {
     assertValidLayout(tiles);
-    tiles = List.copyOf(tiles);
+    tiles = List.copyOf(shuffleTiles(tiles));
   }
 
   /**
@@ -92,6 +93,35 @@ public record Board(List<Tile> tiles) {
     return tiles.size();
   }
 
+  private List<Tile> shuffleTiles(List<Tile> tiles) {
+    Collections.shuffle(tiles);
+
+    List<CornerTile> cornerTiles =
+        tiles.stream().filter(CornerTile.class::isInstance).map(CornerTile.class::cast).toList();
+
+    var topLeft = findCornerTileByPosition(cornerTiles, CornerTile.Position.TOP_LEFT);
+    var topRight = findCornerTileByPosition(cornerTiles, CornerTile.Position.TOP_RIGHT);
+    var bottomLeft = findCornerTileByPosition(cornerTiles, CornerTile.Position.BOTTOM_LEFT);
+    var bottomRight = findCornerTileByPosition(cornerTiles, CornerTile.Position.BOTTOM_RIGHT);
+
+    var orderedTiles = List.of(bottomRight, bottomLeft, topLeft, topRight);
+
+    int tilesPerSide = tiles.size() / 4;
+
+    int i = 0;
+    for (var tile : orderedTiles) {
+      Collections.swap(tiles, i, tiles.indexOf(tile));
+      i += tilesPerSide;
+    }
+
+    return tiles;
+  }
+
+  private CornerTile findCornerTileByPosition(
+      List<CornerTile> tiles, CornerTile.Position position) {
+    return tiles.stream().filter(tile -> tile.getPosition() == position).findAny().orElseThrow();
+  }
+
   private void assertValidLayout(List<Tile> tiles) {
     var cornerTiles =
         tiles.stream().filter(CornerTile.class::isInstance).map(CornerTile.class::cast).toList();
@@ -101,7 +131,7 @@ public record Board(List<Tile> tiles) {
 
   private void assertLayoutShape(List<Tile> tiles) {
     int tilesPerSide = tiles.size() - 4;
-    if (tilesPerSide % 4 != 0) {
+    if ((tilesPerSide % 4) != 0) {
       throw new InvalidBoardLayoutException(
           "The board must be a square shape! There are currently %.2f tiles per side."
               .formatted(tilesPerSide / 4.0));

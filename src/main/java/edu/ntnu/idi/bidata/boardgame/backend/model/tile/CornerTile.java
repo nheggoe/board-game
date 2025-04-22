@@ -22,4 +22,9 @@ public abstract sealed class CornerTile implements Tile
     BOTTOM_LEFT,
     BOTTOM_RIGHT
   }
+
+  @Override
+  public String toString() {
+    return getClass().getSimpleName() + "[" + "position=" + position + ']';
+  }
 }
