@@ -13,7 +13,9 @@ public class OwnableCSVHandler {
       String line;
       br.readLine();
       while ((line = br.readLine()) != null) {
-        lines.add(line);
+        if (!line.startsWith("#")) {
+          lines.add(line);
+        }
       }
     }
     return lines;
