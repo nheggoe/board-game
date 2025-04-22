@@ -1,4 +1,4 @@
-package edu.ntnu.idi.bidata.boardgame.backend.io;
+package edu.ntnu.idi.bidata.boardgame.backend.util;
 
 import java.util.Scanner;
 
@@ -8,9 +8,11 @@ import java.util.Scanner;
  * to ensure a single instance of the class.
  *
  * @author Nick Heggø
- * @version 2025.02.07
+ * @version 2025.04.15
  */
 public class InputHandler {
+
+  private static InputHandler instance;
 
   private final Scanner scanner;
 
@@ -19,18 +21,15 @@ public class InputHandler {
    * read user input from the standard input stream. It is private to enforce the singleton design
    * pattern, allowing only one instance of the InputHandler to be created.
    */
-  public InputHandler() {
-    this(new Scanner(System.in));
+  private InputHandler() {
+    this.scanner = new Scanner(System.in);
   }
 
-  /**
-   * Constructs an instance of the InputHandler with a specified Scanner object. This constructor is
-   * used for testing purposes to provide a mock Scanner object for input simulation.
-   *
-   * @param scanner The Scanner object to use for reading input.
-   */
-  public InputHandler(Scanner scanner) {
-    this.scanner = scanner;
+  public static synchronized InputHandler getInstance() {
+    if (instance == null) {
+      instance = new InputHandler();
+    }
+    return instance;
   }
 
   /**
@@ -66,7 +65,7 @@ public class InputHandler {
 
   private void assertEmptyLine() {
     if (!scanner.hasNextLine()) {
-      throw new IllegalArgumentException("The is problem");
+      throw new IllegalArgumentException("There are no next line!");
     }
   }
 }

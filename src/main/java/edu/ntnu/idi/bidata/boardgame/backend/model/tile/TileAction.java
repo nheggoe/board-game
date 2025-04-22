@@ -1,15 +1,15 @@
-package edu.ntnu.idi.bidata.boardgame.backend.action;
+package edu.ntnu.idi.bidata.boardgame.backend.model.tile;
 
-import edu.ntnu.idi.bidata.boardgame.backend.model.board.Board;
 import edu.ntnu.idi.bidata.boardgame.backend.model.player.Player;
 
 /**
  * The {@code TileAction} interface represents an action that can be performed when a player gets to
  * a specific tile on the board.
  *
- * @author Mihailo Hranisavljevic
- * @version 2025.02.14
+ * @author Mihailo Hranisavljevic and Nick Heggø
+ * @version 2025.04.15
  */
+@FunctionalInterface
 public interface TileAction {
-  void perform(Player player, Board board);
+  void performAction(Player player);
 }
