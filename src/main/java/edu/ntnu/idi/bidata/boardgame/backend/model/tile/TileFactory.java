@@ -16,13 +16,21 @@ public class TileFactory {
 
   private TileFactory() {}
 
-  public static List<Tile> generateTile() {
+  public static List<Tile> generateOwnableTiles() {
     try {
       return generateTilesFromCSV(
           OwnableCSVHandler.readLines("src/main/resources/csv/monopoly_tiles.csv"), 4);
     } catch (IOException ignored) {
       return List.of();
     }
+  }
+
+  public static List<CornerTile> generateCornerTiles() {
+    return List.of(
+        new FreeParkingTile(CornerTile.Position.TOP_LEFT),
+        new GoToJailTile(CornerTile.Position.TOP_RIGHT),
+        new JailTile(CornerTile.Position.BOTTOM_LEFT),
+        new StartTile(CornerTile.Position.BOTTOM_RIGHT));
   }
 
   public static List<Tile> generateTilesFromCSV(List<String> lines, int expectedColumnCount) {

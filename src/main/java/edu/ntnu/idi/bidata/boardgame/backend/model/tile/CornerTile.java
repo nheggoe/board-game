@@ -12,6 +12,10 @@ public abstract sealed class CornerTile implements Tile
     this.position = position;
   }
 
+  public Position getPosition() {
+    return position;
+  }
+
   public enum Position {
     TOP_LEFT,
     TOP_RIGHT,

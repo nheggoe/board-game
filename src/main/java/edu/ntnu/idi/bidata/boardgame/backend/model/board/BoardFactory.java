@@ -2,6 +2,7 @@ package edu.ntnu.idi.bidata.boardgame.backend.model.board;
 
 import edu.ntnu.idi.bidata.boardgame.backend.model.tile.Tile;
 import edu.ntnu.idi.bidata.boardgame.backend.model.tile.TileFactory;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,75 +17,31 @@ public class BoardFactory {
   public static Board generateBoard(Layout layout) {
     return switch (layout) {
       case NORMAL -> generateNormalBoard();
-      default -> throw new UnsupportedOperationException();
-        //      case EASY -> generateEasyBoard();
-        //      case UNFAIR -> generateUnfiarBoard();
+      case EASY -> generateEasyBoard();
+      case UNFAIR -> generateUnfiarBoard();
     };
   }
 
   private static Board generateNormalBoard() {
-    List<Tile> tmp = TileFactory.generateTile();
-    return new Board(tmp);
+    var tmp = TileFactory.generateOwnableTiles();
+    List<Tile> tiles = new ArrayList<>(tmp);
+    tiles.addAll(TileFactory.generateCornerTiles());
+    return new Board(tiles);
   }
 
-  //
-  //  /**
-  //   * Creates a board with snakes and reset actions to represent an unfair board.
-  //   *
-  //   * @return a new board with snakes and reset actions
-  //   */
-  //  private static Board generateUnfiarBoard() {
-  //    List<Tile> tiles = generateTiles(88);
-  //    tiles.get(5).setTileAction(snakeAction);
-  //    tiles.get(15).setTileAction(snakeAction);
-  //    tiles.get(18).setTileAction(snakeAction);
-  //    tiles.get(40).setTileAction(snakeAction);
-  //    tiles.get(45).setTileAction(snakeAction);
-  //    tiles.get(50).setTileAction(resetAction);
-  //    tiles.get(60).setTileAction(resetAction);
-  //    tiles.get(65).setTileAction(resetAction);
-  //    tiles.get(80).setTileAction(snakeAction);
-  //    return new Board(tiles);
-  //  }
-  //
-  //  /**
-  //   * Creates a board with ladders to represent an easy board.
-  //   *
-  //   * @return a new board with ladders
-  //   */
-  //  private static Board generateEasyBoard() {
-  //    List<Tile> tiles = generateTiles(60);
-  //    tiles.get(5).setTileAction(ladderAction);
-  //    tiles.get(15).setTileAction(ladderAction);
-  //    tiles.get(18).setTileAction(ladderAction);
-  //    tiles.get(40).setTileAction(ladderAction);
-  //    tiles.get(45).setTileAction(ladderAction);
-  //    tiles.get(50).setTileAction(ladderAction);
-  //    tiles.get(60).setTileAction(ladderAction);
-  //    tiles.get(65).setTileAction(ladderAction);
-  //    tiles.get(80).setTileAction(ladderAction);
-  //    return new Board(tiles);
-  //  }
-  //
-  //  private static List<Tile> generateTiles(int numberOfTiles) {
-  //    List<Tile> tmp = new ArrayList<>();
-  //    for (int i = 1; i < numberOfTiles - 1; i++) {
-  //      final int finalI = i;
-  //      var tile = new Tile(i, "Tile") {};
-  //      tile.setTileAction(
-  //          player -> System.out.println(player.getName() + " is safe on tile " + finalI));
-  //      tmp.add(tile);
-  //    }
-  //    Tile tile = new Tile(0, "Start") {};
-  //    tile.setTileAction(player -> System.out.println(player.getName() + " is on the first
-  // tile"));
-  //    tmp.addFirst(tile);
-  //
-  //    tile = new Tile(tmp.size(), "End") {};
-  //    tile.setTileAction(player -> System.out.println(player.getName() + " is on the last tile"));
-  //    tmp.addLast(tile);
-  //    return tmp;
-  //  }
+  private static Board generateUnfiarBoard() {
+    var tmp = TileFactory.generateOwnableTiles();
+    List<Tile> tiles = new ArrayList<>(tmp);
+    tiles.addAll(TileFactory.generateCornerTiles());
+    return new Board(tiles);
+  }
+
+  private static Board generateEasyBoard() {
+    var tmp = TileFactory.generateOwnableTiles();
+    List<Tile> tiles = new ArrayList<>(tmp);
+    tiles.addAll(TileFactory.generateCornerTiles());
+    return new Board(tiles);
+  }
 
   public enum Layout {
     NORMAL,

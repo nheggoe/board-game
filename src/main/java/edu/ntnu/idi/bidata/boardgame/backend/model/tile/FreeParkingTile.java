@@ -4,4 +4,6 @@ public final class FreeParkingTile extends CornerTile {
   FreeParkingTile(Position position) {
     super(position);
   }
+
+
 }
