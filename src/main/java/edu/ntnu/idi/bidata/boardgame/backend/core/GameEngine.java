@@ -1,9 +1,10 @@
 package edu.ntnu.idi.bidata.boardgame.backend.core;
 
+import edu.ntnu.idi.bidata.boardgame.backend.model.Game;
+import edu.ntnu.idi.bidata.boardgame.backend.model.Player;
 import edu.ntnu.idi.bidata.boardgame.backend.model.board.Board;
 import edu.ntnu.idi.bidata.boardgame.backend.model.dice.Dice;
-import edu.ntnu.idi.bidata.boardgame.backend.model.game.Game;
-import edu.ntnu.idi.bidata.boardgame.backend.model.player.Player;
+import edu.ntnu.idi.bidata.boardgame.backend.model.tile.JailTile;
 import edu.ntnu.idi.bidata.boardgame.backend.model.tile.TileAction;
 import edu.ntnu.idi.bidata.boardgame.backend.util.InputHandler;
 import edu.ntnu.idi.bidata.boardgame.backend.util.OutputHandler;
@@ -29,6 +30,7 @@ public class GameEngine {
   private int roundNumber = 1;
 
   private Game game;
+  private JailTile jailTile;
 
   /**
    * Constructs a {@code GameEngine} with the required dependencies.
@@ -48,8 +50,13 @@ public class GameEngine {
     return instance;
   }
 
+  public void goToJail(Player player) {
+    jailTile.jailForNmberOfRounds(player, 2);
+  }
+
   public void setup(Game game) {
     setGame(game);
+    setJailTile(game.getJailTile());
   }
 
   /** Starts and manages the game loop, allowing players to take turns until the game ends. */
@@ -75,9 +82,11 @@ public class GameEngine {
   private void playRound() {
     try {
       outputHandler.println("Round %d:".formatted(roundNumber++));
-      game.forEach(player -> game.movePlayer(player, dice.roll(2).getTotal()));
+      game.forEach(player -> game.movePlayer(player, dice.roll(2)));
       game.forEach(this::executeTileAction);
-      checkWinningStatus();
+      if (roundNumber >= 20) {
+        checkWinningStatus();
+      }
     } catch (Exception e) {
       outputHandler.println("An error occurred during the round: " + e.getMessage());
     }
@@ -89,10 +98,7 @@ public class GameEngine {
    * @param player The player whose current tile is checked for an action.
    */
   private void executeTileAction(Player player) {
-    TileAction action = player.getCurrentTile().getTileAction();
-    if (action != null) {
-      action.performAction(player);
-    }
+    TileAction.of(game.getTile(player.getPosition())).execute(player);
   }
 
   /** Prints the current locations of all players. */
@@ -100,35 +106,43 @@ public class GameEngine {
     game.forEach(
         player ->
             outputHandler.println(
-                "Player %s is on tile %d"
-                    .formatted(
-                        player.getName(),
-                        player.getCurrentTile() == null
-                            ? 1
-                            : player.getCurrentTile().getTilePosition() + 1)));
+                "Player %s is on tile %d".formatted(player.getName(), player.getPosition())));
   }
 
   /** Checks if any player has reached the winning tile and ends the game if a winner is found. */
   private void checkWinningStatus() {
-    game.forEach(
-        player -> {
-          if (player.getCurrentTile().equals(game.getBoard().tiles().getLast())) {
-            outputHandler.println(player.getName() + " has won the game!");
-            running = false;
-          }
-        });
+    var winners = game.getWinners().getValue();
+    if (winners.isEmpty()) {
+      throw new IllegalArgumentException("Failed to retrieve winners.");
+    } else if (winners.size() == 1) {
+      Player winner = winners.getFirst();
+      outputHandler.println(
+          "The winner is %s with net worth of $%d!"
+              .formatted(winner.getName(), winner.getNetWorth()));
+    } else {
+      outputHandler.println("We have multiple winners!");
+      for (int i = 0; i < winners.size(); i++) {
+        outputHandler.println("%d. %s".formatted((i + 1), winners.get(i).getName()));
+      }
+      outputHandler.println(
+          "All finished the game with net worth of $%d"
+              .formatted(winners.getFirst().getNetWorth()));
+    }
   }
 
   // ------------------------  getters and setters  ------------------------
-
-  public Game getGame() {
-    return game;
-  }
 
   private void setGame(Game game) {
     if (game == null) {
       throw new IllegalArgumentException("Game cannot be null!");
     }
     this.game = game;
+  }
+
+  private void setJailTile(JailTile jailTile) {
+    if (jailTile == null) {
+      throw new IllegalArgumentException("Jail tile cannot be null!");
+    }
+    this.jailTile = jailTile;
   }
 }

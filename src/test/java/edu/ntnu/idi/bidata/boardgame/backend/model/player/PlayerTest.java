@@ -2,8 +2,8 @@ package edu.ntnu.idi.bidata.boardgame.backend.model.player;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
+import edu.ntnu.idi.bidata.boardgame.backend.model.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +12,7 @@ class PlayerTest {
 
   @BeforeEach
   void setup() {
-    player = new Player("John", Figure.CAR);
+    player = new Player("John", Player.Figure.CAR);
   }
 
   @Test
@@ -23,14 +23,8 @@ class PlayerTest {
 
   @Test
   void testGetSetFigure() {
-    assertThat(player.getFigure()).isEqualTo(Figure.CAR);
-    player.setFigure(Figure.HAT);
-    assertThat(player.getFigure()).isEqualTo(Figure.HAT);
-  }
-
-  @Test
-  void testMovePlayer() {
-    assertThat(player.getCurrentTile().getTilePosition()).isEqualTo(-1);
-    // TODO add support for find game instance by gameId
+    assertThat(player.getFigure()).isEqualTo(Player.Figure.CAR);
+    player.setFigure(Player.Figure.HAT);
+    assertThat(player.getFigure()).isEqualTo(Player.Figure.HAT);
   }
 }

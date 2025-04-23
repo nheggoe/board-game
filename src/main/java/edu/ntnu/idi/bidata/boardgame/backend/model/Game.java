@@ -1,12 +1,15 @@
-package edu.ntnu.idi.bidata.boardgame.backend.model.game;
+package edu.ntnu.idi.bidata.boardgame.backend.model;
 
 import edu.ntnu.idi.bidata.boardgame.backend.model.board.Board;
-import edu.ntnu.idi.bidata.boardgame.backend.model.player.Player;
+import edu.ntnu.idi.bidata.boardgame.backend.model.dice.DiceRoll;
+import edu.ntnu.idi.bidata.boardgame.backend.model.tile.JailTile;
 import edu.ntnu.idi.bidata.boardgame.backend.model.tile.Tile;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.SequencedCollection;
+import java.util.TreeMap;
 import java.util.UUID;
 
 /**
@@ -18,13 +21,15 @@ import java.util.UUID;
  * participating in the game.
  *
  * @author Nick Heggø
- * @version 2025.04.15
+ * @version 2025.04.22
  */
 public class Game implements Iterable<Player> {
 
   private final UUID gameId;
   private final List<Player> players;
 
+  private String saveName;
+  private boolean isEnded;
   private Board board;
 
   private Game() {
@@ -36,28 +41,50 @@ public class Game implements Iterable<Player> {
     this();
     setBoard(board);
     addPlayers(players);
+    isEnded = false;
   }
 
   // ------------------------  APIs  ------------------------
 
+  public void printTiles() {
+    board.tiles().forEach(System.out::println);
+  }
+
+  public Map.Entry<Integer, List<Player>> getWinners() {
+    var treeMap = new TreeMap<Integer, List<Player>>();
+    forEach(
+        player ->
+            treeMap.computeIfAbsent(player.getNetWorth(), unused -> new ArrayList<>()).add(player));
+    return treeMap.reversed().firstEntry();
+  }
+
   public boolean addPlayer(Player player) {
-    player.setGameId(gameId);
     return players.add(player);
   }
 
   public void addPlayers(SequencedCollection<Player> players) {
-    players.forEach(
-        player -> {
-          player.setGameId(gameId);
-          player.setCurrentTile(getBoard().getStartingTile());
-        });
     this.players.addAll(players);
   }
 
-  public void movePlayer(Player player, int steps) {
-    Tile currentTile =
-        player.getCurrentTile() == null ? board.getStartingTile() : player.getCurrentTile();
-    player.setCurrentTile(board.getTileAfterSteps(currentTile, steps));
+  public void movePlayer(Player player, DiceRoll roll) {
+    int newPosition = (player.getPosition() + roll.getTotal()) % board.size();
+    player.setPosition(newPosition);
+  }
+
+  public JailTile getJailTile() {
+    return board.getJailTile();
+  }
+
+  public Tile getTile(int position) {
+    return board.getTile(position);
+  }
+
+  public boolean isEnded() {
+    return isEnded;
+  }
+
+  public void endGame() {
+    isEnded = true;
   }
 
   @Override
@@ -77,11 +104,15 @@ public class Game implements Iterable<Player> {
     this.board = board;
   }
 
-  public Board getBoard() {
-    return board;
-  }
-
   public UUID getGameId() {
     return gameId;
+  }
+
+  public void setSaveName(String saveName) {
+    this.saveName = saveName;
+  }
+
+  public String getSaveName() {
+    return saveName;
   }
 }

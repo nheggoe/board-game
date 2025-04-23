@@ -3,8 +3,8 @@ package edu.ntnu.idi.bidata.boardgame.backend;
 import edu.ntnu.idi.bidata.boardgame.backend.core.GameEngine;
 import edu.ntnu.idi.bidata.boardgame.backend.core.PlayerManager;
 import edu.ntnu.idi.bidata.boardgame.backend.core.event.EventManager;
-import edu.ntnu.idi.bidata.boardgame.backend.model.board.BoardGameFactory;
-import edu.ntnu.idi.bidata.boardgame.backend.model.game.Game;
+import edu.ntnu.idi.bidata.boardgame.backend.model.Game;
+import edu.ntnu.idi.bidata.boardgame.backend.model.board.BoardFactory;
 
 /**
  * The {@link MonopolyFacade} class serves as a facade for managing game setup and execution. It
@@ -23,7 +23,7 @@ public class MonopolyFacade {
     GameEngine engine = GameEngine.getInstance();
     engine.setup(
         new Game(
-            BoardGameFactory.generateBoard(BoardGameFactory.Layout.UNFAIR),
+            BoardFactory.generateBoard(BoardFactory.Layout.UNFAIR),
             new PlayerManager().initializePlayers()));
     eventManager.addListener(engine::run);
   }
