@@ -1,5 +1,6 @@
 package edu.ntnu.idi.bidata.boardgame.backend.util;
 
+
 /**
  * The OutputHandler class is responsible for outputting messages to the standard output stream. It
  * currently acts as a temporary solution for handling console-based output and may transition to a
@@ -31,7 +32,7 @@ public class OutputHandler {
    *
    * @param s The string to be printed to the console.
    */
-  public void println(String s) {
+  public static void println(String s) {
     System.out.println(s);
   }
 
@@ -59,5 +60,9 @@ public class OutputHandler {
   public void printInputPrompt(String message) {
     println(message);
     print("> ");
+  }
+
+  public static void println(Object o) {
+    println(o.toString());
   }
 }

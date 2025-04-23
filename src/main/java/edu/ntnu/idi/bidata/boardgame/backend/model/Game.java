@@ -4,6 +4,7 @@ import edu.ntnu.idi.bidata.boardgame.backend.model.board.Board;
 import edu.ntnu.idi.bidata.boardgame.backend.model.dice.DiceRoll;
 import edu.ntnu.idi.bidata.boardgame.backend.model.tile.JailTile;
 import edu.ntnu.idi.bidata.boardgame.backend.model.tile.Tile;
+import edu.ntnu.idi.bidata.boardgame.backend.util.OutputHandler;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -47,7 +48,7 @@ public class Game implements Iterable<Player> {
   // ------------------------  APIs  ------------------------
 
   public void printTiles() {
-    board.tiles().forEach(System.out::println);
+    board.tiles().forEach(OutputHandler::println);
   }
 
   public Map.Entry<Integer, List<Player>> getWinners() {
@@ -67,8 +68,12 @@ public class Game implements Iterable<Player> {
   }
 
   public void movePlayer(Player player, DiceRoll roll) {
+    int oldPositon = player.getPosition();
     int newPosition = (player.getPosition() + roll.getTotal()) % board.size();
     player.setPosition(newPosition);
+    if (oldPositon > newPosition) {
+      player.addBalance(200);
+    }
   }
 
   public JailTile getJailTile() {
@@ -114,5 +119,9 @@ public class Game implements Iterable<Player> {
 
   public String getSaveName() {
     return saveName;
+  }
+
+  public Board getBoard() {
+    return board;
   }
 }

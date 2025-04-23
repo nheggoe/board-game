@@ -1,6 +1,7 @@
 package edu.ntnu.idi.bidata.boardgame.backend.model;
 
 import edu.ntnu.idi.bidata.boardgame.backend.model.ownable.Owner;
+import edu.ntnu.idi.bidata.boardgame.backend.util.StringFormatter;
 
 /**
  * The {@code Player} class represents a player in the board game. Each player has a name and a
@@ -69,6 +70,7 @@ public class Player extends Owner {
 
   @Override
   public String toString() {
-    return "Player{name=" + getName() + ", position=" + position + ", figure=" + figure + '}';
+    return "%s[figure=%s, position=%d, balance=%d]"
+        .formatted(getName(), StringFormatter.formatEnum(getFigure()), getPosition(), getBalance());
   }
 }

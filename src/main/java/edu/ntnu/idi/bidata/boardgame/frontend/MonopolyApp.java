@@ -6,7 +6,7 @@ import javafx.stage.Stage;
 
 public class MonopolyApp extends Application {
 
-  private SceneSwitcher sceneSwitcher;
+  private static final SceneSwitcher sceneSwitcher = new SceneSwitcher();
 
   public static void main(String[] args) {
     launch(args);
@@ -14,11 +14,19 @@ public class MonopolyApp extends Application {
 
   @Override
   public void start(Stage primaryStage) {
-    SceneSwitcher sceneSwitcher = new SceneSwitcher(primaryStage);
-    sceneSwitcher.switchTo(SceneSwitcher.AppScene.DEMO_VIEW);
+    setup(primaryStage);
+    switchScene(SceneSwitcher.AppScene.GAME_VIEW);
   }
 
-  public SceneSwitcher getSceneSwitcher() {
-    return sceneSwitcher;
+  private static void setup(Stage primaryStage) {
+    primaryStage.setTitle("Board Game");
+    primaryStage.centerOnScreen();
+    primaryStage.setMinWidth(800);
+    primaryStage.setMinHeight(600);
+    sceneSwitcher.setup(primaryStage);
+  }
+
+  public static void switchScene(SceneSwitcher.AppScene scene) {
+    sceneSwitcher.switchTo(scene);
   }
 }
