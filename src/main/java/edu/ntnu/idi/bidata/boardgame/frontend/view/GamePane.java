@@ -1,6 +1,7 @@
 package edu.ntnu.idi.bidata.boardgame.frontend.view;
 
 import edu.ntnu.idi.bidata.boardgame.frontend.controller.GameController;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -20,13 +21,15 @@ public class GamePane extends VBox {
     board = new GridPane();
     controller = new GameController();
     getChildren().add(board);
+    setAlignment(Pos.CENTER);
     initialize();
   }
 
-  private void initialize() {
+  public void initialize() {
     board.setGridLinesVisible(true); // optional: show grid lines
+    board.setAlignment(Pos.CENTER);
 
-    int size = 11;
+    int size = controller.getBoardSize() / 4;
     int pos = 0;
 
     // Bottom row (right to left)
@@ -48,6 +51,12 @@ public class GamePane extends VBox {
     for (int row = 1; row < size - 1; row++) {
       board.add(createTile(pos++), row, size - 1);
     }
+  }
+
+  public void bindSizeProperty() {
+
+    board.prefWidthProperty().bind(this.getScene().widthProperty());
+    board.prefHeightProperty().bind(this.getScene().heightProperty());
   }
 
   private Pane createTile(int pos) {

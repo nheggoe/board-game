@@ -35,6 +35,13 @@ public class GameController {
             .orElseThrow(() -> new IllegalArgumentException("Game engine is not correct setup!"));
   }
 
+  /**
+   * @return the number of tiles the game have
+   */
+  public int getBoardSize() {
+    return game.getBoard().getNumberOfTiles();
+  }
+
   private Parent createContent(GridPane gridPane) {
     var root = new BorderPane();
     var center = new FlowPane();
