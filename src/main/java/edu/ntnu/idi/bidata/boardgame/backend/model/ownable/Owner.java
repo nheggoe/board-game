@@ -68,6 +68,10 @@ public abstract class Owner {
     }
   }
 
+  public List<Ownable> getOwnedAssets() {
+    return new ArrayList<>(ownedAssets);
+  }
+
   public int getNetWorth() {
     return balance + ownedAssets.stream().map(Ownable::price).reduce(Integer::sum).orElse(0);
   }
