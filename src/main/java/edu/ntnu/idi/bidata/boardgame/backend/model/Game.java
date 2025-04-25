@@ -25,6 +25,7 @@ import java.util.UUID;
  */
 public class Game implements Iterable<Player> {
 
+  private int currentPlayerIndex = 0;
   private final UUID gameId;
   private final List<Player> players;
 
@@ -95,6 +96,20 @@ public class Game implements Iterable<Player> {
     return players.iterator();
   }
 
+  public Player getCurrentPlayer() {
+    if (players.isEmpty()) {
+      throw new IllegalStateException("No players in the game!");
+    }
+    return players.get(currentPlayerIndex);
+  }
+
+  public void nextPlayer() {
+    if (players.isEmpty()) {
+      throw new IllegalStateException("No players to rotate!");
+    }
+    currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+  }
+
   // ------------------------  getters and setters  ------------------------
 
   private void setBoard(Board board) {
@@ -115,4 +130,5 @@ public class Game implements Iterable<Player> {
   public String getSaveName() {
     return saveName;
   }
+
 }
