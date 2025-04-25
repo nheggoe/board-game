@@ -34,7 +34,7 @@ public class DemoView extends Scene {
 
     // Create game and UI components
     Game game = new Game(BoardFactory.generateBoard(BoardFactory.Layout.EASY), List.of(p1, p2));
-    UIPane uiPane = new UIPane(game);
+    UIPane uiPane = new UIPane();
     MessageLog log = new MessageLog();
     DiceView diceView = new DiceView(2);
 
@@ -53,7 +53,7 @@ public class DemoView extends Scene {
 
     BorderPane root = new BorderPane();
     root.setRight(sidebar);
-    root.setBottom(log.getRoot());
+    // root.setBottom(log.getRoot());
     root.setCenter(diceView);
 
     return root;

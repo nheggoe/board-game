@@ -1,6 +1,6 @@
 package edu.ntnu.idi.bidata.boardgame.frontend.view;
 
-import edu.ntnu.idi.bidata.boardgame.backend.model.Game;
+import edu.ntnu.idi.bidata.boardgame.backend.core.GameEngine;
 import edu.ntnu.idi.bidata.boardgame.backend.model.Player;
 import edu.ntnu.idi.bidata.boardgame.backend.model.ownable.Ownable;
 import java.util.HashMap;
@@ -38,13 +38,18 @@ public class UIPane extends VBox {
     Color.web("#e2e3e5")
   };
 
-  public UIPane(Game game) {
+  public UIPane() {
     setPrefWidth(320);
     setStyle("-fx-background-color: linear-gradient(to bottom, #1e293b, #0f172a);");
     setPadding(new Insets(10));
 
     VBox content = new VBox(16);
     content.setPadding(new Insets(10));
+
+    var game =
+        GameEngine.getInstance()
+            .getGame()
+            .orElseThrow(() -> new IllegalStateException("Game engine is not correctly setup!"));
 
     int i = 0;
     for (Player player : game) {

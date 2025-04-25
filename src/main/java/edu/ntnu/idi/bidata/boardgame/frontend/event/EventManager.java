@@ -1,4 +1,4 @@
-package edu.ntnu.idi.bidata.boardgame.backend.core.event;
+package edu.ntnu.idi.bidata.boardgame.frontend.event;
 
 import java.util.ArrayList;
 import java.util.List;

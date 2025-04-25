@@ -1,6 +1,5 @@
 package edu.ntnu.idi.bidata.boardgame;
 
-
 import edu.ntnu.idi.bidata.boardgame.backend.MonopolyFacade;
 import edu.ntnu.idi.bidata.boardgame.frontend.MonopolyApp;
 

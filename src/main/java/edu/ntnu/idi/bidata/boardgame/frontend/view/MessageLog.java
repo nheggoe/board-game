@@ -6,7 +6,6 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -32,17 +31,16 @@ import javafx.util.Duration;
  * @author Mihailo Hranisavljevic
  * @version 2025.04.25
  */
-public class MessageLog {
-  private final StackPane root;
+public class MessageLog extends StackPane {
+
   private final Label textLabel;
   private final StringBuilder currentMessage;
   private Timeline typewriter;
 
   /** Constructs a new {@code MessageLog} with visuals and animation. */
   public MessageLog() {
-    root = new StackPane();
-    root.setPrefHeight(140);
-    root.setPadding(new Insets(10));
+    setPrefHeight(140);
+    setPadding(new Insets(10));
 
     Rectangle background = new Rectangle(1000, 140);
     background.setArcWidth(20);
@@ -60,7 +58,7 @@ public class MessageLog {
 
     currentMessage = new StringBuilder();
 
-    root.getChildren().addAll(background, textLabel);
+    getChildren().addAll(background, textLabel);
     StackPane.setAlignment(textLabel, Pos.TOP_LEFT);
     StackPane.setMargin(textLabel, new Insets(10));
   }
@@ -107,14 +105,5 @@ public class MessageLog {
       typewriter.stop();
       textLabel.setText(currentMessage.toString());
     }
-  }
-
-  /**
-   * Returns the root node of the message log for placement in a JavaFX layout.
-   *
-   * @return the styled {@code StackPane} containing the message log
-   */
-  public Node getRoot() {
-    return root;
   }
 }

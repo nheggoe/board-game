@@ -1,6 +1,5 @@
 package edu.ntnu.idi.bidata.boardgame.backend.io.csv;
 
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
