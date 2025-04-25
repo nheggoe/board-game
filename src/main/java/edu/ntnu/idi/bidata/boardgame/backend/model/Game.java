@@ -115,6 +115,16 @@ public class Game implements Iterable<Player> {
     currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
   }
 
+  /**
+   * Sends a player to jail by teleporting them to the jail tile and marking them as jailed.
+   *
+   * @param player the player to send to jail
+   */
+  public void sendPlayerToJail(Player player) {
+    player.setPosition(board.getTilePosition(getJailTile()));
+    getJailTile().jailForNumberOfRounds(player, 2);
+  }
+
   // ------------------------  getters and setters  ------------------------
 
   private void setBoard(Board board) {
