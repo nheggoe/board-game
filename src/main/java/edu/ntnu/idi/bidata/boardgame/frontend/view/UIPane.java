@@ -9,6 +9,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -27,6 +28,7 @@ import javafx.scene.text.FontWeight;
 public class UIPane extends VBox {
 
   private final HashMap<Player, PlayerInfoBox> playerBoxes = new HashMap<>();
+  private Player currentPlayer;
 
   private static final Color[] CARD_COLORS = {
     Color.web("#fff3cd"),
@@ -36,11 +38,6 @@ public class UIPane extends VBox {
     Color.web("#e2e3e5")
   };
 
-  /**
-   * Constructs a {@code UIPane} using a {@link Game} instance.
-   *
-   * @param game the game containing players to display
-   */
   public UIPane(Game game) {
     setPrefWidth(320);
     setStyle("-fx-background-color: linear-gradient(to bottom, #1e293b, #0f172a);");
@@ -67,6 +64,21 @@ public class UIPane extends VBox {
   /** Refreshes all player displays in the sidebar. */
   public void refresh() {
     playerBoxes.values().forEach(PlayerInfoBox::refresh);
+    highlightCurrentPlayer();
+  }
+
+  /** Sets the player whose turn it is, and updates the glow. */
+  public void setCurrentPlayer(Player player) {
+    this.currentPlayer = player;
+    highlightCurrentPlayer();
+  }
+
+  /** Highlights the active player and removes glow from others. */
+  private void highlightCurrentPlayer() {
+    for (var entry : playerBoxes.entrySet()) {
+      PlayerInfoBox box = entry.getValue();
+      box.setGlow(entry.getKey().equals(currentPlayer));
+    }
   }
 
   /** {@code PlayerInfoBox} represents a stylized card for one player. */
@@ -82,12 +94,6 @@ public class UIPane extends VBox {
     private final VBox propertiesList;
     private final ImageView figureImage;
 
-    /**
-     * Constructs a player card with the given background color.
-     *
-     * @param player the player to display
-     * @param backgroundColor the color of the card
-     */
     public PlayerInfoBox(Player player, Color backgroundColor) {
       this.player = player;
 
@@ -104,7 +110,7 @@ public class UIPane extends VBox {
                   BorderStrokeStyle.SOLID,
                   new CornerRadii(12),
                   BorderWidths.DEFAULT)));
-      setEffect(new javafx.scene.effect.DropShadow(6, Color.gray(0.4)));
+      setEffect(new DropShadow(6, Color.gray(0.4)));
 
       nameLabel = label(Font.font(TITLE_FONT, FontWeight.BOLD, 20), "#1a1a1a");
       balanceLabel = label(Font.font(BODY_FONT, FontWeight.BOLD, 14), "#166534");
@@ -129,13 +135,6 @@ public class UIPane extends VBox {
           .addAll(nameLabel, balanceLabel, positionLabel, figureImage, propsHeader, propertiesList);
     }
 
-    /**
-     * Creates a styled label.
-     *
-     * @param font the font to apply
-     * @param hexColor the hex color code for text
-     * @return styled {@link Label}
-     */
     private Label label(Font font, String hexColor) {
       Label l = new Label();
       l.setFont(font);
@@ -144,11 +143,6 @@ public class UIPane extends VBox {
       return l;
     }
 
-    /**
-     * Loads the figure image based on player figure type.
-     *
-     * @param figure the player's figure enum
-     */
     private void loadFigureImage(Player.Figure figure) {
       String resourcePath =
           switch (figure) {
@@ -162,19 +156,10 @@ public class UIPane extends VBox {
           new Image(Objects.requireNonNull(getClass().getResourceAsStream(resourcePath))));
     }
 
-    /** Refreshes the displayed player information. */
     public void refresh() {
       nameLabel.setText(player.getName());
-      nameLabel.setFont(Font.font(TITLE_FONT, FontWeight.BOLD, 22));
-      nameLabel.setTextFill(Color.web("#111"));
-
       balanceLabel.setText("Balance: $" + player.getBalance());
-      balanceLabel.setFont(Font.font(BODY_FONT, FontWeight.BOLD, 15));
-      balanceLabel.setTextFill(Color.web("#0f5132"));
-
       positionLabel.setText("Tile: " + player.getPosition());
-      positionLabel.setFont(Font.font(BODY_FONT, FontWeight.NORMAL, 14));
-      positionLabel.setTextFill(Color.web("#0d47a1"));
 
       propertiesList.getChildren().clear();
       for (Ownable ownable : player.getOwnedAssets()) {
@@ -200,6 +185,21 @@ public class UIPane extends VBox {
         none.setFont(Font.font(PROPERTY_FONT, FontPosture.ITALIC, 12));
         none.setTextFill(Color.web("#6c757d"));
         propertiesList.getChildren().add(none);
+      }
+    }
+
+    /** Toggles a bright animated blue glow effect if it's the player's turn. */
+    public void setGlow(boolean active) {
+      if (active) {
+        DropShadow glow = new DropShadow();
+        glow.setColor(Color.web("#3b82f6"));
+        glow.setRadius(26);
+        glow.setSpread(0.6);
+        glow.setOffsetX(0);
+        glow.setOffsetY(0);
+        setEffect(glow);
+      } else {
+        setEffect(new DropShadow(6, Color.gray(0.4)));
       }
     }
   }

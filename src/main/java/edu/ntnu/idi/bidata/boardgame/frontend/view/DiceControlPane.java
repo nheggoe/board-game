@@ -53,9 +53,11 @@ public class DiceControlPane extends HBox {
                         + " (Total: "
                         + roll.getTotal()
                         + ")");
+
                 game.movePlayer(currentPlayer, roll);
-                uiPane.refresh();
                 game.nextPlayer();
+                uiPane.setCurrentPlayer(game.getCurrentPlayer());
+                uiPane.refresh();
               });
         });
 
