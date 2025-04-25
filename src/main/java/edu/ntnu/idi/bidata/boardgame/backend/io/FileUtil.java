@@ -3,6 +3,7 @@ package edu.ntnu.idi.bidata.boardgame.backend.io;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -10,7 +11,7 @@ import java.util.logging.Logger;
  * specified file and its parent directories exist, creating them if necessary.
  *
  * @author Nick Heggø
- * @version 2025.03.25
+ * @version 2025.04.18
  */
 public class FileUtil {
 
@@ -18,6 +19,8 @@ public class FileUtil {
 
   private static final String FILE_PATH_TEMPLATE = "data/%s/%s.%s";
   private static final String TEST_FILE_PATH_TEMPLATE = "src/test/resources/%s/%s.%s";
+
+  private static final List<String> SUPPORTED_FILE_EXTENSIONS = List.of("json", "csv");
 
   private FileUtil() {}
 
@@ -38,15 +41,14 @@ public class FileUtil {
     if (fileName == null || fileExtension == null) {
       throw new IllegalArgumentException("File name and file extension must not be null");
     }
-    String fileNameFormatted = fileName.strip();
     String fileExtensionFormatted = fileExtension.toLowerCase().strip();
-    return isTest
-        ? Path.of(
-            TEST_FILE_PATH_TEMPLATE.formatted(
-                fileExtensionFormatted, fileNameFormatted, fileExtensionFormatted))
-        : Path.of(
-            FILE_PATH_TEMPLATE.formatted(
-                fileExtensionFormatted, fileNameFormatted, fileExtensionFormatted));
+    if (!SUPPORTED_FILE_EXTENSIONS.contains(fileExtensionFormatted)) {
+      throw new UnsupportedOperationException("Unsupported file extension: " + fileExtension);
+    }
+    String fileNameFormatted = fileName.strip();
+    return Path.of(
+        (isTest ? TEST_FILE_PATH_TEMPLATE : FILE_PATH_TEMPLATE)
+            .formatted(fileExtensionFormatted, fileNameFormatted, fileExtensionFormatted));
   }
 
   /**

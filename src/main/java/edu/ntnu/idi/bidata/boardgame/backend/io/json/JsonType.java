@@ -1,8 +1,9 @@
 package edu.ntnu.idi.bidata.boardgame.backend.io.json;
 
 import com.google.gson.reflect.TypeToken;
+import edu.ntnu.idi.bidata.boardgame.backend.model.Game;
+import edu.ntnu.idi.bidata.boardgame.backend.model.Player;
 import edu.ntnu.idi.bidata.boardgame.backend.model.board.Board;
-import edu.ntnu.idi.bidata.boardgame.backend.model.player.Player;
 import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Set;
@@ -19,7 +20,7 @@ import java.util.Set;
 public class JsonType {
   private static final Map<Class<?>, Type> TYPE_MAP =
       Map.of(
-          Board.class, new TypeToken<Set<Board>>() {}.getType(),
+          Game.class, new TypeToken<Set<Board>>() {}.getType(),
           Player.class, new TypeToken<Set<Player>>() {}.getType());
 
   private JsonType() {}

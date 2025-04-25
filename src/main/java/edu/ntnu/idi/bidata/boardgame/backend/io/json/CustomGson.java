@@ -12,8 +12,7 @@ import com.google.gson.JsonSerializer;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import edu.ntnu.idi.bidata.boardgame.backend.action.TileAction;
-import edu.ntnu.idi.bidata.boardgame.backend.action.TileActionAdapter;
+import edu.ntnu.idi.bidata.boardgame.backend.model.tile.Tile;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.time.LocalDate;
@@ -45,11 +44,35 @@ public class CustomGson {
           new GsonBuilder()
               .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
               .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
-              .registerTypeAdapter(TileAction.class, new TileActionAdapter())
               .setPrettyPrinting()
               .create();
     }
     return gson;
+  }
+
+  private static class GameAdapter extends TypeAdapter<Tile>
+      implements JsonSerializer<Tile>, JsonDeserializer<Tile> {
+
+    @Override
+    public Tile deserialize(
+        JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext)
+        throws JsonParseException {
+      return null;
+    }
+
+    @Override
+    public JsonElement serialize(
+        Tile tile, Type type, JsonSerializationContext jsonSerializationContext) {
+      return null;
+    }
+
+    @Override
+    public void write(JsonWriter jsonWriter, Tile tile) throws IOException {}
+
+    @Override
+    public Tile read(JsonReader jsonReader) throws IOException {
+      return null;
+    }
   }
 
   /**

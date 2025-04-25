@@ -1,12 +1,14 @@
 package edu.ntnu.idi.bidata.boardgame.backend.core;
 
-import edu.ntnu.idi.bidata.boardgame.backend.io.InputHandler;
-import edu.ntnu.idi.bidata.boardgame.backend.io.OutputHandler;
 import edu.ntnu.idi.bidata.boardgame.backend.io.csv.CSVHandler;
-import edu.ntnu.idi.bidata.boardgame.backend.model.board.Board;
-import edu.ntnu.idi.bidata.boardgame.backend.model.player.Player;
+import edu.ntnu.idi.bidata.boardgame.backend.model.Player;
+import edu.ntnu.idi.bidata.boardgame.backend.util.InputHandler;
+import edu.ntnu.idi.bidata.boardgame.backend.util.OutputHandler;
+import edu.ntnu.idi.bidata.boardgame.backend.util.StringFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * The {@code PlayerManager} class is responsible for handling player-related operations, including
@@ -16,27 +18,19 @@ import java.util.List;
  * <p>This class ensures that players are properly initialized before the game starts and provides a
  * seamless way to load saved players or create new ones.
  *
- * @author Nick Heggø
- * @version 2025.03.14
+ * @author Mihailo Hranisavljevic and Nick Heggø
+ * @version 2025.04.18
  */
 public class PlayerManager {
   private final InputHandler inputHandler;
   private final OutputHandler outputHandler;
   private final CSVHandler csvHandler;
-  private final Board board;
 
-  /**
-   * Constructs a {@code PlayerManager} with the required dependencies.
-   *
-   * @param inputHandler Handles user input.
-   * @param outputHandler Handles user output.
-   * @param board The game board used for player positioning.
-   */
-  public PlayerManager(InputHandler inputHandler, OutputHandler outputHandler, Board board) {
-    this.inputHandler = inputHandler;
-    this.outputHandler = outputHandler;
-    this.board = board;
-    this.csvHandler = new CSVHandler("/data/csv/players.csv");
+  /** Constructs a {@code PlayerManager} with the required dependencies. */
+  public PlayerManager() {
+    this.inputHandler = InputHandler.getInstance();
+    this.outputHandler = OutputHandler.getInstance();
+    this.csvHandler = new CSVHandler("players");
   }
 
   /**
@@ -46,7 +40,7 @@ public class PlayerManager {
    * @return A list of initialized players.
    */
   public List<Player> initializePlayers() {
-    List<Player> players = csvHandler.loadPlayers(board).toList();
+    List<Player> players = csvHandler.loadPlayers().toList();
     if (!players.isEmpty() && confirmUseExistingPlayers()) {
       return players;
     }
@@ -119,9 +113,21 @@ public class PlayerManager {
     String name = inputHandler.collectValidString();
 
     outputHandler.println("Choose a figure for player %d:".formatted(playerNumber));
-    outputHandler.printInputPrompt();
-    String figure = inputHandler.collectValidString();
+    while (true) {
+      try {
+        outputHandler.printInputPrompt("Available figures: " + getAvailableFigures());
+        Player.Figure figure =
+            Player.Figure.valueOf(inputHandler.collectValidString().strip().toUpperCase());
+        return new Player(name, figure);
+      } catch (IllegalArgumentException e) {
+        outputHandler.println("Please choose a valid figure:");
+      }
+    }
+  }
 
-    return new Player(name, board, figure);
+  private static String getAvailableFigures() {
+    return Arrays.stream(Player.Figure.values())
+        .map(StringFormatter::formatEnum)
+        .collect(Collectors.joining(", "));
   }
 }

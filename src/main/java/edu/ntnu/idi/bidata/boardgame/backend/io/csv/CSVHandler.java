@@ -1,8 +1,8 @@
 package edu.ntnu.idi.bidata.boardgame.backend.io.csv;
 
 import edu.ntnu.idi.bidata.boardgame.backend.io.FileUtil;
-import edu.ntnu.idi.bidata.boardgame.backend.model.board.Board;
-import edu.ntnu.idi.bidata.boardgame.backend.model.player.Player;
+import edu.ntnu.idi.bidata.boardgame.backend.model.Player;
+import edu.ntnu.idi.bidata.boardgame.backend.util.OutputHandler;
 import java.io.*;
 import java.nio.file.Path;
 import java.util.logging.Logger;
@@ -64,7 +64,7 @@ public class CSVHandler {
               String line = player.getName() + "," + player.getFigure();
               writer.write(line);
               writer.newLine();
-              System.out.println("Saved: " + line);
+              OutputHandler.getInstance().println("Saved: " + line);
             } catch (IOException e) {
               LOGGER.severe(() -> "Error writing to CSV file: " + filePath);
             }
@@ -80,7 +80,7 @@ public class CSVHandler {
    *
    * @return A Stream of Player objects loaded from the CSV file.
    */
-  public Stream<Player> loadPlayers(Board board) {
+  public Stream<Player> loadPlayers() {
     Stream.Builder<Player> playerStreamBuilder = Stream.builder();
 
     try (BufferedReader reader = new BufferedReader(new FileReader(filePath.toFile()))) {
@@ -95,9 +95,9 @@ public class CSVHandler {
 
         String[] data = line.split(",");
         if (data.length == 2) {
-          Player player = new Player(data[0], board, data[1]);
+          Player player = new Player(data[0], Player.Figure.valueOf(data[1]));
           playerStreamBuilder.add(player);
-          System.out.println("Loaded player: " + data[0] + " - " + data[1]);
+          OutputHandler.getInstance().println("Loaded player: " + data[0] + " - " + data[1]);
         }
       }
     } catch (IOException e) {
