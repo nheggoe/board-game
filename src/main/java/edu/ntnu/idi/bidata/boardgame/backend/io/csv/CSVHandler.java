@@ -64,7 +64,7 @@ public class CSVHandler {
               String line = player.getName() + "," + player.getFigure();
               writer.write(line);
               writer.newLine();
-              OutputHandler.getInstance().println("Saved: " + line);
+              OutputHandler.println("Saved: " + line);
             } catch (IOException e) {
               LOGGER.severe(() -> "Error writing to CSV file: " + filePath);
             }
@@ -97,7 +97,7 @@ public class CSVHandler {
         if (data.length == 2) {
           Player player = new Player(data[0], Player.Figure.valueOf(data[1]));
           playerStreamBuilder.add(player);
-          OutputHandler.getInstance().println("Loaded player: " + data[0] + " - " + data[1]);
+          OutputHandler.println("Loaded player: " + data[0] + " - " + data[1]);
         }
       }
     } catch (IOException e) {

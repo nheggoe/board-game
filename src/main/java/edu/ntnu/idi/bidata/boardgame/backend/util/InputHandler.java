@@ -12,7 +12,7 @@ import java.util.Scanner;
  */
 public class InputHandler {
 
-  private static InputHandler instance;
+  private static final InputHandler instance = new InputHandler(new Scanner(System.in));
 
   private final Scanner scanner;
 
@@ -21,15 +21,8 @@ public class InputHandler {
    * read user input from the standard input stream. It is private to enforce the singleton design
    * pattern, allowing only one instance of the InputHandler to be created.
    */
-  private InputHandler() {
-    this.scanner = new Scanner(System.in);
-  }
-
-  public static synchronized InputHandler getInstance() {
-    if (instance == null) {
-      instance = new InputHandler();
-    }
-    return instance;
+  private InputHandler(Scanner scanner) {
+    this.scanner = scanner;
   }
 
   /**
@@ -39,13 +32,13 @@ public class InputHandler {
    *
    * @return A valid, non-empty, trimmed string provided by the user.
    */
-  public String collectValidString() {
+  public static String collectValidString() {
     String validInput = null;
     while (validInput == null) {
       try {
         validInput = nextLine();
       } catch (IllegalArgumentException illegalArgumentException) {
-        System.out.println(illegalArgumentException.getMessage());
+        OutputHandler.println(illegalArgumentException.getMessage());
       }
     }
     return validInput;
@@ -58,13 +51,13 @@ public class InputHandler {
    * @return A non-empty, trimmed string of user input.
    * @throws IllegalArgumentException If the input is null or blank.
    */
-  public String nextLine() {
+  public static String nextLine() {
     assertEmptyLine();
-    return scanner.nextLine().strip();
+    return instance.scanner.nextLine().strip();
   }
 
-  private void assertEmptyLine() {
-    if (!scanner.hasNextLine()) {
+  private static void assertEmptyLine() {
+    if (!instance.scanner.hasNextLine()) {
       throw new IllegalArgumentException("There are no next line!");
     }
   }

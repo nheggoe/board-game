@@ -1,40 +1,26 @@
 package edu.ntnu.idi.bidata.boardgame.frontend.view;
 
-import edu.ntnu.idi.bidata.boardgame.backend.model.Game;
-import edu.ntnu.idi.bidata.boardgame.backend.model.Player;
-import edu.ntnu.idi.bidata.boardgame.backend.model.board.BoardFactory;
 import edu.ntnu.idi.bidata.boardgame.backend.model.ownable.Ownable;
 import edu.ntnu.idi.bidata.boardgame.backend.model.ownable.Property;
 import edu.ntnu.idi.bidata.boardgame.backend.model.ownable.Railroad;
 import edu.ntnu.idi.bidata.boardgame.backend.model.ownable.Utility;
 import edu.ntnu.idi.bidata.boardgame.backend.model.tile.CornerTile;
-import edu.ntnu.idi.bidata.boardgame.backend.model.tile.FreeParkingTile;
-import edu.ntnu.idi.bidata.boardgame.backend.model.tile.GoToJailTile;
-import edu.ntnu.idi.bidata.boardgame.backend.model.tile.JailTile;
 import edu.ntnu.idi.bidata.boardgame.backend.model.tile.OwnableTile;
-import edu.ntnu.idi.bidata.boardgame.backend.model.tile.StartTile;
 import edu.ntnu.idi.bidata.boardgame.backend.model.tile.TaxTile;
-import edu.ntnu.idi.bidata.boardgame.backend.model.tile.Tile;
 import edu.ntnu.idi.bidata.boardgame.frontend.controller.GameController;
-import java.util.List;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 
 public class GamePane extends VBox {
 
@@ -97,10 +83,9 @@ public class GamePane extends VBox {
     tile.setPrefSize(tileSize, tileSize);
 
     switch (controller.getTileAtPosition(pos)) {
-      case CornerTile cornerTile -> {
-        tile.setBackground(
-            new Background(new BackgroundFill(Color.GREY, CornerRadii.EMPTY, Insets.EMPTY)));
-      }
+      case CornerTile cornerTile ->
+          tile.setBackground(
+              new Background(new BackgroundFill(Color.GREY, CornerRadii.EMPTY, Insets.EMPTY)));
       case OwnableTile(Ownable ownable) -> {
         switch (ownable) {
           case Property(String name, Property.Color color, int price) -> {
@@ -113,8 +98,6 @@ public class GamePane extends VBox {
             imageView.setPreserveRatio(true);
             imageView.setSmooth(true);
 
-            // imageView.fitWidthProperty().bind(tile.widthProperty());
-            // imageView.fitHeightProperty().bind(tile.heightProperty());
             tile.getChildren().add(imageView);
             var label = new Label(name);
             tile.getChildren().add(label);
@@ -151,45 +134,6 @@ public class GamePane extends VBox {
     return tile;
   }
 
-  private Parent createContent(GridPane gridPane) {
-    var root = new BorderPane();
-    var center = new FlowPane();
-    var game =
-        new Game(
-            BoardFactory.generateBoard(BoardFactory.Layout.NORMAL),
-            List.of(
-                new Player("Nick", Player.Figure.HAT),
-                new Player("Misha", Player.Figure.BATTLE_SHIP)));
-    game.getBoard().tiles().stream().map(this::renderTile).forEach(center.getChildren()::addAll);
-
-    root.setCenter(center);
-    return root;
-  }
-
-  private Node renderTile(Tile tile) {
-    return switch (tile) {
-      case JailTile jailTile -> createBackground(Color.DARKGREY);
-      case OwnableTile ownableTile -> createOwnableTilePane(ownableTile);
-      case TaxTile taxTile -> null;
-      case FreeParkingTile freeParkingTile -> createBackground(Color.ORANGE);
-      case GoToJailTile goToJailTile -> createBackground(Color.DARKGREY);
-      case StartTile startTile -> createBackground(Color.BLUE);
-    };
-  }
-
-  private Node createOwnableTilePane(OwnableTile ownableTile) {
-    return switch (ownableTile) {
-      case OwnableTile(Property(String name, Property.Color color, int price)) -> {
-        var pane = new Pane(createBackground(colorAdapter(color)));
-        // pane.setOnMouseClicked(event -> AlertFacotry.createAlert(Alert.AlertType.INFORMATION,
-        // property.toString()));
-        yield pane;
-      }
-      case OwnableTile(Railroad railroad) -> createBackground(Color.BROWN);
-      case OwnableTile(Utility utility) -> createBackground(Color.ORANGE);
-    };
-  }
-
   private Color colorAdapter(Property.Color color) {
     return switch (color) {
       case BROWN -> Color.BROWN;
@@ -201,11 +145,5 @@ public class GamePane extends VBox {
       case RED -> Color.RED;
       case YELLOW -> Color.YELLOW;
     };
-  }
-
-  private Rectangle createBackground(Color background) {
-    Rectangle rectangle = new Rectangle(20, 20);
-    rectangle.setFill(background);
-    return rectangle;
   }
 }

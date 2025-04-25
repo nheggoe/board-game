@@ -1,8 +1,11 @@
 package edu.ntnu.idi.bidata.boardgame.backend.core;
 
+import static edu.ntnu.idi.bidata.boardgame.backend.util.InputHandler.collectValidString;
+import static edu.ntnu.idi.bidata.boardgame.backend.util.InputHandler.nextLine;
+import static edu.ntnu.idi.bidata.boardgame.backend.util.OutputHandler.*;
+
 import edu.ntnu.idi.bidata.boardgame.backend.io.csv.CSVHandler;
 import edu.ntnu.idi.bidata.boardgame.backend.model.Player;
-import edu.ntnu.idi.bidata.boardgame.backend.util.InputHandler;
 import edu.ntnu.idi.bidata.boardgame.backend.util.OutputHandler;
 import edu.ntnu.idi.bidata.boardgame.backend.util.StringFormatter;
 import java.util.ArrayList;
@@ -22,14 +25,10 @@ import java.util.stream.Collectors;
  * @version 2025.04.18
  */
 public class PlayerManager {
-  private final InputHandler inputHandler;
-  private final OutputHandler outputHandler;
   private final CSVHandler csvHandler;
 
   /** Constructs a {@code PlayerManager} with the required dependencies. */
   public PlayerManager() {
-    this.inputHandler = InputHandler.getInstance();
-    this.outputHandler = OutputHandler.getInstance();
     this.csvHandler = new CSVHandler("players");
   }
 
@@ -53,9 +52,9 @@ public class PlayerManager {
    * @return {@code true} if the user confirms; {@code false} otherwise.
    */
   private boolean confirmUseExistingPlayers() {
-    outputHandler.println("Existing players found. Do you want to use them? (yes/no)");
-    outputHandler.printInputPrompt();
-    String choice = inputHandler.collectValidString().toLowerCase();
+    println("Existing players found. Do you want to use them? (yes/no)");
+    printInputPrompt();
+    String choice = collectValidString().toLowerCase();
     return choice.equals("yes") || choice.equals("y");
   }
 
@@ -69,17 +68,17 @@ public class PlayerManager {
 
     while (numberOfPlayers < 1) {
       try {
-        outputHandler.println("Enter number of players:");
-        outputHandler.printInputPrompt();
-        String input = inputHandler.nextLine();
+        println("Enter number of players:");
+        printInputPrompt();
+        String input = nextLine();
 
         numberOfPlayers = Integer.parseInt(input);
 
         if (numberOfPlayers < 1) {
-          outputHandler.println("Number of players must be at least 1. Try again.");
+          OutputHandler.println("Number of players must be at least 1. Try again.");
         }
       } catch (NumberFormatException e) {
-        outputHandler.println("Invalid input. Please enter a valid number.");
+        OutputHandler.println("Invalid input. Please enter a valid number.");
       }
     }
 
@@ -98,7 +97,7 @@ public class PlayerManager {
    */
   private void saveNewPlayers(List<Player> players) {
     csvHandler.savePlayers(players.stream());
-    outputHandler.println("Players saved successfully!");
+    println("Players saved successfully!");
   }
 
   /**
@@ -108,19 +107,18 @@ public class PlayerManager {
    * @return The newly created Player object.
    */
   private Player promptUserForPlayer(int playerNumber) {
-    outputHandler.println("Enter name for player %d:".formatted(playerNumber));
-    outputHandler.printInputPrompt();
-    String name = inputHandler.collectValidString();
+    println("Enter name for player %d:".formatted(playerNumber));
+    printInputPrompt();
+    String name = collectValidString();
 
-    outputHandler.println("Choose a figure for player %d:".formatted(playerNumber));
+    OutputHandler.println("Choose a figure for player %d:".formatted(playerNumber));
     while (true) {
       try {
-        outputHandler.printInputPrompt("Available figures: " + getAvailableFigures());
-        Player.Figure figure =
-            Player.Figure.valueOf(inputHandler.collectValidString().strip().toUpperCase());
+        printInputPrompt("Available figures: " + getAvailableFigures());
+        Player.Figure figure = Player.Figure.valueOf(collectValidString().strip().toUpperCase());
         return new Player(name, figure);
       } catch (IllegalArgumentException e) {
-        outputHandler.println("Please choose a valid figure:");
+        OutputHandler.println("Please choose a valid figure:");
       }
     }
   }

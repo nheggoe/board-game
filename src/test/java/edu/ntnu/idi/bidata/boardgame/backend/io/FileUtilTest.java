@@ -1,7 +1,6 @@
 package edu.ntnu.idi.bidata.boardgame.backend.io;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.nio.file.Path;
 import org.junit.jupiter.api.Test;

@@ -1,5 +1,8 @@
 package edu.ntnu.idi.bidata.boardgame.backend.core;
 
+import static edu.ntnu.idi.bidata.boardgame.backend.util.InputHandler.*;
+import static edu.ntnu.idi.bidata.boardgame.backend.util.OutputHandler.*;
+
 import edu.ntnu.idi.bidata.boardgame.backend.model.Game;
 import edu.ntnu.idi.bidata.boardgame.backend.model.Player;
 import edu.ntnu.idi.bidata.boardgame.backend.model.board.Board;
@@ -7,8 +10,6 @@ import edu.ntnu.idi.bidata.boardgame.backend.model.dice.Dice;
 import edu.ntnu.idi.bidata.boardgame.backend.model.ownable.InsufficientFundsException;
 import edu.ntnu.idi.bidata.boardgame.backend.model.tile.JailTile;
 import edu.ntnu.idi.bidata.boardgame.backend.model.tile.TileAction;
-import edu.ntnu.idi.bidata.boardgame.backend.util.InputHandler;
-import edu.ntnu.idi.bidata.boardgame.backend.util.OutputHandler;
 import java.util.Optional;
 
 /**
@@ -26,28 +27,18 @@ public class GameEngine {
 
   private static GameEngine instance;
 
-  private final OutputHandler outputHandler;
-  private final Dice dice;
   private boolean running = true;
   private int roundNumber = 1;
 
   private Game game;
   private JailTile jailTile;
 
-  /**
-   * Constructs a {@code GameEngine} with the required dependencies.
-   *
-   * @param outputHandler Handles output to the user.
-   * @param dice The dice object used for rolling moves.
-   */
-  private GameEngine(OutputHandler outputHandler, Dice dice) {
-    this.outputHandler = outputHandler;
-    this.dice = dice;
-  }
+  /** Constructs a {@code GameEngine} with the required dependencies. */
+  private GameEngine() {}
 
   public static synchronized GameEngine getInstance() {
     if (instance == null) {
-      instance = new GameEngine(OutputHandler.getInstance(), Dice.getInstance());
+      instance = new GameEngine();
     }
     return instance;
   }
@@ -64,12 +55,12 @@ public class GameEngine {
 
   /** Starts and manages the game loop, allowing players to take turns until the game ends. */
   public void run() {
-    OutputHandler.println("Game has started! Initial player positions:");
+    println("Game has started! Initial player positions:");
     printPlayerLocations();
 
     while (running) {
-      OutputHandler.println("Press enter to play round or 'exit' to quit:");
-      String input = InputHandler.getInstance().nextLine();
+      println("Press enter to play round or 'exit' to quit:");
+      String input = nextLine();
       if (input.equalsIgnoreCase("exit")) {
         running = false;
       } else {
@@ -87,11 +78,11 @@ public class GameEngine {
    * determining if any player has won.
    */
   private void playRound() {
-    OutputHandler.println("Round %d:".formatted(roundNumber++));
+    println("Round %d:".formatted(roundNumber++));
 
     for (var player : game) {
-      var diceRoll = dice.roll(2);
-      OutputHandler.println(player + " has rolled " + diceRoll);
+      var diceRoll = Dice.getInstance().roll(2);
+      println(player + " has rolled " + diceRoll);
       game.movePlayer(player, diceRoll);
       executeTileAction(player);
     }
@@ -110,15 +101,14 @@ public class GameEngine {
     try {
       TileAction.of(game.getTile(player.getPosition())).execute(player);
     } catch (InsufficientFundsException e) {
-      OutputHandler.println("");
+      println("");
     }
   }
 
   /** Prints the current locations of all players. */
   private void printPlayerLocations() {
     for (var player : game) {
-      OutputHandler.println(
-          "Player %s is on tile %d".formatted(player.getName(), player.getPosition()));
+      println("Player %s is on tile %d".formatted(player.getName(), player.getPosition()));
     }
   }
 
@@ -129,15 +119,15 @@ public class GameEngine {
       throw new IllegalArgumentException("Failed to retrieve winners.");
     } else if (winners.size() == 1) {
       Player winner = winners.getFirst();
-      OutputHandler.println(
+      println(
           "The winner is %s with net worth of $%d!"
               .formatted(winner.getName(), winner.getNetWorth()));
     } else {
-      OutputHandler.println("We have multiple winners!");
+      println("We have multiple winners!");
       for (int i = 0; i < winners.size(); i++) {
-        OutputHandler.println("%d. %s".formatted((i + 1), winners.get(i).getName()));
+        println("%d. %s".formatted((i + 1), winners.get(i).getName()));
       }
-      OutputHandler.println(
+      println(
           "All finished the game with net worth of $%d"
               .formatted(winners.getFirst().getNetWorth()));
     }

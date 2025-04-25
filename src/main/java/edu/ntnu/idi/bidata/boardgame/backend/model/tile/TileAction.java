@@ -1,5 +1,8 @@
 package edu.ntnu.idi.bidata.boardgame.backend.model.tile;
 
+import static edu.ntnu.idi.bidata.boardgame.backend.util.InputHandler.nextLine;
+import static edu.ntnu.idi.bidata.boardgame.backend.util.OutputHandler.println;
+
 import edu.ntnu.idi.bidata.boardgame.backend.core.GameEngine;
 import edu.ntnu.idi.bidata.boardgame.backend.model.Player;
 import edu.ntnu.idi.bidata.boardgame.backend.model.ownable.InsufficientFundsException;
@@ -7,8 +10,6 @@ import edu.ntnu.idi.bidata.boardgame.backend.model.ownable.Ownable;
 import edu.ntnu.idi.bidata.boardgame.backend.model.ownable.Property;
 import edu.ntnu.idi.bidata.boardgame.backend.model.ownable.Railroad;
 import edu.ntnu.idi.bidata.boardgame.backend.model.ownable.Utility;
-import edu.ntnu.idi.bidata.boardgame.backend.util.InputHandler;
-import edu.ntnu.idi.bidata.boardgame.backend.util.OutputHandler;
 import edu.ntnu.idi.bidata.boardgame.backend.util.StringFormatter;
 
 @FunctionalInterface
@@ -27,9 +28,9 @@ public interface TileAction {
   private static TileAction getCornerTileAction(CornerTile tile) {
     return switch (tile) {
       case GoToJailTile unused -> player -> GameEngine.getInstance().goToJail(player);
-      case FreeParkingTile unused -> player -> OutputHandler.getInstance().println("Free parking");
-      case JailTile unused -> player -> OutputHandler.getInstance().println("Visiting Jail");
-      case StartTile unused -> player -> OutputHandler.getInstance().println("On start Tile");
+      case FreeParkingTile unused -> player -> println("Free parking");
+      case JailTile unused -> player -> println("Visiting Jail");
+      case StartTile unused -> player -> println("On start Tile");
     };
   }
 
@@ -38,7 +39,7 @@ public interface TileAction {
       if (!player.isOwnerOf(ownable) && !confirmPurchase(player, ownable)) {
         player.pay(ownable.rent());
       } else {
-        OutputHandler.getInstance().println("Welcome owner");
+        println("Welcome owner");
       }
     };
   }
@@ -54,8 +55,8 @@ public interface TileAction {
             case Utility(String name, int price) ->
                 "Do you want to purchase %s for $%d?".formatted(name, price);
           };
-      OutputHandler.getInstance().println(prompt);
-      if (InputHandler.getInstance().nextLine().equals("yes")) {
+      println(prompt);
+      if (nextLine().equals("yes")) {
         return processPurchase(player, ownable);
       }
     }
@@ -67,7 +68,7 @@ public interface TileAction {
       player.purchase(ownable);
       return true;
     } catch (InsufficientFundsException e) {
-      OutputHandler.getInstance().println(e.getMessage());
+      println(e.getMessage());
       return false;
     }
   }

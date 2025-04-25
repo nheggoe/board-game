@@ -50,6 +50,7 @@ public class CustomGson {
     return gson;
   }
 
+  // TODO add support for Tiles and Ownable
   private static class GameAdapter extends TypeAdapter<Tile>
       implements JsonSerializer<Tile>, JsonDeserializer<Tile> {
 

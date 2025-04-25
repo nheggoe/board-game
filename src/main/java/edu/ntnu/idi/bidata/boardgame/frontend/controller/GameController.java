@@ -15,15 +15,23 @@ public class GameController {
             .orElseThrow(() -> new IllegalArgumentException("Game engine is not correct setup!"));
   }
 
-  public Tile getTileAtPosition(int positon) {
-    return game.getTile(positon);
+  /**
+   * Retrieves the tile located at a specific position on the game board.
+   *
+   * @param position the position on the game board, typically represented as an index
+   * @return the {@link Tile} at the specified position
+   * @throws IllegalArgumentException if the specified position is invalid
+   */
+  public Tile getTileAtPosition(int position) {
+    return game.getTile(position);
   }
 
   /**
-   * @return the number of tiles the game have
+   * Retrieves the size of the game board by returning the number of tiles it contains.
+   *
+   * @return the total number of tiles on the board
    */
   public int getBoardSize() {
     return game.getBoard().getNumberOfTiles();
   }
-
 }
