@@ -21,6 +21,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
@@ -92,7 +93,9 @@ public class GamePane extends VBox {
 
   private Pane createTile(int pos) {
     StackPane tile = new StackPane();
-    tile.setPrefSize(60, 60);
+    int tileSize = 80;
+    tile.setPrefSize(tileSize, tileSize);
+
     switch (controller.getTileAtPosition(pos)) {
       case CornerTile cornerTile -> {
         tile.setBackground(
@@ -104,23 +107,43 @@ public class GamePane extends VBox {
             tile.setBackground(
                 new Background(
                     new BackgroundFill(colorAdapter(color), CornerRadii.EMPTY, Insets.EMPTY)));
-            tile.getChildren()
-                .add(new ImageView(new Image("icons/propertyv2.png", 60, 60, true, false)));
+
+            var image = new Image("icons/propertyv2.png", tileSize, tileSize, true, true);
+            var imageView = new ImageView(image);
+            imageView.setPreserveRatio(true);
+            imageView.setSmooth(true);
+
+            // imageView.fitWidthProperty().bind(tile.widthProperty());
+            // imageView.fitHeightProperty().bind(tile.heightProperty());
+            tile.getChildren().add(imageView);
+            var label = new Label(name);
+            tile.getChildren().add(label);
+            StackPane.setAlignment(imageView, Pos.CENTER);
+            StackPane.setAlignment(label, Pos.BOTTOM_CENTER);
           }
           case Railroad railroad -> {
             tile.setBackground(
                 new Background(
                     new BackgroundFill(Color.DARKGREY, CornerRadii.EMPTY, Insets.EMPTY)));
+            tile.getChildren()
+                .add(
+                    new ImageView(
+                        new Image("icons/railroad.png", tileSize, tileSize, true, false)));
           }
           case Utility utility -> {
             tile.setBackground(
                 new Background(new BackgroundFill(Color.BROWN, CornerRadii.EMPTY, Insets.EMPTY)));
+            tile.getChildren()
+                .add(
+                    new ImageView(new Image("icons/utility.png", tileSize, tileSize, true, false)));
           }
         }
       }
       case TaxTile taxTile -> {
         tile.setBackground(
             new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
+        tile.getChildren()
+            .add(new ImageView(new Image("icons/propertyv2.png", 60, 60, true, false)));
       }
     }
     tile.setStyle("-fx-border-color: black;");

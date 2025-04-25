@@ -8,9 +8,7 @@ public class GameView extends Scene {
 
   public GameView(double width, double height) {
     super(new Pane(), width, height);
-    var gamePane = new GamePane();
-    setRoot(gamePane);
-    gamePane.bindSizeProperty();
+    setRoot(new GamePane());
   }
 
 }
