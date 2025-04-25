@@ -9,6 +9,7 @@ import edu.ntnu.idi.bidata.boardgame.backend.model.tile.JailTile;
 import edu.ntnu.idi.bidata.boardgame.backend.model.tile.TileAction;
 import edu.ntnu.idi.bidata.boardgame.backend.util.InputHandler;
 import edu.ntnu.idi.bidata.boardgame.backend.util.OutputHandler;
+import java.util.Optional;
 
 /**
  * The {@code GameEngine} class is responsible for managing the core game loop and logic. It
@@ -75,6 +76,10 @@ public class GameEngine {
         playRound();
       }
     }
+  }
+
+  public Optional<Game> getGame() {
+    return Optional.ofNullable(game);
   }
 
   /**

@@ -1,6 +1,11 @@
 package edu.ntnu.idi.bidata.boardgame.frontend;
 
+import edu.ntnu.idi.bidata.boardgame.backend.core.GameEngine;
+import edu.ntnu.idi.bidata.boardgame.backend.model.Game;
+import edu.ntnu.idi.bidata.boardgame.backend.model.Player;
+import edu.ntnu.idi.bidata.boardgame.backend.model.board.BoardFactory;
 import edu.ntnu.idi.bidata.boardgame.frontend.view.SceneSwitcher;
+import java.util.List;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -14,6 +19,14 @@ public class MonopolyApp extends Application {
 
   @Override
   public void start(Stage primaryStage) {
+    // temporary solution, currently we are skipping setups and goes straight to GameView
+    var game =
+        new Game(
+            BoardFactory.generateBoard(BoardFactory.Layout.NORMAL),
+            List.of(
+                new Player("Nick", Player.Figure.HAT),
+                new Player("Misha", Player.Figure.BATTLE_SHIP)));
+    GameEngine.getInstance().setup(game);
     setup(primaryStage);
     switchScene(SceneSwitcher.AppScene.GAME_VIEW);
   }
