@@ -27,6 +27,7 @@ public class MonopolyApp extends Application {
                 new Player("Nick", Player.Figure.HAT),
                 new Player("Misha", Player.Figure.BATTLE_SHIP)));
     GameEngine.getInstance().setup(game);
+    game.printTiles();
     setup(primaryStage);
     switchScene(SceneSwitcher.AppScene.GAME_VIEW);
   }
