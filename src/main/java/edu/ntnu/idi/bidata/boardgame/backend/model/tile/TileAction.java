@@ -27,12 +27,14 @@ public interface TileAction {
 
   private static TileAction getCornerTileAction(CornerTile tile) {
     return switch (tile) {
-      case GoToJailTile unused -> player -> GameEngine.getInstance().goToJail(player);
+      case GoToJailTile unused ->
+          player -> GameEngine.getInstance().getGame().orElseThrow().sendPlayerToJail(player);
       case FreeParkingTile unused -> player -> println("Free parking");
       case JailTile unused -> player -> println("Visiting Jail");
       case StartTile unused -> player -> println("On start Tile");
     };
   }
+
 
   private static TileAction ownableAction(Ownable ownable) {
     return player -> {

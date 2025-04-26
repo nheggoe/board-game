@@ -8,7 +8,6 @@ import edu.ntnu.idi.bidata.boardgame.backend.model.Player;
 import edu.ntnu.idi.bidata.boardgame.backend.model.board.Board;
 import edu.ntnu.idi.bidata.boardgame.backend.model.dice.Dice;
 import edu.ntnu.idi.bidata.boardgame.backend.model.ownable.InsufficientFundsException;
-import edu.ntnu.idi.bidata.boardgame.backend.model.tile.JailTile;
 import edu.ntnu.idi.bidata.boardgame.backend.model.tile.TileAction;
 import java.util.Optional;
 
@@ -31,8 +30,6 @@ public class GameEngine {
   private int roundNumber = 1;
 
   private Game game;
-  private JailTile jailTile;
-
   /** Constructs a {@code GameEngine} with the required dependencies. */
   private GameEngine() {}
 
@@ -43,13 +40,8 @@ public class GameEngine {
     return instance;
   }
 
-  public void goToJail(Player player) {
-    jailTile.jailForNmberOfRounds(player, 2);
-  }
-
   public void setup(Game game) {
     setGame(game);
-    setJailTile(game.getJailTile());
     game.forEach(player -> player.addBalance(200));
   }
 
@@ -142,10 +134,4 @@ public class GameEngine {
     this.game = game;
   }
 
-  private void setJailTile(JailTile jailTile) {
-    if (jailTile == null) {
-      throw new IllegalArgumentException("Jail tile cannot be null!");
-    }
-    this.jailTile = jailTile;
-  }
 }

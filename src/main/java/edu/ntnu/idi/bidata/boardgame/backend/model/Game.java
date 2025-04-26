@@ -53,7 +53,7 @@ public class Game implements Iterable<Player> {
   // ------------------------  APIs  ------------------------
 
   public void printTiles() {
-    board.tiles().forEach(OutputHandler::log);
+    board.tiles().forEach(OutputHandler::println);
   }
 
   public Map.Entry<Integer, List<Player>> getWinners() {
@@ -128,6 +128,16 @@ public class Game implements Iterable<Player> {
   public void detach(GameObserver observer) {
     Objects.requireNonNull(observer, "Observer cannot be null!");
     observers.remove(observer);
+  }
+
+  /**
+   * Sends a player to jail by teleporting them to the jail tile and marking them as jailed.
+   *
+   * @param player the player to send to jail
+   */
+  public void sendPlayerToJail(Player player) {
+    player.setPosition(board.getTilePosition(getJailTile()));
+    getJailTile().jailForNumberOfRounds(player, 2);
   }
 
   // ------------------------  getters and setters  ------------------------
