@@ -33,12 +33,14 @@ import javafx.util.Duration;
  */
 public class MessageLog extends StackPane {
 
+  private static final MessageLog instance = new MessageLog();
+
   private final Label textLabel;
   private final StringBuilder currentMessage;
   private Timeline typewriter;
 
   /** Constructs a new {@code MessageLog} with visuals and animation. */
-  public MessageLog() {
+  private MessageLog() {
     setPrefHeight(140);
     setPadding(new Insets(10));
 
@@ -61,6 +63,10 @@ public class MessageLog extends StackPane {
     getChildren().addAll(background, textLabel);
     StackPane.setAlignment(textLabel, Pos.TOP_LEFT);
     StackPane.setMargin(textLabel, new Insets(10));
+  }
+
+  public static MessageLog getInstance() {
+    return instance;
   }
 
   /**

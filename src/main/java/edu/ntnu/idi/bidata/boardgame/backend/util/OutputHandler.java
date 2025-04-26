@@ -1,5 +1,7 @@
 package edu.ntnu.idi.bidata.boardgame.backend.util;
 
+import edu.ntnu.idi.bidata.boardgame.frontend.view.MessageLog;
+
 /**
  * The OutputHandler class is responsible for outputting messages to the standard output stream. It
  * currently acts as a temporary solution for handling console-based output and may transition to a
@@ -15,6 +17,10 @@ package edu.ntnu.idi.bidata.boardgame.backend.util;
 public class OutputHandler {
 
   private OutputHandler() {}
+
+  public static void log(Object o) {
+    MessageLog.getInstance().log(o.toString());
+  }
 
   /**
    * Prints the specified string to the standard output stream, followed by a newline. Serves at a

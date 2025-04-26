@@ -35,7 +35,7 @@ public class DemoView extends Scene {
     // Create game and UI components
     Game game = new Game(BoardFactory.generateBoard(BoardFactory.Layout.EASY), List.of(p1, p2));
     UIPane uiPane = new UIPane();
-    MessageLog log = new MessageLog();
+    MessageLog log = MessageLog.getInstance();
     DiceView diceView = new DiceView(2);
 
     uiPane.setCurrentPlayer(game.getCurrentPlayer());

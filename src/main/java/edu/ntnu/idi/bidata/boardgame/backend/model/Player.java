@@ -2,6 +2,7 @@ package edu.ntnu.idi.bidata.boardgame.backend.model;
 
 import edu.ntnu.idi.bidata.boardgame.backend.model.ownable.Owner;
 import edu.ntnu.idi.bidata.boardgame.backend.util.StringFormatter;
+import java.util.UUID;
 
 /**
  * The {@code Player} class represents a player in the board game. Each player has a name and a
@@ -13,6 +14,7 @@ import edu.ntnu.idi.bidata.boardgame.backend.util.StringFormatter;
 public class Player extends Owner {
 
   // player info
+  private final UUID id;
   private Figure figure;
 
   // game state
@@ -27,6 +29,7 @@ public class Player extends Owner {
    */
   public Player(String name, Figure figure) {
     super();
+    id = UUID.randomUUID();
     setName(name);
     setFigure(figure);
   }
@@ -58,6 +61,10 @@ public class Player extends Owner {
       throw new IllegalArgumentException("Positon cannot be negative!");
     }
     this.position = position;
+  }
+
+  public UUID getId() {
+    return id;
   }
 
   public enum Figure {

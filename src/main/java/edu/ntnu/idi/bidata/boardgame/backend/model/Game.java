@@ -49,7 +49,7 @@ public class Game implements Iterable<Player> {
   // ------------------------  APIs  ------------------------
 
   public void printTiles() {
-    board.tiles().forEach(OutputHandler::println);
+    board.tiles().forEach(OutputHandler::log);
   }
 
   public Map.Entry<Integer, List<Player>> getWinners() {

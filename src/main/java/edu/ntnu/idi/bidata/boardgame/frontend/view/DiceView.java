@@ -1,7 +1,9 @@
 package edu.ntnu.idi.bidata.boardgame.frontend.view;
 
+import edu.ntnu.idi.bidata.boardgame.backend.core.GameObserver;
 import edu.ntnu.idi.bidata.boardgame.backend.model.dice.DiceRoll;
 import java.util.Random;
+import java.util.UUID;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Pos;
@@ -29,7 +31,7 @@ import javafx.util.Duration;
  *
  * @version 2025.04.25
  */
-public class DiceView extends HBox {
+public class DiceView extends HBox implements GameObserver {
 
   private static final String BASE_PATH = "/images/dice";
   private static final int FACE_COUNT = 6;
@@ -103,4 +105,16 @@ public class DiceView extends HBox {
   private Image loadFace(int face) {
     return new Image(BASE_PATH + face + ".png");
   }
+
+  @Override
+  public void onPlayerMoved(UUID playerId, int oldPosition, int newPosition) {}
+
+  @Override
+  public void onPropertyPurchased(int playerId, int propertyId) {}
+
+  @Override
+  public void onDiceRolled(DiceRoll diceRoll) {}
+
+  @Override
+  public void onPlayerBalanceChanged(UUID playerId, int oldBalance, int newBalance) {}
 }
