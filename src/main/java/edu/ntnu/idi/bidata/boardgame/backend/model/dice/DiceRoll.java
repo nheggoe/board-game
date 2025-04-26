@@ -41,4 +41,19 @@ public record DiceRoll(int... rolls) {
   public int getTotal() {
     return Arrays.stream(rolls).sum();
   }
+
+  @Override
+  public String toString() {
+    var sb = new StringBuilder();
+    if (areDiceEqual()) {
+      sb.append(rolls.length).append(" equal dice of ").append(rolls[0]).append('!');
+    } else {
+      for (var roll : rolls) {
+        sb.append(roll).append(", ");
+      }
+      sb.delete(sb.length() - 2, sb.length());
+    }
+    sb.append(" (").append(getTotal()).append(")");
+    return sb.toString();
+  }
 }

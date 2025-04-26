@@ -16,27 +16,11 @@ public class BoardFactory {
 
   public static Board generateBoard(Layout layout) {
     return switch (layout) {
-      case NORMAL -> generateNormalBoard();
-      case EASY -> generateEasyBoard();
-      case UNFAIR -> generateUnfiarBoard();
+      case NORMAL, EASY, UNFAIR -> generateNormalBoard();
     };
   }
 
   private static Board generateNormalBoard() {
-    var tmp = TileFactory.generateOwnableTiles();
-    List<Tile> tiles = new ArrayList<>(tmp);
-    tiles.addAll(TileFactory.generateCornerTiles());
-    return new Board(tiles);
-  }
-
-  private static Board generateUnfiarBoard() {
-    var tmp = TileFactory.generateOwnableTiles();
-    List<Tile> tiles = new ArrayList<>(tmp);
-    tiles.addAll(TileFactory.generateCornerTiles());
-    return new Board(tiles);
-  }
-
-  private static Board generateEasyBoard() {
     var tmp = TileFactory.generateOwnableTiles();
     List<Tile> tiles = new ArrayList<>(tmp);
     tiles.addAll(TileFactory.generateCornerTiles());

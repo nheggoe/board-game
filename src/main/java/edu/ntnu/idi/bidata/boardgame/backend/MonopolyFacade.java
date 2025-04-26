@@ -2,9 +2,9 @@ package edu.ntnu.idi.bidata.boardgame.backend;
 
 import edu.ntnu.idi.bidata.boardgame.backend.core.GameEngine;
 import edu.ntnu.idi.bidata.boardgame.backend.core.PlayerManager;
-import edu.ntnu.idi.bidata.boardgame.backend.core.event.EventManager;
 import edu.ntnu.idi.bidata.boardgame.backend.model.Game;
 import edu.ntnu.idi.bidata.boardgame.backend.model.board.BoardFactory;
+import edu.ntnu.idi.bidata.boardgame.frontend.event.EventManager;
 
 /**
  * The {@link MonopolyFacade} class serves as a facade for managing game setup and execution. It

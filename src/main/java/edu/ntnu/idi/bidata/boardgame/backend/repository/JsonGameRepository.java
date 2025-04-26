@@ -22,7 +22,7 @@ public class JsonGameRepository implements DataRepository<Game> {
   private JsonGameRepository() {
     jsonService = new JsonService<>(Game.class);
     entities = new ConcurrentHashMap<>();
-    idExtractor = Game::getGameId;
+    idExtractor = Game::getId;
     refresh();
   }
 

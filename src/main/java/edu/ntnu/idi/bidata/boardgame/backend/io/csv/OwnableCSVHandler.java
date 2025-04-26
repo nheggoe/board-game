@@ -7,11 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OwnableCSVHandler {
+
+  private OwnableCSVHandler() {}
+
   public static List<String> readLines(String filename) throws IOException {
     List<String> lines = new ArrayList<>();
     try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
       String line;
-      br.readLine();
+      br.readLine(); // skip the first line
       while ((line = br.readLine()) != null) {
         if (!line.startsWith("#")) {
           lines.add(line);

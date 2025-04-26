@@ -5,15 +5,14 @@ import javafx.stage.Stage;
 
 public class SceneSwitcher {
 
-  private final Stage primaryStage;
+  private Stage primaryStage;
 
   public enum AppScene {
     MAIN_MENU,
-    GAME_VIEW,
-    DEMO_VIEW
+    GAME_VIEW
   }
 
-  public SceneSwitcher(Stage primaryStage) {
+  public void setup(Stage primaryStage) {
     if (primaryStage == null) {
       throw new IllegalArgumentException("primaryStage must not be null");
     }
@@ -21,14 +20,17 @@ public class SceneSwitcher {
   }
 
   public void switchTo(AppScene scene) {
-    primaryStage.setScene(createScene(scene));
+    Scene oldScene = primaryStage.getScene();
+    double width = (oldScene != null) ? oldScene.getWidth() : primaryStage.getWidth();
+    double height = (oldScene != null) ? oldScene.getHeight() : primaryStage.getHeight();
+    primaryStage.setScene(createScene(scene, width, height));
     primaryStage.show();
   }
 
-  private Scene createScene(AppScene scene) {
+  private Scene createScene(AppScene scene, double width, double height) {
     return switch (scene) {
-      case MAIN_MENU, GAME_VIEW -> throw new UnsupportedOperationException("Not yet implemented");
-      case DEMO_VIEW -> new DemoView();
+      case GAME_VIEW -> new GameView(width, height);
+      case MAIN_MENU -> throw new UnsupportedOperationException("Not yet implemented");
     };
   }
 }

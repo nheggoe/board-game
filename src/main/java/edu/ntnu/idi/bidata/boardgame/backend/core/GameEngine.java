@@ -1,13 +1,15 @@
 package edu.ntnu.idi.bidata.boardgame.backend.core;
 
+import static edu.ntnu.idi.bidata.boardgame.backend.util.InputHandler.*;
+import static edu.ntnu.idi.bidata.boardgame.backend.util.OutputHandler.*;
+
 import edu.ntnu.idi.bidata.boardgame.backend.model.Game;
 import edu.ntnu.idi.bidata.boardgame.backend.model.Player;
 import edu.ntnu.idi.bidata.boardgame.backend.model.board.Board;
 import edu.ntnu.idi.bidata.boardgame.backend.model.dice.Dice;
-import edu.ntnu.idi.bidata.boardgame.backend.model.tile.JailTile;
+import edu.ntnu.idi.bidata.boardgame.backend.model.ownable.InsufficientFundsException;
 import edu.ntnu.idi.bidata.boardgame.backend.model.tile.TileAction;
-import edu.ntnu.idi.bidata.boardgame.backend.util.InputHandler;
-import edu.ntnu.idi.bidata.boardgame.backend.util.OutputHandler;
+import java.util.Optional;
 
 /**
  * The {@code GameEngine} class is responsible for managing the core game loop and logic. It
@@ -24,49 +26,33 @@ public class GameEngine {
 
   private static GameEngine instance;
 
-  private final OutputHandler outputHandler;
-  private final Dice dice;
   private boolean running = true;
   private int roundNumber = 1;
 
   private Game game;
-  private JailTile jailTile;
-
-  /**
-   * Constructs a {@code GameEngine} with the required dependencies.
-   *
-   * @param outputHandler Handles output to the user.
-   * @param dice The dice object used for rolling moves.
-   */
-  private GameEngine(OutputHandler outputHandler, Dice dice) {
-    this.outputHandler = outputHandler;
-    this.dice = dice;
-  }
+  /** Constructs a {@code GameEngine} with the required dependencies. */
+  private GameEngine() {}
 
   public static synchronized GameEngine getInstance() {
     if (instance == null) {
-      instance = new GameEngine(OutputHandler.getInstance(), Dice.getInstance());
+      instance = new GameEngine();
     }
     return instance;
   }
 
-  public void goToJail(Player player) {
-    jailTile.jailForNmberOfRounds(player, 2);
-  }
-
   public void setup(Game game) {
     setGame(game);
-    setJailTile(game.getJailTile());
+    game.forEach(player -> player.addBalance(200));
   }
 
   /** Starts and manages the game loop, allowing players to take turns until the game ends. */
   public void run() {
-    outputHandler.println("Game has started! Initial player positions:");
+    println("Game has started! Initial player positions:");
     printPlayerLocations();
 
     while (running) {
-      outputHandler.println("Press enter to play round or 'exit' to quit:");
-      String input = InputHandler.getInstance().nextLine();
+      println("Press enter to play round or 'exit' to quit:");
+      String input = nextLine();
       if (input.equalsIgnoreCase("exit")) {
         running = false;
       } else {
@@ -75,20 +61,26 @@ public class GameEngine {
     }
   }
 
+  public Optional<Game> getGame() {
+    return Optional.ofNullable(game);
+  }
+
   /**
    * Executes a game round by rolling the dice, moving players, checking tile actions, and
    * determining if any player has won.
    */
   private void playRound() {
-    try {
-      outputHandler.println("Round %d:".formatted(roundNumber++));
-      game.forEach(player -> game.movePlayer(player, dice.roll(2)));
-      game.forEach(this::executeTileAction);
-      if (roundNumber >= 20) {
-        checkWinningStatus();
-      }
-    } catch (Exception e) {
-      outputHandler.println("An error occurred during the round: " + e.getMessage());
+    println("Round %d:".formatted(roundNumber++));
+
+    for (var player : game) {
+      var diceRoll = Dice.getInstance().roll(2);
+      println(player + " has rolled " + diceRoll);
+      game.movePlayer(player, diceRoll);
+      executeTileAction(player);
+    }
+
+    if (roundNumber >= 20) {
+      checkWinningStatus();
     }
   }
 
@@ -98,15 +90,18 @@ public class GameEngine {
    * @param player The player whose current tile is checked for an action.
    */
   private void executeTileAction(Player player) {
-    TileAction.of(game.getTile(player.getPosition())).execute(player);
+    try {
+      TileAction.of(game.getTile(player.getPosition())).execute(player);
+    } catch (InsufficientFundsException e) {
+      println("");
+    }
   }
 
   /** Prints the current locations of all players. */
   private void printPlayerLocations() {
-    game.forEach(
-        player ->
-            outputHandler.println(
-                "Player %s is on tile %d".formatted(player.getName(), player.getPosition())));
+    for (var player : game) {
+      println("Player %s is on tile %d".formatted(player.getName(), player.getPosition()));
+    }
   }
 
   /** Checks if any player has reached the winning tile and ends the game if a winner is found. */
@@ -116,15 +111,15 @@ public class GameEngine {
       throw new IllegalArgumentException("Failed to retrieve winners.");
     } else if (winners.size() == 1) {
       Player winner = winners.getFirst();
-      outputHandler.println(
+      println(
           "The winner is %s with net worth of $%d!"
               .formatted(winner.getName(), winner.getNetWorth()));
     } else {
-      outputHandler.println("We have multiple winners!");
+      println("We have multiple winners!");
       for (int i = 0; i < winners.size(); i++) {
-        outputHandler.println("%d. %s".formatted((i + 1), winners.get(i).getName()));
+        println("%d. %s".formatted((i + 1), winners.get(i).getName()));
       }
-      outputHandler.println(
+      println(
           "All finished the game with net worth of $%d"
               .formatted(winners.getFirst().getNetWorth()));
     }
@@ -139,10 +134,4 @@ public class GameEngine {
     this.game = game;
   }
 
-  private void setJailTile(JailTile jailTile) {
-    if (jailTile == null) {
-      throw new IllegalArgumentException("Jail tile cannot be null!");
-    }
-    this.jailTile = jailTile;
-  }
 }

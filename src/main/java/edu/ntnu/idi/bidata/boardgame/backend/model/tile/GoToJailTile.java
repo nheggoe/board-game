@@ -1,8 +1,30 @@
 package edu.ntnu.idi.bidata.boardgame.backend.model.tile;
 
+import static edu.ntnu.idi.bidata.boardgame.backend.util.OutputHandler.*;
+
+import edu.ntnu.idi.bidata.boardgame.backend.core.GameEngine;
+
+/**
+ * {@code GoToJailTile} represents the tile that sends a player directly to jail when landed on.
+ *
+ * <p>Extends {@link CornerTile}.
+ *
+ * @author Mihailo
+ * @version 2025.04.25
+ */
 public final class GoToJailTile extends CornerTile {
 
-  GoToJailTile(Position position) {
+  public GoToJailTile(Position position) {
     super(position);
+  }
+
+  public TileAction getAction() {
+    return player -> {
+      println(player.getName() + " has been sent directly to Jail!");
+      GameEngine.getInstance()
+          .getGame()
+          .orElseThrow(() -> new IllegalStateException("No active game found!"))
+          .sendPlayerToJail(player);
+    };
   }
 }

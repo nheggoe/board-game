@@ -1,5 +1,7 @@
 package edu.ntnu.idi.bidata.boardgame.backend.util;
 
+import edu.ntnu.idi.bidata.boardgame.frontend.view.MessageLog;
+
 /**
  * The OutputHandler class is responsible for outputting messages to the standard output stream. It
  * currently acts as a temporary solution for handling console-based output and may transition to a
@@ -14,15 +16,10 @@ package edu.ntnu.idi.bidata.boardgame.backend.util;
  */
 public class OutputHandler {
 
-  private static OutputHandler instance;
-
   private OutputHandler() {}
 
-  public static synchronized OutputHandler getInstance() {
-    if (instance == null) {
-      instance = new OutputHandler();
-    }
-    return instance;
+  public static void log(Object o) {
+    MessageLog.getInstance().log(o.toString());
   }
 
   /**
@@ -31,7 +28,7 @@ public class OutputHandler {
    *
    * @param s The string to be printed to the console.
    */
-  public void println(String s) {
+  public static void println(String s) {
     System.out.println(s);
   }
 
@@ -40,7 +37,7 @@ public class OutputHandler {
    *
    * @param s The string to be printed to the console.
    */
-  public void print(String s) {
+  public static void print(String s) {
     System.out.print(s);
   }
 
@@ -48,7 +45,7 @@ public class OutputHandler {
    * Prints a prompt symbol ("> ") to the standard output stream. This is typically used to indicate
    * that the system is ready to receive input from the user.
    */
-  public void printInputPrompt() {
+  public static void printInputPrompt() {
     print("> ");
   }
 
@@ -56,8 +53,12 @@ public class OutputHandler {
    * Prints a message and a prompt symbol ("> ") to the standard output stream. This is typically
    * used to indicate that the system is ready to receive input from the user.
    */
-  public void printInputPrompt(String message) {
+  public static void printInputPrompt(String message) {
     println(message);
     print("> ");
+  }
+
+  public static void println(Object o) {
+    println(o.toString());
   }
 }
