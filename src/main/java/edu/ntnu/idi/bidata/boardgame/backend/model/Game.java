@@ -14,6 +14,7 @@ import java.util.Objects;
 import java.util.SequencedCollection;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 /**
  * The {@link Game} class represents a board game instance. It manages players, their states, and
@@ -177,5 +178,9 @@ public class Game implements Iterable<Player> {
     for (var observer : observers) {
       observer.onDiceRolled(player, diceRoll);
     }
+  }
+
+  public Stream<Player> stream() {
+    return players.stream();
   }
 }

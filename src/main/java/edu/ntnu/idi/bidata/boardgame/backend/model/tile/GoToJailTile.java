@@ -21,7 +21,10 @@ public final class GoToJailTile extends CornerTile {
   public TileAction getAction() {
     return player -> {
       println(player.getName() + " has been sent directly to Jail!");
-      GameEngine.getInstance().goToJail(player);
+      GameEngine.getInstance()
+          .getGame()
+          .orElseThrow(() -> new IllegalStateException("No active game found!"))
+          .sendPlayerToJail(player);
     };
   }
 }

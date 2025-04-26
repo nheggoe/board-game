@@ -88,10 +88,11 @@ public class GamePane extends VBox {
               new Background(new BackgroundFill(Color.GREY, CornerRadii.EMPTY, Insets.EMPTY)));
       case OwnableTile(Ownable ownable) -> {
         switch (ownable) {
-          case Property(String name, Property.Color color, int price) -> {
+          case Property property -> {
             tile.setBackground(
                 new Background(
-                    new BackgroundFill(colorAdapter(color), CornerRadii.EMPTY, Insets.EMPTY)));
+                    new BackgroundFill(
+                        colorAdapter(property.getColor()), CornerRadii.EMPTY, Insets.EMPTY)));
 
             var image = new Image("icons/propertyv2.png", tileSize, tileSize, true, true);
             var imageView = new ImageView(image);
@@ -99,7 +100,7 @@ public class GamePane extends VBox {
             imageView.setSmooth(true);
 
             tile.getChildren().add(imageView);
-            var label = new Label(name);
+            var label = new Label(property.getName());
             tile.getChildren().add(label);
             StackPane.setAlignment(imageView, Pos.CENTER);
             StackPane.setAlignment(label, Pos.BOTTOM_CENTER);
