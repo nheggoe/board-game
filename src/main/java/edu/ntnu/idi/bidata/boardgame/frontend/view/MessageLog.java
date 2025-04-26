@@ -7,9 +7,12 @@ import javafx.animation.Timeline;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.util.Duration;
@@ -31,7 +34,7 @@ import javafx.util.Duration;
  * @author Mihailo Hranisavljevic
  * @version 2025.04.25
  */
-public class MessageLog extends StackPane {
+public class MessageLog extends VBox {
 
   private static final MessageLog instance = new MessageLog();
 
@@ -41,15 +44,14 @@ public class MessageLog extends StackPane {
 
   /** Constructs a new {@code MessageLog} with visuals and animation. */
   private MessageLog() {
-    setPrefHeight(140);
-    setPadding(new Insets(10));
+    super();
+    setBackground(
+        new Background(new BackgroundFill(Color.BLACK, new CornerRadii(20), new Insets(10))));
 
-    Rectangle background = new Rectangle(1000, 140);
-    background.setArcWidth(20);
-    background.setArcHeight(20);
-    background.setFill(Color.BLACK);
-    background.setStroke(Color.WHITE);
-    background.setStrokeWidth(3);
+    var root = new StackPane();
+    root.setPrefHeight(200);
+    root.setPadding(new Insets(10));
+    getChildren().add(root);
 
     textLabel = new Label();
     textLabel.setFont(Font.font("Courier New", FontWeight.BOLD, 18));
@@ -60,7 +62,7 @@ public class MessageLog extends StackPane {
 
     currentMessage = new StringBuilder();
 
-    getChildren().addAll(background, textLabel);
+    root.getChildren().addAll(textLabel);
     StackPane.setAlignment(textLabel, Pos.TOP_LEFT);
     StackPane.setMargin(textLabel, new Insets(10));
   }
