@@ -1,5 +1,6 @@
 package edu.ntnu.idi.bidata.boardgame.backend.model;
 
+import edu.ntnu.idi.bidata.boardgame.backend.core.GameObserver;
 import edu.ntnu.idi.bidata.boardgame.backend.model.board.Board;
 import edu.ntnu.idi.bidata.boardgame.backend.model.dice.DiceRoll;
 import edu.ntnu.idi.bidata.boardgame.backend.model.tile.JailTile;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.SequencedCollection;
 import java.util.TreeMap;
 import java.util.UUID;
@@ -26,17 +28,19 @@ import java.util.UUID;
  */
 public class Game implements Iterable<Player> {
 
+  private final UUID id;
   private int currentPlayerIndex = 0;
-  private final UUID gameId;
   private final List<Player> players;
+  private final List<GameObserver> observers;
 
   private String saveName;
   private boolean isEnded;
   private Board board;
 
   private Game() {
-    this.gameId = UUID.randomUUID();
+    this.id = UUID.randomUUID();
     this.players = new ArrayList<>();
+    this.observers = new ArrayList<>();
   }
 
   public Game(Board board, SequencedCollection<Player> players) {
@@ -75,6 +79,7 @@ public class Game implements Iterable<Player> {
     if (oldPositon > newPosition) {
       player.addBalance(200);
     }
+    notifyPlayerMoved(player, oldPositon, newPosition);
   }
 
   public JailTile getJailTile() {
@@ -115,6 +120,16 @@ public class Game implements Iterable<Player> {
     currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
   }
 
+  public void attach(GameObserver observer) {
+    Objects.requireNonNull(observer, "Observer cannot be null!");
+    observers.add(observer);
+  }
+
+  public void detach(GameObserver observer) {
+    Objects.requireNonNull(observer, "Observer cannot be null!");
+    observers.remove(observer);
+  }
+
   // ------------------------  getters and setters  ------------------------
 
   private void setBoard(Board board) {
@@ -124,8 +139,8 @@ public class Game implements Iterable<Player> {
     this.board = board;
   }
 
-  public UUID getGameId() {
-    return gameId;
+  public UUID getId() {
+    return id;
   }
 
   public void setSaveName(String saveName) {
@@ -138,5 +153,19 @@ public class Game implements Iterable<Player> {
 
   public Board getBoard() {
     return board;
+  }
+
+  // ------------------------  private  ------------------------
+
+  private void notifyPlayerMoved(Player player, int oldPositon, int newPosition) {
+    for (var observer : observers) {
+      observer.onPlayerMoved(player, oldPositon, newPosition);
+    }
+  }
+
+  private void notifyDiceRolled(Player player, DiceRoll diceRoll) {
+    for (var observer : observers) {
+      observer.onDiceRolled(player, diceRoll);
+    }
   }
 }
