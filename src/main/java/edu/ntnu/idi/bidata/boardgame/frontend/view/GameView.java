@@ -54,8 +54,9 @@ public class GameView extends BorderPane implements EventListener {
           messageLog.log(diceRoll);
         }
       }
-      case DISPLAY_TEXT -> {}
+      case DISPLAY_TEXT -> messageLog.log(event.payload());
       case PLAYER_MOVED -> {}
+      case PLAYER_REMOVED -> {}
       case PURCHASED_OWNABLE -> {}
     }
   }

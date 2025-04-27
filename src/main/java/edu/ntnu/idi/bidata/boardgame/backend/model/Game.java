@@ -78,6 +78,7 @@ public class Game implements EventManager {
     if (oldPositon > newPosition) {
       player.addBalance(200);
     }
+    notifyDiceRolled(player, roll);
     notifyPlayerMoved(player, newPosition);
   }
 
