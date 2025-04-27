@@ -31,6 +31,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 /**
  * The {@link Game} class represents a board game instance. It manages players, their states, and
@@ -231,5 +232,9 @@ public class Game implements EventManager {
 
   public List<Tile> getTiles() {
     return board.tiles();
+  }
+
+  public Stream<Player> stream() {
+    return players.stream();
   }
 }

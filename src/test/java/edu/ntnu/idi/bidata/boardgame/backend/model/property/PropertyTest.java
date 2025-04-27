@@ -36,7 +36,7 @@ class PropertyTest {
 
   @Test
   void testBasic() {
-    assertThat(property.name()).isEqualTo("Test property");
+    assertThat(property.getName()).isEqualTo("Test property");
   }
 
   @Test
