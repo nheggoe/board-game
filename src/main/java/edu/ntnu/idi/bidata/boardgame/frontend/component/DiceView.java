@@ -1,4 +1,4 @@
-package edu.ntnu.idi.bidata.boardgame.frontend.view;
+package edu.ntnu.idi.bidata.boardgame.frontend.component;
 
 import edu.ntnu.idi.bidata.boardgame.backend.model.dice.DiceRoll;
 import java.util.Random;
@@ -37,7 +37,7 @@ public class DiceView extends HBox {
   private static final int TOTAL_DURATION_MS = 1500; // 1.5 seconds
   private static final int FRAME_DURATION_MS = TOTAL_DURATION_MS / STEPS;
 
-  private final ImageView[] diceImages;
+  private ImageView[] diceImages;
   private final Random random = new Random();
 
   /**
@@ -45,18 +45,9 @@ public class DiceView extends HBox {
    *
    * @param diceCount the number of dice to display
    */
-  public DiceView(int diceCount) {
-    this.diceImages = new ImageView[diceCount];
+  public DiceView() {
     setAlignment(Pos.CENTER);
     setSpacing(20);
-
-    for (int i = 0; i < diceCount; i++) {
-      ImageView imageView = new ImageView();
-      imageView.setFitWidth(64);
-      imageView.setFitHeight(64);
-      diceImages[i] = imageView;
-      getChildren().add(imageView);
-    }
   }
 
   /**
@@ -67,6 +58,16 @@ public class DiceView extends HBox {
    * @param onFinish a {@link Runnable} to execute after the animation finishes
    */
   public void rollDiceAnimated(DiceRoll result, Runnable onFinish) {
+    int diceCount = result.rolls().length;
+    this.diceImages = new ImageView[diceCount];
+    for (int i = 0; i < diceCount; i++) {
+      ImageView imageView = new ImageView();
+      imageView.setFitWidth(64);
+      imageView.setFitHeight(64);
+      diceImages[i] = imageView;
+      getChildren().add(imageView);
+    }
+
     Timeline timeline = new Timeline();
     timeline.setCycleCount(STEPS);
 

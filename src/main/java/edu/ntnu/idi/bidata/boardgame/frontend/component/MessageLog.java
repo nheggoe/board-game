@@ -1,4 +1,4 @@
-package edu.ntnu.idi.bidata.boardgame.frontend.view;
+package edu.ntnu.idi.bidata.boardgame.frontend.component;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import javafx.animation.Animation;
@@ -36,14 +36,12 @@ import javafx.util.Duration;
  */
 public class MessageLog extends VBox {
 
-  private static final MessageLog instance = new MessageLog();
-
   private final Label textLabel;
   private final StringBuilder currentMessage;
   private Timeline typewriter;
 
   /** Constructs a new {@code MessageLog} with visuals and animation. */
-  private MessageLog() {
+  public MessageLog() {
     super();
     setBackground(
         new Background(new BackgroundFill(Color.BLACK, new CornerRadii(20), new Insets(10))));
@@ -67,17 +65,13 @@ public class MessageLog extends VBox {
     StackPane.setMargin(textLabel, new Insets(10));
   }
 
-  public static MessageLog getInstance() {
-    return instance;
-  }
-
   /**
    * Displays a message in the log with a typewriter effect. If a previous message is still typing,
    * it is interrupted.
    *
-   * @param message the message to display
+   * @param object the message to display
    */
-  public void log(String message) {
+  public void log(Object object) {
     AtomicInteger charIndex = new AtomicInteger();
     if (typewriter != null) {
       typewriter.stop();
@@ -85,7 +79,7 @@ public class MessageLog extends VBox {
 
     charIndex.set(0);
     currentMessage.setLength(0);
-    currentMessage.append(message);
+    currentMessage.append(object.toString());
     textLabel.setText("");
 
     typewriter =
