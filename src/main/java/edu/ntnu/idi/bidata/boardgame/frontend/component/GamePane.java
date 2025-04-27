@@ -33,9 +33,21 @@ public class GamePane extends VBox {
     getChildren().add(board);
     setAlignment(Pos.CENTER);
     initialize(tiles);
+    bindSizeProperty();
   }
 
-  public void initialize(List<Tile> tiles) {
+  private void bindSizeProperty() {
+    sceneProperty()
+        .addListener(
+            (observable, oldScene, newScene) -> {
+              if (newScene != null) {
+                board.prefWidthProperty().bind(newScene.widthProperty().divide(2));
+                board.prefHeightProperty().bind(newScene.heightProperty().divide(2));
+              }
+            });
+  }
+
+  private void initialize(List<Tile> tiles) {
     board.setGridLinesVisible(true); // optional: show grid lines
     board.setAlignment(Pos.CENTER);
 
@@ -68,15 +80,10 @@ public class GamePane extends VBox {
     }
   }
 
-  public void bindSizeProperty() {
-    board.prefWidthProperty().bind(this.getScene().widthProperty());
-    board.prefHeightProperty().bind(this.getScene().heightProperty());
-  }
-
   private Pane createTile(Tile tile) {
     StackPane tilePane = new StackPane();
-    int tileSize = 80;
-    tilePane.setPrefSize(tileSize, tileSize);
+    tilePane.prefWidthProperty().bind(board.heightProperty().divide(1000.0));
+    tilePane.prefHeightProperty().bind(board.heightProperty().divide(1000.0));
 
     switch (tile) {
       case CornerTile cornerTile ->
@@ -90,8 +97,10 @@ public class GamePane extends VBox {
                     new BackgroundFill(
                         colorAdapter(property.getColor()), CornerRadii.EMPTY, Insets.EMPTY)));
 
-            var image = new Image("icons/propertyv2.png", tileSize, tileSize, true, true);
+            var image = new Image("icons/propertyv2.png");
             var imageView = new ImageView(image);
+            imageView.fitWidthProperty().bind(tilePane.widthProperty().multiply(1));
+            imageView.fitHeightProperty().bind(tilePane.heightProperty().multiply(1));
             imageView.setPreserveRatio(true);
             imageView.setSmooth(true);
 
@@ -105,19 +114,12 @@ public class GamePane extends VBox {
             tilePane.setBackground(
                 new Background(
                     new BackgroundFill(Color.DARKGREY, CornerRadii.EMPTY, Insets.EMPTY)));
-            tilePane
-                .getChildren()
-                .add(
-                    new ImageView(
-                        new Image("icons/railroad.png", tileSize, tileSize, true, false)));
+            tilePane.getChildren().add(new ImageView(new Image("icons/railroad.png")));
           }
           case Utility utility -> {
             tilePane.setBackground(
                 new Background(new BackgroundFill(Color.BROWN, CornerRadii.EMPTY, Insets.EMPTY)));
-            tilePane
-                .getChildren()
-                .add(
-                    new ImageView(new Image("icons/utility.png", tileSize, tileSize, true, false)));
+            tilePane.getChildren().add(new ImageView(new Image("icons/utility.png")));
           }
         }
       }

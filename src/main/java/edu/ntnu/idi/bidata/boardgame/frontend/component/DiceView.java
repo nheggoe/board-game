@@ -8,6 +8,7 @@ import javafx.geometry.Pos;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
 /**
@@ -23,13 +24,13 @@ import javafx.util.Duration;
  * <p>Example usage:
  *
  * <pre>{@code
- * DiceView diceView = new DiceView(2);
- * diceView.rollDiceAnimated(diceRoll, () -> System.out.println("Roll complete!"));
+ * DiceView diceView = new DiceView();
+ * diceView.animateDiceRoll(new DiceRoll(1, 2));
  * }</pre>
  *
- * @version 2025.04.25
+ * @version 2025.04.28
  */
-public class DiceView extends HBox {
+public class DiceView extends VBox {
 
   private static final String BASE_PATH = "/images/dice";
   private static final int FACE_COUNT = 6;
@@ -37,14 +38,8 @@ public class DiceView extends HBox {
   private static final int TOTAL_DURATION_MS = 1500; // 1.5 seconds
   private static final int FRAME_DURATION_MS = TOTAL_DURATION_MS / STEPS;
 
-  private ImageView[] diceImages;
   private final Random random = new Random();
 
-  /**
-   * Constructs a {@code DiceView} with the specified number of dice.
-   *
-   * @param diceCount the number of dice to display
-   */
   public DiceView() {
     setAlignment(Pos.CENTER);
     setSpacing(20);
@@ -52,21 +47,21 @@ public class DiceView extends HBox {
 
   /**
    * Animates the dice roll, showing random faces during the animation, then settling on the final
-   * result provided by the {@link DiceRoll}.
+   * diceRoll provided by the {@link DiceRoll}.
    *
-   * @param result the final dice roll result to display
-   * @param onFinish a {@link Runnable} to execute after the animation finishes
+   * @param diceRoll the final dice roll diceRoll to display
    */
-  public void rollDiceAnimated(DiceRoll result, Runnable onFinish) {
-    int diceCount = result.rolls().length;
-    this.diceImages = new ImageView[diceCount];
+  public void animateDiceRoll(DiceRoll diceRoll) {
+    getChildren().clear();
+    int diceCount = diceRoll.rolls().length;
+    ImageView[] diceImages = new ImageView[diceCount];
     for (int i = 0; i < diceCount; i++) {
       ImageView imageView = new ImageView();
       imageView.setFitWidth(64);
       imageView.setFitHeight(64);
       diceImages[i] = imageView;
-      getChildren().add(imageView);
     }
+    getChildren().add(new HBox(diceImages));
 
     Timeline timeline = new Timeline();
     timeline.setCycleCount(STEPS);
@@ -86,10 +81,9 @@ public class DiceView extends HBox {
     timeline.setOnFinished(
         event -> {
           for (int i = 0; i < diceImages.length; i++) {
-            int face = result.rolls()[i];
+            int face = diceRoll.rolls()[i];
             diceImages[i].setImage(loadFace(face));
           }
-          if (onFinish != null) onFinish.run();
         });
 
     timeline.play();

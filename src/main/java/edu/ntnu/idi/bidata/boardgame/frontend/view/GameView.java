@@ -52,6 +52,7 @@ public class GameView extends BorderPane implements EventListener {
       case DICE_ROLLED -> {
         if (event.payload() instanceof DiceRoll diceRoll) {
           messageLog.log(diceRoll);
+          diceView.animateDiceRoll(diceRoll);
         }
       }
       case DISPLAY_TEXT -> messageLog.log(event.payload());
