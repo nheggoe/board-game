@@ -52,7 +52,7 @@ public class UIPane extends VBox {
             .orElseThrow(() -> new IllegalStateException("Game engine is not correctly setup!"));
 
     int i = 0;
-    for (Player player : game) {
+    for (Player player : game.getPlayers()) {
       PlayerInfoBox box = new PlayerInfoBox(player, CARD_COLORS[i % CARD_COLORS.length]);
       playerBoxes.put(player, box);
       content.getChildren().add(box);

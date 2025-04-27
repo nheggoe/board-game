@@ -1,18 +1,16 @@
 package edu.ntnu.idi.bidata.boardgame.backend.model;
 
 import edu.ntnu.idi.bidata.boardgame.backend.core.GameObserver;
+import edu.ntnu.idi.bidata.boardgame.backend.core.TurnManager;
 import edu.ntnu.idi.bidata.boardgame.backend.model.board.Board;
 import edu.ntnu.idi.bidata.boardgame.backend.model.dice.DiceRoll;
 import edu.ntnu.idi.bidata.boardgame.backend.model.tile.JailTile;
 import edu.ntnu.idi.bidata.boardgame.backend.model.tile.Tile;
 import edu.ntnu.idi.bidata.boardgame.backend.util.OutputHandler;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.SequencedCollection;
-import java.util.TreeMap;
 import java.util.UUID;
 
 /**
@@ -26,27 +24,26 @@ import java.util.UUID;
  * @author Nick Heggø
  * @version 2025.04.22
  */
-public class Game implements Iterable<Player> {
+public class Game {
 
   private final UUID id;
-  private int currentPlayerIndex = 0;
-  private final List<Player> players;
+  private final TurnManager players;
   private final List<GameObserver> observers;
 
   private String saveName;
   private boolean isEnded;
   private Board board;
 
-  private Game() {
+  private Game(List<Player> players) {
     this.id = UUID.randomUUID();
-    this.players = new ArrayList<>();
     this.observers = new ArrayList<>();
+    this.players = new TurnManager(players);
   }
 
-  public Game(Board board, SequencedCollection<Player> players) {
-    this();
+  public Game(Board board, List<Player> players) {
+    this(players);
     setBoard(board);
-    addPlayers(players);
+    players.forEach(player -> player.addBalance(200));
     isEnded = false;
   }
 
@@ -57,19 +54,7 @@ public class Game implements Iterable<Player> {
   }
 
   public Map.Entry<Integer, List<Player>> getWinners() {
-    var treeMap = new TreeMap<Integer, List<Player>>();
-    forEach(
-        player ->
-            treeMap.computeIfAbsent(player.getNetWorth(), unused -> new ArrayList<>()).add(player));
-    return treeMap.reversed().firstEntry();
-  }
-
-  public boolean addPlayer(Player player) {
-    return players.add(player);
-  }
-
-  public void addPlayers(SequencedCollection<Player> players) {
-    this.players.addAll(players);
+    return players.getWinners();
   }
 
   public void movePlayer(Player player, DiceRoll roll) {
@@ -98,26 +83,12 @@ public class Game implements Iterable<Player> {
     isEnded = true;
   }
 
-  @Override
-  public Iterator<Player> iterator() {
-    if (players.isEmpty()) {
-      throw new IllegalStateException("There is currently no players!");
-    }
-    return players.iterator();
-  }
-
   public Player getCurrentPlayer() {
-    if (players.isEmpty()) {
-      throw new IllegalStateException("No players in the game!");
-    }
-    return players.get(currentPlayerIndex);
+    return players.getCurrentPlayer();
   }
 
-  public void nextPlayer() {
-    if (players.isEmpty()) {
-      throw new IllegalStateException("No players to rotate!");
-    }
-    currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+  public Player nextPlayer() {
+    return players.next();
   }
 
   public void attach(GameObserver observer) {
@@ -163,6 +134,10 @@ public class Game implements Iterable<Player> {
 
   public Board getBoard() {
     return board;
+  }
+
+  public TurnManager getPlayers() {
+    return players;
   }
 
   // ------------------------  private  ------------------------
