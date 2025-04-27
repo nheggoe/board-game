@@ -39,7 +39,7 @@ public class GamePane extends VBox {
     board.setGridLinesVisible(true); // optional: show grid lines
     board.setAlignment(Pos.CENTER);
 
-    int size = tiles.size() / 4;
+    int size = (tiles.size() + 4) / 4;
 
     // Position tiles in clockwise order, starting with 00 at bottom right
 
@@ -84,10 +84,11 @@ public class GamePane extends VBox {
               new Background(new BackgroundFill(Color.GREY, CornerRadii.EMPTY, Insets.EMPTY)));
       case OwnableTile(Ownable ownable) -> {
         switch (ownable) {
-          case Property(String name, Property.Color color, int price) -> {
+          case Property property -> {
             tilePane.setBackground(
                 new Background(
-                    new BackgroundFill(colorAdapter(color), CornerRadii.EMPTY, Insets.EMPTY)));
+                    new BackgroundFill(
+                        colorAdapter(property.getColor()), CornerRadii.EMPTY, Insets.EMPTY)));
 
             var image = new Image("icons/propertyv2.png", tileSize, tileSize, true, true);
             var imageView = new ImageView(image);
@@ -95,7 +96,7 @@ public class GamePane extends VBox {
             imageView.setSmooth(true);
 
             tilePane.getChildren().add(imageView);
-            var label = new Label(name);
+            var label = new Label(property.getName());
             tilePane.getChildren().add(label);
             StackPane.setAlignment(imageView, Pos.CENTER);
             StackPane.setAlignment(label, Pos.BOTTOM_CENTER);

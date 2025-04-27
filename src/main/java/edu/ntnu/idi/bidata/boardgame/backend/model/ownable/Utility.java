@@ -1,8 +1,5 @@
 package edu.ntnu.idi.bidata.boardgame.backend.model.ownable;
 
-import edu.ntnu.idi.bidata.boardgame.backend.core.GameEngine;
-import edu.ntnu.idi.bidata.boardgame.backend.model.Player;
-import edu.ntnu.idi.bidata.boardgame.backend.model.dice.Dice;
 
 /**
  * Represents a Utility that charges rent based on a new dice roll. If the owner owns both
@@ -21,19 +18,22 @@ public record Utility(String name, int price) implements Ownable {
 
   @Override
   public int rent() {
-    var diceRoll = Dice.getInstance().roll(2);
-    int total = diceRoll.getTotal();
-
-    var game = GameEngine.getInstance().getGame().orElseThrow();
-    Player owner = game.stream().filter(p -> p.isOwnerOf(this)).findFirst().orElse(null);
-
-    if (owner == null) {
-      return total * 4;
-    }
-
-    long utilityOwned = owner.getOwnedAssets().stream().filter(Utility.class::isInstance).count();
-
-    int multiplier = (utilityOwned == 2) ? 10 : 4;
-    return total * multiplier;
+    // todo fix
+    // var diceRoll = Dice.getInstance().roll(2);
+    // int total = diceRoll.getTotal();
+    //
+    // var game = GameEngine.getInstance().getGame().orElseThrow();
+    // Player owner = game.stream().filter(p -> p.isOwnerOf(this)).findFirst().orElse(null);
+    //
+    // if (owner == null) {
+    //   return total * 4;
+    // }
+    //
+    // long utilityOwned =
+    // owner.getOwnedAssets().stream().filter(Utility.class::isInstance).count();
+    //
+    // int multiplier = (utilityOwned == 2) ? 10 : 4;
+    // return total * multiplier;
+    return 4;
   }
 }
