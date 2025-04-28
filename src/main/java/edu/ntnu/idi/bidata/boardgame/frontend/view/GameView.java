@@ -57,7 +57,9 @@ public class GameView extends BorderPane implements EventListener {
       }
       case DISPLAY_TEXT -> messageLog.log(event.payload());
       case PLAYER_MOVED -> {
-        if (event.payload() instanceof Integer position) {}
+        if (event.payload() instanceof Player player) {
+          gameBoard.playerMoved(player, player.getPosition());
+        }
       }
       case PLAYER_REMOVED -> {}
       case PURCHASED_OWNABLE -> {}

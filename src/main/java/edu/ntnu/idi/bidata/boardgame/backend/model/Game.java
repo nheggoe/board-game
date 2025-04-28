@@ -310,7 +310,7 @@ public class Game implements EventPublisher {
   }
 
   private void notifyPlayerMoved(Player player, int newPosition) {
-    update(new Event(Event.Type.PLAYER_MOVED, player.getId(), newPosition));
+    update(new Event(Event.Type.PLAYER_MOVED, player.getId(), player));
   }
 
   private void notifyDiceRolled(Player player, DiceRoll diceRoll) {
