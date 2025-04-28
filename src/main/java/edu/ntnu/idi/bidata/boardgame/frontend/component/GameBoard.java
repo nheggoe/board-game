@@ -1,5 +1,6 @@
 package edu.ntnu.idi.bidata.boardgame.frontend.component;
 
+import edu.ntnu.idi.bidata.boardgame.backend.model.Player;
 import edu.ntnu.idi.bidata.boardgame.backend.model.ownable.Ownable;
 import edu.ntnu.idi.bidata.boardgame.backend.model.ownable.Property;
 import edu.ntnu.idi.bidata.boardgame.backend.model.ownable.Railroad;
@@ -23,11 +24,11 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
-public class GamePane extends VBox {
+public class GameBoard extends VBox {
 
   private final GridPane board;
 
-  public GamePane(List<Tile> tiles) {
+  public GameBoard(List<Tile> tiles) {
     super();
     board = new GridPane();
     getChildren().add(board);
@@ -35,7 +36,9 @@ public class GamePane extends VBox {
     initialize(tiles);
   }
 
-  public void initialize(List<Tile> tiles) {
+  public void playerMoved(Player player, int position) {}
+
+  private void initialize(List<Tile> tiles) {
     board.setGridLinesVisible(true); // optional: show grid lines
     board.setAlignment(Pos.CENTER);
 
