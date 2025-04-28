@@ -7,10 +7,10 @@ package edu.ntnu.idi.bidata.boardgame.backend.event;
  * which is intended to define the actions that should be performed when the listener is notified of
  * an event.
  *
- * @see EventManager
+ * @see EventPublisher
  * @author Nick Heggø
  * @version 2025.04.02
  */
 public interface EventListener {
-  void update(Event event);
+  void onEvent(Event event);
 }

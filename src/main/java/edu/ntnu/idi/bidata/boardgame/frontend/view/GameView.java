@@ -47,7 +47,7 @@ public class GameView extends BorderPane implements EventListener {
   }
 
   @Override
-  public void update(Event event) {
+  public void onEvent(Event event) {
     switch (event.type()) {
       case DICE_ROLLED -> {
         if (event.payload() instanceof DiceRoll diceRoll) {

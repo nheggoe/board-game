@@ -39,7 +39,7 @@ public class TurnManager implements EventListener {
   }
 
   @Override
-  public void update(Event event) {
+  public void onEvent(Event event) {
     if (event.type() == Event.Type.PLAYER_REMOVED && event.payload() instanceof UUID playerId) {
       removePlayer(playerId);
     }

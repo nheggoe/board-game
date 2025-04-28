@@ -1,6 +1,6 @@
 package edu.ntnu.idi.bidata.boardgame.backend.event;
 
-public interface EventManager {
+public interface EventPublisher {
 
   void addListener(EventListener listener);
 

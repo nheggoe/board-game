@@ -33,7 +33,7 @@ public class GamePane extends VBox {
     getChildren().add(board);
     setAlignment(Pos.CENTER);
     initialize(tiles);
-    bindSizeProperty();
+    // bindSizeProperty();
   }
 
   private void bindSizeProperty() {
@@ -82,8 +82,8 @@ public class GamePane extends VBox {
 
   private Pane createTile(Tile tile) {
     StackPane tilePane = new StackPane();
-    tilePane.prefWidthProperty().bind(board.heightProperty().divide(1000.0));
-    tilePane.prefHeightProperty().bind(board.heightProperty().divide(1000.0));
+    tilePane.prefWidthProperty().bind(this.heightProperty().divide(1000.0));
+    tilePane.prefHeightProperty().bind(this.heightProperty().divide(1000.0));
 
     switch (tile) {
       case CornerTile cornerTile ->
