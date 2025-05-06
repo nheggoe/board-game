@@ -1,5 +1,6 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.component;
 
+import edu.ntnu.idi.bidata.boardgame.core.Component;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.Player;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Ownable;
 import java.util.HashMap;
@@ -25,7 +26,7 @@ import javafx.scene.text.FontWeight;
  * @author Mihailo Hranisavljevic
  * @version 2025.04.25
  */
-public class UIPane extends VBox {
+public class UIPane extends Component {
 
   private final HashMap<Player, PlayerInfoBox> playerBoxes = new HashMap<>();
   private Player currentPlayer;

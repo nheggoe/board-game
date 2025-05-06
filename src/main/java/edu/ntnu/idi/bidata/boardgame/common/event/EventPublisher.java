@@ -2,9 +2,9 @@ package edu.ntnu.idi.bidata.boardgame.common.event;
 
 public interface EventPublisher {
 
-  void addListener(EventListener listener);
+  void addListener(Class<? extends Event> eventType, EventListener listener);
 
-  void removeListener(EventListener listener);
+  void removeListener(Class<? extends Event> eventType, EventListener listener);
 
-  void update(Event event);
+  void publishEvent(Event event);
 }

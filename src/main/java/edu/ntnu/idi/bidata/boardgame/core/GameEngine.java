@@ -1,6 +1,5 @@
 package edu.ntnu.idi.bidata.boardgame.core;
 
-import edu.ntnu.idi.bidata.boardgame.common.event.EventListener;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.Game;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.Player;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.board.Board;
@@ -43,13 +42,5 @@ public class GameEngine {
     turnManager.nextTurn();
     var diceRoll = Dice.getInstance().roll(2);
     game.movePlayer(currentPlayer, diceRoll);
-  }
-
-  public void addListener(EventListener eventListener) {
-    game.addListener(Objects.requireNonNull(eventListener, "Observer cannot be null!"));
-  }
-
-  public void removeListener(EventListener eventListener) {
-    game.removeListener(Objects.requireNonNull(eventListener, "Observer cannot be null!"));
   }
 }

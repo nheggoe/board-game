@@ -1,5 +1,6 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.component;
 
+import edu.ntnu.idi.bidata.boardgame.core.Component;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.dice.DiceRoll;
 import java.util.Random;
 import javafx.animation.KeyFrame;
@@ -8,7 +9,6 @@ import javafx.geometry.Pos;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
 /**
@@ -30,7 +30,7 @@ import javafx.util.Duration;
  *
  * @version 2025.04.28
  */
-public class DiceView extends VBox {
+public class DiceView extends Component {
 
   private static final String BASE_PATH = "/images/dice";
   private static final int FACE_COUNT = 6;

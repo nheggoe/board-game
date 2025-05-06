@@ -1,8 +1,9 @@
-package edu.ntnu.idi.bidata.boardgame.games.monopoly.controller;
+package edu.ntnu.idi.bidata.boardgame.core;
 
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.controller.SceneSwitcher;
 import java.util.Objects;
 
-public abstract class Controller implements AutoCloseable {
+public abstract class Controller {
 
   private final SceneSwitcher sceneSwitcher;
 

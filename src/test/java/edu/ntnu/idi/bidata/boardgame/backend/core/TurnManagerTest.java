@@ -2,6 +2,7 @@ package edu.ntnu.idi.bidata.boardgame.backend.core;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
 import edu.ntnu.idi.bidata.boardgame.core.TurnManager;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,7 @@ class TurnManagerTest {
     ids =
         new ArrayList<>(
             List.of(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID()));
-    turnManager = new TurnManager(ids);
+    turnManager = new TurnManager(new EventBus(), ids);
   }
 
   @Test

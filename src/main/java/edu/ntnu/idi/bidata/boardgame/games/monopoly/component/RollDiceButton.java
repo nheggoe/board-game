@@ -1,5 +1,6 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.component;
 
+import edu.ntnu.idi.bidata.boardgame.core.Component;
 import java.util.Objects;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -17,7 +18,7 @@ import javafx.scene.image.ImageView;
  * @author Mihailo
  * @version 2025.04.25
  */
-public class RollDiceButton extends Button {
+public class RollDiceButton extends Component {
 
   /**
    * Constructs a {@code DiceControlPane} with a roll button that controls the dice animation,
@@ -25,10 +26,11 @@ public class RollDiceButton extends Button {
    */
   public RollDiceButton(EventHandler<ActionEvent> rollDiceAction) {
     Objects.requireNonNull(rollDiceAction);
+    Button button = new Button("Roll Dice");
     ImageView icon = new ImageView(new Image("/images/rolldice.png"));
     icon.setFitWidth(48);
     icon.setFitHeight(48);
-    setGraphic(icon);
-    setOnAction(rollDiceAction);
+    button.setGraphic(icon);
+    button.setOnAction(rollDiceAction);
   }
 }

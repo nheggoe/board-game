@@ -1,7 +1,10 @@
 package edu.ntnu.idi.bidata.boardgame.core;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.Event;
+import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
 import edu.ntnu.idi.bidata.boardgame.common.event.EventListener;
+import edu.ntnu.idi.bidata.boardgame.common.event.PlayerRemovedEvent;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.Player;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -9,11 +12,14 @@ import java.util.UUID;
 
 public class TurnManager implements EventListener {
 
+  private final EventBus eventBus;
   private final List<UUID> playerIds;
   private UUID currentPlayerId;
   private int roundNumber = 0;
 
-  public TurnManager(List<UUID> playerIds) {
+  public TurnManager(EventBus eventBus, List<UUID> playerIds) {
+    this.eventBus = Objects.requireNonNull(eventBus, "Event bus cannot be null!");
+    eventBus.addListener(PlayerRemovedEvent.class, this);
     Objects.requireNonNull(playerIds, "Players list cannot be null");
     if (playerIds.isEmpty()) {
       throw new IllegalArgumentException("Players list cannot be empty");
@@ -38,13 +44,6 @@ public class TurnManager implements EventListener {
     playerIds.removeIf(p -> p.equals(playerId));
   }
 
-  @Override
-  public void onEvent(Event event) {
-    if (event.type() == Event.Type.PLAYER_REMOVED && event.payload() instanceof UUID playerId) {
-      removePlayer(playerId);
-    }
-  }
-
   public void nextTurn() {
     if (playerIds.isEmpty()) {
       throw new NoSuchElementException("No players in the game!");
@@ -63,5 +62,17 @@ public class TurnManager implements EventListener {
 
   public int getRoundNumber() {
     return roundNumber;
+  }
+
+  @Override
+  public void onEvent(Event event) {
+    if (event instanceof PlayerRemovedEvent(Player player) && playerIds.contains(player.getId())) {
+      playerIds.removeIf(p -> p.equals(player.getId()));
+    }
+  }
+
+  @Override
+  public void close() throws Exception {
+    eventBus.removeListener(PlayerRemovedEvent.class, this);
   }
 }

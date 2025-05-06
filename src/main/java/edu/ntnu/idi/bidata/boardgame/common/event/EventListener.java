@@ -11,6 +11,6 @@ package edu.ntnu.idi.bidata.boardgame.common.event;
  * @author Nick Heggø
  * @version 2025.04.02
  */
-public interface EventListener {
+public interface EventListener extends AutoCloseable {
   void onEvent(Event event);
 }

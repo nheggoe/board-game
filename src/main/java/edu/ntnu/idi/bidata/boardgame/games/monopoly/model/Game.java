@@ -2,9 +2,11 @@ package edu.ntnu.idi.bidata.boardgame.games.monopoly.model;
 
 import static edu.ntnu.idi.bidata.boardgame.common.util.InputHandler.nextLine;
 
-import edu.ntnu.idi.bidata.boardgame.common.event.Event;
+import edu.ntnu.idi.bidata.boardgame.common.event.DiceRolledEvent;
+import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
 import edu.ntnu.idi.bidata.boardgame.common.event.EventListener;
-import edu.ntnu.idi.bidata.boardgame.common.event.EventPublisher;
+import edu.ntnu.idi.bidata.boardgame.common.event.OutputEvent;
+import edu.ntnu.idi.bidata.boardgame.common.event.PlayerMovedEvent;
 import edu.ntnu.idi.bidata.boardgame.common.util.OutputHandler;
 import edu.ntnu.idi.bidata.boardgame.common.util.StringFormatter;
 import edu.ntnu.idi.bidata.boardgame.core.TileAction;
@@ -44,21 +46,22 @@ import java.util.stream.Stream;
  * @author Nick Heggø
  * @version 2025.04.22
  */
-public class Game implements EventPublisher {
+public class Game {
+
+  private final EventBus eventBus;
 
   private final UUID id;
   private final Board board;
   private final List<Player> players;
-  private final List<EventListener> eventListeners;
   private boolean isEnded;
 
   private String gameSaveName;
 
-  public Game(Board board, List<Player> players) {
+  public Game(EventBus eventBus, Board board, List<Player> players) {
+    this.eventBus = Objects.requireNonNull(eventBus, "EventBus cannot be null!");
     this.id = UUID.randomUUID();
     this.board = Objects.requireNonNull(board, "Board cannot be null!");
     this.players = new ArrayList<>(Objects.requireNonNull(players, "Players cannot be null!"));
-    this.eventListeners = new ArrayList<>();
     this.isEnded = false;
     players.forEach(player -> player.addBalance(200));
   }
@@ -80,7 +83,7 @@ public class Game implements EventPublisher {
       player.addBalance(200);
     }
     notifyDiceRolled(player, roll);
-    notifyPlayerMoved(player, newPosition);
+    notifyPlayerMoved(player);
   }
 
   private Optional<Player> getPlayerById(UUID playerId) {
@@ -119,23 +122,6 @@ public class Game implements EventPublisher {
         player ->
             treeMap.computeIfAbsent(player.getNetWorth(), unused -> new ArrayList<>()).add(player));
     return treeMap.reversed().firstEntry();
-  }
-
-  @Override
-  public void addListener(EventListener listener) {
-    Objects.requireNonNull(listener, "Observer cannot be null!");
-    eventListeners.add(listener);
-  }
-
-  @Override
-  public void removeListener(EventListener listener) {
-    Objects.requireNonNull(listener, "Observer cannot be null!");
-    eventListeners.remove(listener);
-  }
-
-  @Override
-  public void update(Event event) {
-    eventListeners.forEach(listener -> listener.onEvent(event));
   }
 
   // ------------------------  private  ------------------------
@@ -309,16 +295,16 @@ public class Game implements EventPublisher {
     }
   }
 
-  private void notifyPlayerMoved(Player player, int newPosition) {
-    update(new Event(Event.Type.PLAYER_MOVED, player.getId(), player));
+  private void notifyPlayerMoved(Player player) {
+    eventBus.publishEvent(new PlayerMovedEvent(player));
   }
 
   private void notifyDiceRolled(Player player, DiceRoll diceRoll) {
-    update(new Event(Event.Type.DICE_ROLLED, player.getId(), diceRoll));
+    eventBus.publishEvent(new DiceRolledEvent(player, diceRoll));
   }
 
   private void println(Object o) {
-    update(new Event(Event.Type.DISPLAY_TEXT, null, o));
+    eventBus.publishEvent(new OutputEvent(o.toString()));
   }
 
   // ------------------------  getters and setters  ------------------------

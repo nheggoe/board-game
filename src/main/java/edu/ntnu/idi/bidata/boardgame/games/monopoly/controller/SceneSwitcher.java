@@ -1,5 +1,7 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.controller;
 
+import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
+import edu.ntnu.idi.bidata.boardgame.core.Controller;
 import edu.ntnu.idi.bidata.boardgame.core.GameEngine;
 import edu.ntnu.idi.bidata.boardgame.core.TurnManager;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.Game;
@@ -14,6 +16,7 @@ import javafx.stage.Stage;
 
 public class SceneSwitcher {
 
+  private final EventBus eventBus = new EventBus();
   private final Scene scene;
   private Controller controller;
 
@@ -38,12 +41,16 @@ public class SceneSwitcher {
       case GAME_VIEW -> {
         var game =
             new Game(
+                eventBus,
                 BoardFactory.generateBoard(BoardFactory.Layout.NORMAL),
                 List.of(
                     new Player("Nick", Player.Figure.HAT),
                     new Player("Misha", Player.Figure.BATTLE_SHIP)));
         controller =
-            new GameController(this, new GameEngine(game, new TurnManager(game.getPlayerIds())));
+            new GameController(
+                this,
+                eventBus,
+                new GameEngine(game, new TurnManager(eventBus, game.getPlayerIds())));
       }
       case MAIN_MENU -> throw new UnsupportedOperationException("Not yet implemented");
     }

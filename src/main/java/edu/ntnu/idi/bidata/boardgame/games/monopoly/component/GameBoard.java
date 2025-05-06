@@ -1,5 +1,10 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.component;
 
+import edu.ntnu.idi.bidata.boardgame.common.event.Event;
+import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
+import edu.ntnu.idi.bidata.boardgame.common.event.EventListener;
+import edu.ntnu.idi.bidata.boardgame.common.event.PlayerRemovedEvent;
+import edu.ntnu.idi.bidata.boardgame.core.Component;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.Player;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Ownable;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Property;
@@ -10,6 +15,7 @@ import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.MonopolyTile;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.OwnableMonopolyTile;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.TaxMonopolyTile;
 import java.util.List;
+import java.util.Objects;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -21,15 +27,16 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
-public class GameBoard extends VBox {
+public class GameBoard extends Component implements EventListener {
 
+  private final EventBus eventBus;
   private final GridPane board;
 
-  public GameBoard(List<MonopolyTile> tiles) {
-    super();
+  public GameBoard(EventBus eventBus, List<MonopolyTile> tiles) {
+    this.eventBus = Objects.requireNonNull(eventBus, "EventBus cannot be null");
+    eventBus.addListener(PlayerRemovedEvent.class, this);
     board = new GridPane();
     getChildren().add(board);
     setAlignment(Pos.CENTER);
@@ -282,5 +289,17 @@ public class GameBoard extends VBox {
       case RED -> Color.RED;
       case YELLOW -> Color.YELLOW;
     };
+  }
+
+  @Override
+  public void onEvent(Event event) {
+    if (event instanceof PlayerRemovedEvent(Player player)) {
+      playerMoved(player, player.getPosition());
+    }
+  }
+
+  @Override
+  public void close() {
+    eventBus.removeListener(PlayerRemovedEvent.class, this);
   }
 }
