@@ -1,6 +1,6 @@
 package edu.ntnu.idi.bidata.boardgame;
 
-import edu.ntnu.idi.bidata.boardgame.frontend.MonopolyApp;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.MonopolyApp;
 
 /**
  * The {@link Launcher} class is the entry point of the program.
