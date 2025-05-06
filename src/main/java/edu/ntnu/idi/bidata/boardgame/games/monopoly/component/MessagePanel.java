@@ -1,5 +1,9 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.component;
 
+import edu.ntnu.idi.bidata.boardgame.common.event.Event;
+import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
+import edu.ntnu.idi.bidata.boardgame.common.event.OutputEvent;
+import edu.ntnu.idi.bidata.boardgame.core.EventListeningComponent;
 import java.util.concurrent.atomic.AtomicInteger;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -11,7 +15,6 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -32,20 +35,21 @@ import javafx.util.Duration;
  * }</pre>
  *
  * @author Mihailo Hranisavljevic
- * @version 2025.04.25
+ * @version 2025.05.06
  */
-public class MessageLog extends VBox {
+public class MessagePanel extends EventListeningComponent {
 
   private final Label textLabel;
   private final StringBuilder currentMessage;
   private Timeline typewriter;
 
   /** Constructs a new {@code MessageLog} with visuals and animation. */
-  public MessageLog() {
-    super();
+  public MessagePanel(EventBus eventBus) {
+    super(eventBus);
+    getEventBus().addListener(OutputEvent.class, this);
+
     setBackground(
         new Background(new BackgroundFill(Color.BLACK, new CornerRadii(20), new Insets(10))));
-
     var root = new StackPane();
     root.setPrefHeight(200);
     root.setPadding(new Insets(10));
@@ -71,7 +75,7 @@ public class MessageLog extends VBox {
    *
    * @param object the message to display
    */
-  public void log(Object object) {
+  public void animateMessage(Object object) {
     AtomicInteger charIndex = new AtomicInteger();
     if (typewriter != null) {
       typewriter.stop();
@@ -106,6 +110,21 @@ public class MessageLog extends VBox {
     if (typewriter != null && typewriter.getStatus() == Animation.Status.RUNNING) {
       typewriter.stop();
       textLabel.setText(currentMessage.toString());
+    }
+  }
+
+  @Override
+  public void onEvent(Event event) {
+    if (event instanceof OutputEvent(String output)) {
+      animateMessage(output);
+    }
+  }
+
+  @Override
+  public void close() {
+    getEventBus().removeListener(OutputEvent.class, this);
+    if (typewriter != null) {
+      typewriter.stop();
     }
   }
 }

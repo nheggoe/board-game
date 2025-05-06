@@ -16,7 +16,7 @@ import javafx.scene.image.ImageView;
  * refreshes the UI, and advances to the next player.
  *
  * @author Mihailo
- * @version 2025.04.25
+ * @version 2025.05.06
  */
 public class RollDiceButton extends Component {
 
@@ -32,5 +32,6 @@ public class RollDiceButton extends Component {
     icon.setFitHeight(48);
     button.setGraphic(icon);
     button.setOnAction(rollDiceAction);
+    getChildren().add(button);
   }
 }

@@ -1,10 +1,14 @@
 package edu.ntnu.idi.bidata.boardgame.core;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import javafx.scene.layout.Region;
 
+/**
+ * @author Nick Heggø
+ * @version 2025.05.06
+ */
 public abstract class View extends Region implements AutoCloseable {
 
   private final List<Component> components;
@@ -13,15 +17,8 @@ public abstract class View extends Region implements AutoCloseable {
     this.components = new ArrayList<>();
   }
 
-  protected void addComponent(Component component) {
-    Objects.requireNonNull(component, "Component cannot be null!");
-    components.add(component);
-  }
-
-  protected void addAllComponents(Component... components) {
-    for (var component : components) {
-      addComponent(component);
-    }
+  protected void addComponents(Component... components) {
+    this.components.addAll(Arrays.asList(components));
   }
 
   @Override
