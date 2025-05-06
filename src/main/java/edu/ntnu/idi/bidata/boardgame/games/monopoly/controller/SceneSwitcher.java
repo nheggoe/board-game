@@ -1,10 +1,10 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.controller;
 
-import edu.ntnu.idi.bidata.boardgame.backend.core.GameEngine;
-import edu.ntnu.idi.bidata.boardgame.backend.core.TurnManager;
-import edu.ntnu.idi.bidata.boardgame.backend.model.Game;
-import edu.ntnu.idi.bidata.boardgame.backend.model.Player;
-import edu.ntnu.idi.bidata.boardgame.backend.model.board.BoardFactory;
+import edu.ntnu.idi.bidata.boardgame.core.GameEngine;
+import edu.ntnu.idi.bidata.boardgame.core.TurnManager;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.Game;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.Player;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.board.BoardFactory;
 import java.util.List;
 import java.util.Objects;
 import javafx.scene.Parent;

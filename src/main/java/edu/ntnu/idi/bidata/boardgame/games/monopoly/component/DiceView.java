@@ -1,6 +1,6 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.component;
 
-import edu.ntnu.idi.bidata.boardgame.backend.model.dice.DiceRoll;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.dice.DiceRoll;
 import java.util.Random;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;

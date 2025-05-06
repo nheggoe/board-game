@@ -1,9 +1,9 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile;
 
-import edu.ntnu.idi.bidata.boardgame.backend.io.csv.OwnableCSVHandler;
-import edu.ntnu.idi.bidata.boardgame.backend.model.ownable.Ownable;
-import edu.ntnu.idi.bidata.boardgame.backend.model.ownable.Property;
-import edu.ntnu.idi.bidata.boardgame.backend.model.ownable.Utility;
+import edu.ntnu.idi.bidata.boardgame.common.io.csv.OwnableCSVHandler;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Ownable;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Property;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Utility;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;

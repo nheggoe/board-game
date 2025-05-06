@@ -1,7 +1,7 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.controller;
 
-import edu.ntnu.idi.bidata.boardgame.backend.core.GameEngine;
-import edu.ntnu.idi.bidata.boardgame.frontend.view.GameView;
+import edu.ntnu.idi.bidata.boardgame.core.GameEngine;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.view.GameView;
 import java.util.Objects;
 
 public class GameController extends Controller {

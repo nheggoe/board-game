@@ -1,6 +1,6 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly;
 
-import edu.ntnu.idi.bidata.boardgame.frontend.controller.SceneSwitcher;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.controller.SceneSwitcher;
 import javafx.application.Application;
 import javafx.stage.Stage;
 

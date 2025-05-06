@@ -1,8 +1,8 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.repository;
 
-import edu.ntnu.idi.bidata.boardgame.backend.io.DAO;
-import edu.ntnu.idi.bidata.boardgame.backend.io.json.JsonService;
-import edu.ntnu.idi.bidata.boardgame.backend.model.Game;
+import edu.ntnu.idi.bidata.boardgame.common.io.DAO;
+import edu.ntnu.idi.bidata.boardgame.common.io.json.JsonService;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.Game;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.UUID;

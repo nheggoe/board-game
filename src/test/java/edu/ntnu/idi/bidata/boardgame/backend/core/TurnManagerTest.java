@@ -2,6 +2,7 @@ package edu.ntnu.idi.bidata.boardgame.backend.core;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import edu.ntnu.idi.bidata.boardgame.core.TurnManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

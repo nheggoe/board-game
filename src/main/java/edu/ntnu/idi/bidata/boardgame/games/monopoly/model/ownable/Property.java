@@ -1,7 +1,7 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable;
 
-import edu.ntnu.idi.bidata.boardgame.backend.model.upgrade.Upgrade;
-import edu.ntnu.idi.bidata.boardgame.backend.model.upgrade.UpgradeType;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.upgrade.Upgrade;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.upgrade.UpgradeType;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package edu.ntnu.idi.bidata.boardgame.core;
 
-import edu.ntnu.idi.bidata.boardgame.backend.event.Event;
-import edu.ntnu.idi.bidata.boardgame.backend.event.EventListener;
+import edu.ntnu.idi.bidata.boardgame.common.event.Event;
+import edu.ntnu.idi.bidata.boardgame.common.event.EventListener;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;

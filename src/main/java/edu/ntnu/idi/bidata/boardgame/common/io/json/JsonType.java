@@ -1,9 +1,9 @@
 package edu.ntnu.idi.bidata.boardgame.common.io.json;
 
 import com.google.gson.reflect.TypeToken;
-import edu.ntnu.idi.bidata.boardgame.backend.model.Game;
-import edu.ntnu.idi.bidata.boardgame.backend.model.Player;
-import edu.ntnu.idi.bidata.boardgame.backend.model.board.Board;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.Game;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.Player;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.board.Board;
 import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Set;

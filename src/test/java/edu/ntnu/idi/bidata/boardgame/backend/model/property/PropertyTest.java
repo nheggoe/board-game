@@ -2,9 +2,9 @@ package edu.ntnu.idi.bidata.boardgame.backend.model.property;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
-import edu.ntnu.idi.bidata.boardgame.backend.model.Player;
-import edu.ntnu.idi.bidata.boardgame.backend.model.ownable.InsufficientFundsException;
-import edu.ntnu.idi.bidata.boardgame.backend.model.ownable.Property;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.Player;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.InsufficientFundsException;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Property;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

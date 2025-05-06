@@ -1,14 +1,14 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.component;
 
-import edu.ntnu.idi.bidata.boardgame.backend.model.Player;
-import edu.ntnu.idi.bidata.boardgame.backend.model.ownable.Ownable;
-import edu.ntnu.idi.bidata.boardgame.backend.model.ownable.Property;
-import edu.ntnu.idi.bidata.boardgame.backend.model.ownable.Railroad;
-import edu.ntnu.idi.bidata.boardgame.backend.model.ownable.Utility;
-import edu.ntnu.idi.bidata.boardgame.backend.model.tile.CornerTile;
-import edu.ntnu.idi.bidata.boardgame.backend.model.tile.OwnableTile;
-import edu.ntnu.idi.bidata.boardgame.backend.model.tile.TaxTile;
-import edu.ntnu.idi.bidata.boardgame.backend.model.tile.Tile;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.Player;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Ownable;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Property;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Railroad;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Utility;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.CornerMonopolyTile;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.MonopolyTile;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.OwnableMonopolyTile;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.TaxMonopolyTile;
 import java.util.List;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -28,7 +28,7 @@ public class GameBoard extends VBox {
 
   private final GridPane board;
 
-  public GameBoard(List<Tile> tiles) {
+  public GameBoard(List<MonopolyTile> tiles) {
     super();
     board = new GridPane();
     getChildren().add(board);
@@ -140,9 +140,7 @@ public class GameBoard extends VBox {
     int playerCount =
         (int)
             tilePane.getChildren().stream()
-                .filter(
-                    child ->
-                        child instanceof ImageView && child.getUserData() != null)
+                .filter(child -> child instanceof ImageView && child.getUserData() != null)
                 .count();
 
     // Adjust position based on number of players already on this tile
@@ -174,7 +172,7 @@ public class GameBoard extends VBox {
     };
   }
 
-  private void initialize(List<Tile> tiles) {
+  private void initialize(List<MonopolyTile> tiles) {
     board.setGridLinesVisible(true); // optional: show grid lines
     board.setAlignment(Pos.CENTER);
 
@@ -212,16 +210,16 @@ public class GameBoard extends VBox {
     board.prefHeightProperty().bind(this.getScene().heightProperty());
   }
 
-  private Pane createTile(Tile tile) {
+  private Pane createTile(MonopolyTile tile) {
     StackPane tilePane = new StackPane();
     int tileSize = 80;
     tilePane.setPrefSize(tileSize, tileSize);
 
     switch (tile) {
-      case CornerTile cornerTile ->
+      case CornerMonopolyTile cornerTile ->
           tilePane.setBackground(
               new Background(new BackgroundFill(Color.GREY, CornerRadii.EMPTY, Insets.EMPTY)));
-      case OwnableTile(Ownable ownable) -> {
+      case OwnableMonopolyTile(Ownable ownable) -> {
         switch (ownable) {
           case Property property -> {
             tilePane.setBackground(
@@ -260,7 +258,7 @@ public class GameBoard extends VBox {
           }
         }
       }
-      case TaxTile taxTile -> {
+      case TaxMonopolyTile taxTile -> {
         tilePane.setBackground(
             new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
         tilePane

@@ -1,29 +1,29 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.model;
 
-import static edu.ntnu.idi.bidata.boardgame.backend.util.InputHandler.nextLine;
+import static edu.ntnu.idi.bidata.boardgame.common.util.InputHandler.nextLine;
 
-import edu.ntnu.idi.bidata.boardgame.backend.core.TileAction;
-import edu.ntnu.idi.bidata.boardgame.backend.event.Event;
-import edu.ntnu.idi.bidata.boardgame.backend.event.EventListener;
-import edu.ntnu.idi.bidata.boardgame.backend.event.EventPublisher;
-import edu.ntnu.idi.bidata.boardgame.backend.model.board.Board;
-import edu.ntnu.idi.bidata.boardgame.backend.model.dice.DiceRoll;
-import edu.ntnu.idi.bidata.boardgame.backend.model.ownable.InsufficientFundsException;
-import edu.ntnu.idi.bidata.boardgame.backend.model.ownable.Ownable;
-import edu.ntnu.idi.bidata.boardgame.backend.model.ownable.Property;
-import edu.ntnu.idi.bidata.boardgame.backend.model.ownable.Railroad;
-import edu.ntnu.idi.bidata.boardgame.backend.model.ownable.Utility;
-import edu.ntnu.idi.bidata.boardgame.backend.model.tile.FreeParkingTile;
-import edu.ntnu.idi.bidata.boardgame.backend.model.tile.GoToJailTile;
-import edu.ntnu.idi.bidata.boardgame.backend.model.tile.JailTile;
-import edu.ntnu.idi.bidata.boardgame.backend.model.tile.OwnableTile;
-import edu.ntnu.idi.bidata.boardgame.backend.model.tile.StartTile;
-import edu.ntnu.idi.bidata.boardgame.backend.model.tile.TaxTile;
-import edu.ntnu.idi.bidata.boardgame.backend.model.tile.Tile;
-import edu.ntnu.idi.bidata.boardgame.backend.model.upgrade.Upgrade;
-import edu.ntnu.idi.bidata.boardgame.backend.model.upgrade.UpgradeType;
-import edu.ntnu.idi.bidata.boardgame.backend.util.OutputHandler;
-import edu.ntnu.idi.bidata.boardgame.backend.util.StringFormatter;
+import edu.ntnu.idi.bidata.boardgame.common.event.Event;
+import edu.ntnu.idi.bidata.boardgame.common.event.EventListener;
+import edu.ntnu.idi.bidata.boardgame.common.event.EventPublisher;
+import edu.ntnu.idi.bidata.boardgame.common.util.OutputHandler;
+import edu.ntnu.idi.bidata.boardgame.common.util.StringFormatter;
+import edu.ntnu.idi.bidata.boardgame.core.TileAction;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.board.Board;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.dice.DiceRoll;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.InsufficientFundsException;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Ownable;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Property;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Railroad;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Utility;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.FreeParkingMonopolyTile;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.GoToJailMonopolyTile;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.JailMonopolyTile;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.MonopolyTile;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.OwnableMonopolyTile;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.StartMonopolyTile;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.TaxMonopolyTile;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.upgrade.Upgrade;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.upgrade.UpgradeType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -87,11 +87,11 @@ public class Game implements EventPublisher {
     return players.stream().filter(player -> player.getId().equals(playerId)).findFirst();
   }
 
-  public JailTile getJailTile() {
+  public JailMonopolyTile getJailTile() {
     return board.getJailTile();
   }
 
-  public Tile getTile(int position) {
+  public MonopolyTile getTile(int position) {
     return board.getTile(position);
   }
 
@@ -146,14 +146,14 @@ public class Game implements EventPublisher {
    * @param tile the tile the player has landed on
    * @return the corresponding TileAction
    */
-  private TileAction tileActionOf(Tile tile) {
+  private TileAction tileActionOf(MonopolyTile tile) {
     return switch (tile) {
-      case OwnableTile(Ownable ownable) -> ownableAction(ownable);
-      case TaxTile(int percentage) -> payPercentageTax(percentage);
-      case GoToJailTile unused -> this::sendPlayerToJail;
-      case FreeParkingTile unused -> player -> println("Free parking");
-      case JailTile unused -> player -> println("Visiting Jail");
-      case StartTile unused -> player -> println("On start Tile");
+      case OwnableMonopolyTile(Ownable ownable) -> ownableAction(ownable);
+      case TaxMonopolyTile(int percentage) -> payPercentageTax(percentage);
+      case GoToJailMonopolyTile unused -> this::sendPlayerToJail;
+      case FreeParkingMonopolyTile unused -> player -> println("Free parking");
+      case JailMonopolyTile unused -> player -> println("Visiting Jail");
+      case StartMonopolyTile unused -> player -> println("On start Tile");
     };
   }
 
@@ -347,7 +347,7 @@ public class Game implements EventPublisher {
     return players;
   }
 
-  public List<Tile> getTiles() {
+  public List<MonopolyTile> getTiles() {
     return board.tiles();
   }
 

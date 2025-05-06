@@ -1,9 +1,9 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.model.board;
 
-import edu.ntnu.idi.bidata.boardgame.backend.model.tile.CornerTile;
-import edu.ntnu.idi.bidata.boardgame.backend.model.tile.JailTile;
-import edu.ntnu.idi.bidata.boardgame.backend.model.tile.StartTile;
-import edu.ntnu.idi.bidata.boardgame.backend.model.tile.Tile;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.CornerMonopolyTile;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.JailMonopolyTile;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.MonopolyTile;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.StartMonopolyTile;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -21,7 +21,7 @@ import java.util.Map;
  * @author Mihailo Hranisavljevic and Nick Heggø
  * @version 2025.04.22
  */
-public record Board(List<Tile> tiles) {
+public record Board(List<MonopolyTile> tiles) {
 
   public Board {
     assertValidLayout(tiles);
@@ -32,11 +32,11 @@ public record Board(List<Tile> tiles) {
    * Calculates the tile a player lands on after moving a specified number of steps from the
    * provided starting tile.
    *
-   * @param currentPosition the starting {@link Tile} from which the steps are calculated
+   * @param currentPosition the starting {@link MonopolyTile} from which the steps are calculated
    * @param steps the number of steps to move forward from the starting tile
-   * @return the {@link Tile} the player lands on after moving the specified number of steps
+   * @return the {@link MonopolyTile} the player lands on after moving the specified number of steps
    */
-  public Tile getTileAfterSteps(int currentPosition, int steps) {
+  public MonopolyTile getTileAfterSteps(int currentPosition, int steps) {
     if (currentPosition < 0) {
       throw new IllegalTilePositionException();
     }
@@ -49,18 +49,18 @@ public record Board(List<Tile> tiles) {
    *
    * @return the staring point of the game
    */
-  public StartTile getStartingTile() {
+  public StartMonopolyTile getStartingTile() {
     return tiles.stream()
-        .filter(StartTile.class::isInstance)
-        .map(StartTile.class::cast)
+        .filter(StartMonopolyTile.class::isInstance)
+        .map(StartMonopolyTile.class::cast)
         .findAny()
         .orElseThrow(InvalidBoardLayoutException::new);
   }
 
-  public JailTile getJailTile() {
+  public JailMonopolyTile getJailTile() {
     return tiles.stream()
-        .filter(JailTile.class::isInstance)
-        .map(JailTile.class::cast)
+        .filter(JailMonopolyTile.class::isInstance)
+        .map(JailMonopolyTile.class::cast)
         .findAny()
         .orElseThrow(InvalidBoardLayoutException::new);
   }
@@ -69,7 +69,7 @@ public record Board(List<Tile> tiles) {
     return tiles.size();
   }
 
-  public int getTilePosition(Tile tile) {
+  public int getTilePosition(MonopolyTile tile) {
     return tiles.indexOf(tile);
   }
 
@@ -77,10 +77,10 @@ public record Board(List<Tile> tiles) {
    * Retrieves a tile at the provided position.
    *
    * @param position the position of the tile to retrieve
-   * @return the {@link Tile} object at the specified position
+   * @return the {@link MonopolyTile} object at the specified position
    * @throws IndexOutOfBoundsException if the position is out of bounds
    */
-  public Tile getTile(int position) {
+  public MonopolyTile getTile(int position) {
     return tiles.get(position);
   }
 
@@ -93,16 +93,20 @@ public record Board(List<Tile> tiles) {
     return tiles.size();
   }
 
-  private List<Tile> shuffleTiles(List<Tile> tiles) {
+  private List<MonopolyTile> shuffleTiles(List<MonopolyTile> tiles) {
     Collections.shuffle(tiles);
 
-    List<CornerTile> cornerTiles =
-        tiles.stream().filter(CornerTile.class::isInstance).map(CornerTile.class::cast).toList();
+    List<CornerMonopolyTile> cornerTiles =
+        tiles.stream()
+            .filter(CornerMonopolyTile.class::isInstance)
+            .map(CornerMonopolyTile.class::cast)
+            .toList();
 
-    var topLeft = findCornerTileByPosition(cornerTiles, CornerTile.Position.TOP_LEFT);
-    var topRight = findCornerTileByPosition(cornerTiles, CornerTile.Position.TOP_RIGHT);
-    var bottomLeft = findCornerTileByPosition(cornerTiles, CornerTile.Position.BOTTOM_LEFT);
-    var bottomRight = findCornerTileByPosition(cornerTiles, CornerTile.Position.BOTTOM_RIGHT);
+    var topLeft = findCornerTileByPosition(cornerTiles, CornerMonopolyTile.Position.TOP_LEFT);
+    var topRight = findCornerTileByPosition(cornerTiles, CornerMonopolyTile.Position.TOP_RIGHT);
+    var bottomLeft = findCornerTileByPosition(cornerTiles, CornerMonopolyTile.Position.BOTTOM_LEFT);
+    var bottomRight =
+        findCornerTileByPosition(cornerTiles, CornerMonopolyTile.Position.BOTTOM_RIGHT);
 
     var orderedTiles = List.of(bottomRight, bottomLeft, topLeft, topRight);
 
@@ -117,19 +121,22 @@ public record Board(List<Tile> tiles) {
     return tiles;
   }
 
-  private CornerTile findCornerTileByPosition(
-      List<CornerTile> tiles, CornerTile.Position position) {
+  private CornerMonopolyTile findCornerTileByPosition(
+      List<CornerMonopolyTile> tiles, CornerMonopolyTile.Position position) {
     return tiles.stream().filter(tile -> tile.getPosition() == position).findAny().orElseThrow();
   }
 
-  private void assertValidLayout(List<Tile> tiles) {
+  private void assertValidLayout(List<MonopolyTile> tiles) {
     var cornerTiles =
-        tiles.stream().filter(CornerTile.class::isInstance).map(CornerTile.class::cast).toList();
+        tiles.stream()
+            .filter(CornerMonopolyTile.class::isInstance)
+            .map(CornerMonopolyTile.class::cast)
+            .toList();
     assertCornerTiles(cornerTiles);
     assertLayoutShape(tiles);
   }
 
-  private void assertLayoutShape(List<Tile> tiles) {
+  private void assertLayoutShape(List<MonopolyTile> tiles) {
     int tilesPerSide = tiles.size() - 4;
     if ((tilesPerSide % 4) != 0) {
       throw new InvalidBoardLayoutException(
@@ -138,7 +145,7 @@ public record Board(List<Tile> tiles) {
     }
   }
 
-  private void assertCornerTiles(List<CornerTile> tiles) {
+  private void assertCornerTiles(List<CornerMonopolyTile> tiles) {
     // assert there are four corners
     if (tiles.size() != 4) {
       throw new InvalidBoardLayoutException("A valid board layout will need 4 corner tiles!");
@@ -162,7 +169,8 @@ public record Board(List<Tile> tiles) {
 
     // assert there are one tile per corner
     var sortByPositon =
-        new EnumMap<CornerTile.Position, List<CornerTile>>(CornerTile.Position.class);
+        new EnumMap<CornerMonopolyTile.Position, List<CornerMonopolyTile>>(
+            CornerMonopolyTile.Position.class);
     for (var tile : tiles) {
       sortByPositon.computeIfAbsent(tile.getPosition(), k -> new ArrayList<>()).add(tile);
     }

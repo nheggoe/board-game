@@ -1,6 +1,6 @@
 package edu.ntnu.idi.bidata.boardgame.core;
 
-import edu.ntnu.idi.bidata.boardgame.backend.model.Player;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.Player;
 
 /**
  * {@code TileAction} defines the executable action that occurs when a player lands on a tile.

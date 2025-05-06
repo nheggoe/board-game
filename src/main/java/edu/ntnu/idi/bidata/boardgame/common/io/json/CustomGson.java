@@ -12,7 +12,7 @@ import com.google.gson.JsonSerializer;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import edu.ntnu.idi.bidata.boardgame.backend.model.tile.Tile;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.MonopolyTile;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.time.LocalDate;
@@ -51,11 +51,11 @@ public class CustomGson {
   }
 
   // TODO add support for Tiles and Ownable
-  private static class GameAdapter extends TypeAdapter<Tile>
-      implements JsonSerializer<Tile>, JsonDeserializer<Tile> {
+  private static class GameAdapter extends TypeAdapter<MonopolyTile>
+      implements JsonSerializer<MonopolyTile>, JsonDeserializer<MonopolyTile> {
 
     @Override
-    public Tile deserialize(
+    public MonopolyTile deserialize(
         JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext)
         throws JsonParseException {
       return null;
@@ -63,15 +63,15 @@ public class CustomGson {
 
     @Override
     public JsonElement serialize(
-        Tile tile, Type type, JsonSerializationContext jsonSerializationContext) {
+        MonopolyTile tile, Type type, JsonSerializationContext jsonSerializationContext) {
       return null;
     }
 
     @Override
-    public void write(JsonWriter jsonWriter, Tile tile) throws IOException {}
+    public void write(JsonWriter jsonWriter, MonopolyTile tile) throws IOException {}
 
     @Override
-    public Tile read(JsonReader jsonReader) throws IOException {
+    public MonopolyTile read(JsonReader jsonReader) throws IOException {
       return null;
     }
   }

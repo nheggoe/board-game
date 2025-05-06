@@ -1,6 +1,6 @@
 package edu.ntnu.idi.bidata.boardgame.common.io.json;
 
-import edu.ntnu.idi.bidata.boardgame.backend.io.DAO;
+import edu.ntnu.idi.bidata.boardgame.common.io.DAO;
 import java.util.Set;
 import java.util.stream.Stream;
 

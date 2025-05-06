@@ -1,7 +1,7 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.model;
 
-import edu.ntnu.idi.bidata.boardgame.backend.model.ownable.Owner;
-import edu.ntnu.idi.bidata.boardgame.backend.util.StringFormatter;
+import edu.ntnu.idi.bidata.boardgame.common.util.StringFormatter;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Owner;
 import java.util.UUID;
 
 /**

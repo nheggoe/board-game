@@ -1,11 +1,11 @@
 package edu.ntnu.idi.bidata.boardgame.core;
 
-import edu.ntnu.idi.bidata.boardgame.backend.event.EventListener;
-import edu.ntnu.idi.bidata.boardgame.backend.model.Game;
-import edu.ntnu.idi.bidata.boardgame.backend.model.Player;
-import edu.ntnu.idi.bidata.boardgame.backend.model.board.Board;
-import edu.ntnu.idi.bidata.boardgame.backend.model.dice.Dice;
-import edu.ntnu.idi.bidata.boardgame.backend.model.tile.Tile;
+import edu.ntnu.idi.bidata.boardgame.common.event.EventListener;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.Game;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.Player;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.board.Board;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.dice.Dice;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.MonopolyTile;
 import java.util.List;
 import java.util.Objects;
 
@@ -34,7 +34,7 @@ public class GameEngine {
     return List.copyOf(game.getPlayers());
   }
 
-  public List<Tile> getTiles() {
+  public List<MonopolyTile> getTiles() {
     return List.copyOf(game.getTiles());
   }
 

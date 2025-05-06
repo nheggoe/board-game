@@ -1,7 +1,7 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.model.board;
 
-import edu.ntnu.idi.bidata.boardgame.backend.model.tile.Tile;
-import edu.ntnu.idi.bidata.boardgame.backend.model.tile.TileFactory;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.MonopolyTile;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.TileFactory;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +22,7 @@ public class BoardFactory {
 
   private static Board generateNormalBoard() {
     var tmp = TileFactory.generateOwnableTiles();
-    List<Tile> tiles = new ArrayList<>(tmp);
+    List<MonopolyTile> tiles = new ArrayList<>(tmp);
     tiles.addAll(TileFactory.generateCornerTiles());
     return new Board(tiles);
   }

@@ -1,13 +1,13 @@
 package edu.ntnu.idi.bidata.boardgame.core;
 
-import static edu.ntnu.idi.bidata.boardgame.backend.util.InputHandler.collectValidString;
-import static edu.ntnu.idi.bidata.boardgame.backend.util.InputHandler.nextLine;
-import static edu.ntnu.idi.bidata.boardgame.backend.util.OutputHandler.*;
+import static edu.ntnu.idi.bidata.boardgame.common.util.InputHandler.collectValidString;
+import static edu.ntnu.idi.bidata.boardgame.common.util.InputHandler.nextLine;
+import static edu.ntnu.idi.bidata.boardgame.common.util.OutputHandler.printInputPrompt;
+import static edu.ntnu.idi.bidata.boardgame.common.util.OutputHandler.println;
 
-import edu.ntnu.idi.bidata.boardgame.backend.io.csv.CSVHandler;
-import edu.ntnu.idi.bidata.boardgame.backend.model.Player;
-import edu.ntnu.idi.bidata.boardgame.backend.util.OutputHandler;
-import edu.ntnu.idi.bidata.boardgame.backend.util.StringFormatter;
+import edu.ntnu.idi.bidata.boardgame.common.io.csv.CSVHandler;
+import edu.ntnu.idi.bidata.boardgame.common.util.StringFormatter;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.Player;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -75,10 +75,10 @@ public class PlayerManager {
         numberOfPlayers = Integer.parseInt(input);
 
         if (numberOfPlayers < 1) {
-          OutputHandler.println("Number of players must be at least 1. Try again.");
+          println("Number of players must be at least 1. Try again.");
         }
       } catch (NumberFormatException e) {
-        OutputHandler.println("Invalid input. Please enter a valid number.");
+        println("Invalid input. Please enter a valid number.");
       }
     }
 
@@ -111,14 +111,14 @@ public class PlayerManager {
     printInputPrompt();
     String name = collectValidString();
 
-    OutputHandler.println("Choose a figure for player %d:".formatted(playerNumber));
+    println("Choose a figure for player %d:".formatted(playerNumber));
     while (true) {
       try {
         printInputPrompt("Available figures: " + getAvailableFigures());
         Player.Figure figure = Player.Figure.valueOf(collectValidString().strip().toUpperCase());
         return new Player(name, figure);
       } catch (IllegalArgumentException e) {
-        OutputHandler.println("Please choose a valid figure:");
+        println("Please choose a valid figure:");
       }
     }
   }
