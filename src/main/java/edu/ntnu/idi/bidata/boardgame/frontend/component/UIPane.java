@@ -1,9 +1,9 @@
-package edu.ntnu.idi.bidata.boardgame.frontend.view;
+package edu.ntnu.idi.bidata.boardgame.frontend.component;
 
-import edu.ntnu.idi.bidata.boardgame.backend.core.GameEngine;
 import edu.ntnu.idi.bidata.boardgame.backend.model.Player;
 import edu.ntnu.idi.bidata.boardgame.backend.model.ownable.Ownable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -38,7 +38,7 @@ public class UIPane extends VBox {
     Color.web("#e2e3e5")
   };
 
-  public UIPane() {
+  public UIPane(List<Player> players) {
     setPrefWidth(320);
     setStyle("-fx-background-color: linear-gradient(to bottom, #1e293b, #0f172a);");
     setPadding(new Insets(10));
@@ -46,13 +46,8 @@ public class UIPane extends VBox {
     VBox content = new VBox(16);
     content.setPadding(new Insets(10));
 
-    var game =
-        GameEngine.getInstance()
-            .getGame()
-            .orElseThrow(() -> new IllegalStateException("Game engine is not correctly setup!"));
-
     int i = 0;
-    for (Player player : game) {
+    for (Player player : players) {
       PlayerInfoBox box = new PlayerInfoBox(player, CARD_COLORS[i % CARD_COLORS.length]);
       playerBoxes.put(player, box);
       content.getChildren().add(box);

@@ -1,4 +1,4 @@
-package edu.ntnu.idi.bidata.boardgame.frontend.event;
+package edu.ntnu.idi.bidata.boardgame.backend.event;
 
 /**
  * An interface to represent an event listener that can respond to updates.
@@ -12,5 +12,5 @@ package edu.ntnu.idi.bidata.boardgame.frontend.event;
  * @version 2025.04.02
  */
 public interface EventListener {
-  void update();
+  void update(Event event);
 }

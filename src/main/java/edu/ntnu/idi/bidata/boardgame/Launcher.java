@@ -1,11 +1,9 @@
 package edu.ntnu.idi.bidata.boardgame;
 
-import edu.ntnu.idi.bidata.boardgame.backend.MonopolyFacade;
 import edu.ntnu.idi.bidata.boardgame.frontend.MonopolyApp;
 
 /**
- * The {@link Launcher} class is the entry point of the program. It creates a new instance of the
- * {@link MonopolyFacade} class and runs it.
+ * The {@link Launcher} class is the entry point of the program.
  *
  * @author Nick Heggø
  * @version 2025.04.15
