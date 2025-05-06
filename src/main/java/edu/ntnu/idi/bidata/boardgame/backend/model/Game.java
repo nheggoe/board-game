@@ -5,7 +5,7 @@ import static edu.ntnu.idi.bidata.boardgame.backend.util.InputHandler.nextLine;
 import edu.ntnu.idi.bidata.boardgame.backend.core.TileAction;
 import edu.ntnu.idi.bidata.boardgame.backend.event.Event;
 import edu.ntnu.idi.bidata.boardgame.backend.event.EventListener;
-import edu.ntnu.idi.bidata.boardgame.backend.event.EventManager;
+import edu.ntnu.idi.bidata.boardgame.backend.event.EventPublisher;
 import edu.ntnu.idi.bidata.boardgame.backend.model.board.Board;
 import edu.ntnu.idi.bidata.boardgame.backend.model.dice.DiceRoll;
 import edu.ntnu.idi.bidata.boardgame.backend.model.ownable.InsufficientFundsException;
@@ -44,7 +44,7 @@ import java.util.stream.Stream;
  * @author Nick Heggø
  * @version 2025.04.22
  */
-public class Game implements EventManager {
+public class Game implements EventPublisher {
 
   private final UUID id;
   private final Board board;
@@ -135,7 +135,7 @@ public class Game implements EventManager {
 
   @Override
   public void update(Event event) {
-    eventListeners.forEach(listener -> listener.update(event));
+    eventListeners.forEach(listener -> listener.onEvent(event));
   }
 
   // ------------------------  private  ------------------------
@@ -310,7 +310,7 @@ public class Game implements EventManager {
   }
 
   private void notifyPlayerMoved(Player player, int newPosition) {
-    update(new Event(Event.Type.PLAYER_MOVED, player.getId(), newPosition));
+    update(new Event(Event.Type.PLAYER_MOVED, player.getId(), player));
   }
 
   private void notifyDiceRolled(Player player, DiceRoll diceRoll) {
