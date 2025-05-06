@@ -1,6 +1,5 @@
 package edu.ntnu.idi.bidata.boardgame.core;
 
-import edu.ntnu.idi.bidata.boardgame.common.event.EventListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -20,15 +19,15 @@ public abstract class View extends Region implements AutoCloseable {
   }
 
   protected void addAllComponents(Component... components) {
-    for (Component component : components) {
+    for (var component : components) {
       addComponent(component);
     }
   }
 
   @Override
   public void close() throws Exception {
-    for (Component component : components) {
-      if (component instanceof EventListener listener) {
+    for (var component : components) {
+      if (component instanceof EventListeningComponent listener) {
         listener.close();
       }
     }

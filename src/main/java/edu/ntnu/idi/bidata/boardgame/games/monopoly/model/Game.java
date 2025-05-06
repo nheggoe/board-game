@@ -82,7 +82,7 @@ public class Game {
     if (oldPositon > newPosition) {
       player.addBalance(200);
     }
-    notifyDiceRolled(player, roll);
+    notifyDiceRolled(roll);
     notifyPlayerMoved(player);
   }
 
@@ -299,8 +299,8 @@ public class Game {
     eventBus.publishEvent(new PlayerMovedEvent(player));
   }
 
-  private void notifyDiceRolled(Player player, DiceRoll diceRoll) {
-    eventBus.publishEvent(new DiceRolledEvent(player, diceRoll));
+  private void notifyDiceRolled(DiceRoll diceRoll) {
+    eventBus.publishEvent(new DiceRolledEvent(diceRoll));
   }
 
   private void println(Object o) {

@@ -4,7 +4,7 @@ import edu.ntnu.idi.bidata.boardgame.common.event.Event;
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
 import edu.ntnu.idi.bidata.boardgame.common.event.EventListener;
 import edu.ntnu.idi.bidata.boardgame.common.event.PlayerRemovedEvent;
-import edu.ntnu.idi.bidata.boardgame.core.Component;
+import edu.ntnu.idi.bidata.boardgame.core.EventListeningComponent;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.Player;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Ownable;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Property;
@@ -15,7 +15,6 @@ import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.MonopolyTile;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.OwnableMonopolyTile;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.TaxMonopolyTile;
 import java.util.List;
-import java.util.Objects;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -29,14 +28,14 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
-public class GameBoard extends Component implements EventListener {
+public class MonopolyBoardView extends EventListeningComponent implements EventListener {
 
-  private final EventBus eventBus;
   private final GridPane board;
 
-  public GameBoard(EventBus eventBus, List<MonopolyTile> tiles) {
-    this.eventBus = Objects.requireNonNull(eventBus, "EventBus cannot be null");
-    eventBus.addListener(PlayerRemovedEvent.class, this);
+  public MonopolyBoardView(EventBus eventBus, List<MonopolyTile> tiles) {
+    super(eventBus);
+    getEventBus().addListener(PlayerRemovedEvent.class, this);
+
     board = new GridPane();
     getChildren().add(board);
     setAlignment(Pos.CENTER);
@@ -300,6 +299,6 @@ public class GameBoard extends Component implements EventListener {
 
   @Override
   public void close() {
-    eventBus.removeListener(PlayerRemovedEvent.class, this);
+    getEventBus().removeListener(PlayerRemovedEvent.class, this);
   }
 }

@@ -1,6 +1,20 @@
 package edu.ntnu.idi.bidata.boardgame.common.event;
 
+/**
+ * Represents an abstract base for events used within the application.
+ *
+ * <p>This sealed interface is designed to define a common type for all event instances, enabling
+ * the system to process and distinguish between different types of events. It ensures type safety
+ * by restricting the permitted implementations to a predefined set of classes.
+ *
+ * <p>Each permitted implementation defines a specific type of event, carrying relevant information
+ * that can be published, listened to, and handled by the appropriate components within the system.
+ *
+ * <p>This interface works in conjunction with other components such as {@link EventBus}, {@link
+ * EventListener}, and {@link EventPublisher} to allow for event-driven programming paradigms.
+ *
+ * @author Nick Heggø
+ * @version 2025.05.06
+ */
 public sealed interface Event
-    permits DiceRolledEvent, OutputEvent, PlayerMovedEvent, PlayerRemovedEvent, PurchaseEvent {
-  Object payload();
-}
+    permits DiceRolledEvent, OutputEvent, PlayerMovedEvent, PlayerRemovedEvent, PurchaseEvent {}

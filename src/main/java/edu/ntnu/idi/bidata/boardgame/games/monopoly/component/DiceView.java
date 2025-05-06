@@ -1,6 +1,9 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.component;
 
-import edu.ntnu.idi.bidata.boardgame.core.Component;
+import edu.ntnu.idi.bidata.boardgame.common.event.DiceRolledEvent;
+import edu.ntnu.idi.bidata.boardgame.common.event.Event;
+import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
+import edu.ntnu.idi.bidata.boardgame.core.EventListeningComponent;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.dice.DiceRoll;
 import java.util.Random;
 import javafx.animation.KeyFrame;
@@ -30,7 +33,7 @@ import javafx.util.Duration;
  *
  * @version 2025.04.28
  */
-public class DiceView extends Component {
+public class DiceView extends EventListeningComponent {
 
   private static final String BASE_PATH = "/images/dice";
   private static final int FACE_COUNT = 6;
@@ -40,7 +43,9 @@ public class DiceView extends Component {
 
   private final Random random = new Random();
 
-  public DiceView() {
+  public DiceView(EventBus eventBus) {
+    super(eventBus);
+    getEventBus().addListener(DiceRolledEvent.class, this);
     setAlignment(Pos.CENTER);
     setSpacing(20);
   }
@@ -97,5 +102,17 @@ public class DiceView extends Component {
    */
   private Image loadFace(int face) {
     return new Image(BASE_PATH + face + ".png");
+  }
+
+  @Override
+  public void onEvent(Event event) {
+    if (event instanceof DiceRolledEvent(DiceRoll diceRoll)) {
+      animateDiceRoll(diceRoll);
+    }
+  }
+
+  @Override
+  public void close() {
+    getEventBus().removeListener(DiceRolledEvent.class, this);
   }
 }

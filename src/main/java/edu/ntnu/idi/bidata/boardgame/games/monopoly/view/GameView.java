@@ -3,10 +3,10 @@ package edu.ntnu.idi.bidata.boardgame.games.monopoly.view;
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
 import edu.ntnu.idi.bidata.boardgame.core.View;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.component.DiceView;
-import edu.ntnu.idi.bidata.boardgame.games.monopoly.component.GameBoard;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.component.MessageLog;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.component.MonopolyBoardView;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.component.PlayerDashboard;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.component.RollDiceButton;
-import edu.ntnu.idi.bidata.boardgame.games.monopoly.component.UIPane;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.Player;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.MonopolyTile;
 import java.util.List;
@@ -30,18 +30,18 @@ public class GameView extends View {
     // Center
     StackPane center = new StackPane();
     root.setCenter(center);
-    GameBoard gameBoard = new GameBoard(eventBus, tiles);
-    DiceView diceView = new DiceView();
-    center.getChildren().addAll(gameBoard, diceView);
-    addAllComponents(gameBoard, diceView);
+    MonopolyBoardView monopolyBoardView = new MonopolyBoardView(eventBus, tiles);
+    DiceView diceView = new DiceView(eventBus);
+    center.getChildren().addAll(monopolyBoardView, diceView);
+    addAllComponents(monopolyBoardView, diceView);
 
     // Right
     VBox right = new VBox();
     root.setRight(right);
-    UIPane uiPane = new UIPane(players);
+    PlayerDashboard playerDashboard = new PlayerDashboard(eventBus, players);
     RollDiceButton rollDiceButton = new RollDiceButton(rollDiceHandler);
-    right.getChildren().addAll(uiPane, rollDiceButton);
-    addAllComponents(uiPane, rollDiceButton);
+    right.getChildren().addAll(playerDashboard, rollDiceButton);
+    addAllComponents(playerDashboard, rollDiceButton);
 
     // Bottom
     MessageLog messageLog = new MessageLog();

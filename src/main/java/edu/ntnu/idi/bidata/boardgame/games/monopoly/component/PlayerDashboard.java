@@ -1,6 +1,13 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.component;
 
-import edu.ntnu.idi.bidata.boardgame.core.Component;
+import edu.ntnu.idi.bidata.boardgame.common.event.DiceRolledEvent;
+import edu.ntnu.idi.bidata.boardgame.common.event.Event;
+import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
+import edu.ntnu.idi.bidata.boardgame.common.event.OutputEvent;
+import edu.ntnu.idi.bidata.boardgame.common.event.PlayerMovedEvent;
+import edu.ntnu.idi.bidata.boardgame.common.event.PlayerRemovedEvent;
+import edu.ntnu.idi.bidata.boardgame.common.event.PurchaseEvent;
+import edu.ntnu.idi.bidata.boardgame.core.EventListeningComponent;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.Player;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Ownable;
 import java.util.HashMap;
@@ -26,7 +33,7 @@ import javafx.scene.text.FontWeight;
  * @author Mihailo Hranisavljevic
  * @version 2025.04.25
  */
-public class UIPane extends Component {
+public class PlayerDashboard extends EventListeningComponent {
 
   private final HashMap<Player, PlayerInfoBox> playerBoxes = new HashMap<>();
   private Player currentPlayer;
@@ -39,7 +46,10 @@ public class UIPane extends Component {
     Color.web("#e2e3e5")
   };
 
-  public UIPane(List<Player> players) {
+  public PlayerDashboard(EventBus eventBus, List<Player> players) {
+    super(eventBus);
+    getEventBus().addListener(PlayerMovedEvent.class, this);
+    getEventBus().addListener(PlayerRemovedEvent.class, this);
     setPrefWidth(320);
     setStyle("-fx-background-color: linear-gradient(to bottom, #1e293b, #0f172a);");
     setPadding(new Insets(10));
@@ -80,6 +90,29 @@ public class UIPane extends Component {
       PlayerInfoBox box = entry.getValue();
       box.setGlow(entry.getKey().equals(currentPlayer));
     }
+  }
+
+  @Override
+  public void onEvent(Event event) {
+    switch (event) {
+      case PlayerMovedEvent(Player player) -> {
+        refresh();
+        highlightCurrentPlayer();
+      }
+      case PlayerRemovedEvent(Player player) -> {
+        playerBoxes.remove(player);
+        refresh();
+      }
+      case DiceRolledEvent diceRolledEvent -> {}
+      case OutputEvent outputEvent -> {}
+      case PurchaseEvent purchaseEvent -> {}
+    }
+  }
+
+  @Override
+  public void close() throws Exception {
+    getEventBus().removeListener(PlayerMovedEvent.class, this);
+    getEventBus().removeListener(PlayerRemovedEvent.class, this);
   }
 
   /** {@code PlayerInfoBox} represents a stylized card for one player. */
