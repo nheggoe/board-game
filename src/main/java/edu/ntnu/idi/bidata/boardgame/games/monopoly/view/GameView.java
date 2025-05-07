@@ -18,7 +18,7 @@ import javafx.scene.layout.VBox;
 
 /**
  * @author Nick Heggø
- * @version 2025.05.06
+ * @version 2025.05.07
  */
 public class GameView extends View {
 
@@ -34,7 +34,7 @@ public class GameView extends View {
     // Center
     StackPane center = new StackPane();
     root.setCenter(center);
-    MonopolyBoardView monopolyBoardView = new MonopolyBoardView(eventBus, tiles);
+    MonopolyBoardView monopolyBoardView = new MonopolyBoardView(eventBus, tiles, players);
     DiceView diceView = new DiceView(eventBus);
     center.getChildren().addAll(monopolyBoardView, diceView);
     addComponents(monopolyBoardView, diceView);

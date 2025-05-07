@@ -3,7 +3,7 @@ package edu.ntnu.idi.bidata.boardgame.games.monopoly.component;
 import edu.ntnu.idi.bidata.boardgame.common.event.Event;
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
 import edu.ntnu.idi.bidata.boardgame.common.event.EventListener;
-import edu.ntnu.idi.bidata.boardgame.common.event.PlayerRemovedEvent;
+import edu.ntnu.idi.bidata.boardgame.common.event.PlayerMovedEvent;
 import edu.ntnu.idi.bidata.boardgame.core.EventListeningComponent;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.Player;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Ownable;
@@ -28,18 +28,22 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
+/**
+ * @author Nick Heggø
+ * @version 2025.05.07
+ */
 public class MonopolyBoardView extends EventListeningComponent implements EventListener {
 
   private final GridPane board;
 
-  public MonopolyBoardView(EventBus eventBus, List<MonopolyTile> tiles) {
+  public MonopolyBoardView(EventBus eventBus, List<MonopolyTile> tiles, List<Player> players) {
     super(eventBus);
-    getEventBus().addListener(PlayerRemovedEvent.class, this);
+    getEventBus().addListener(PlayerMovedEvent.class, this);
 
     board = new GridPane();
     getChildren().add(board);
     setAlignment(Pos.CENTER);
-    initialize(tiles);
+    initialize(tiles, players);
   }
 
   /**
@@ -178,7 +182,7 @@ public class MonopolyBoardView extends EventListeningComponent implements EventL
     };
   }
 
-  private void initialize(List<MonopolyTile> tiles) {
+  private void initialize(List<MonopolyTile> tiles, List<Player> players) {
     board.setGridLinesVisible(true); // optional: show grid lines
     board.setAlignment(Pos.CENTER);
 
@@ -209,6 +213,8 @@ public class MonopolyBoardView extends EventListeningComponent implements EventL
     for (int col = 1; col < size - 1; col++) {
       board.add(createTile(tiles.get(pos++)), size - 1, col);
     }
+
+    players.forEach(player -> playerMoved(player, 0));
   }
 
   public void bindSizeProperty() {
@@ -292,13 +298,13 @@ public class MonopolyBoardView extends EventListeningComponent implements EventL
 
   @Override
   public void onEvent(Event event) {
-    if (event instanceof PlayerRemovedEvent(Player player)) {
+    if (event instanceof PlayerMovedEvent(Player player)) {
       playerMoved(player, player.getPosition());
     }
   }
 
   @Override
   public void close() {
-    getEventBus().removeListener(PlayerRemovedEvent.class, this);
+    getEventBus().removeListener(PlayerMovedEvent.class, this);
   }
 }

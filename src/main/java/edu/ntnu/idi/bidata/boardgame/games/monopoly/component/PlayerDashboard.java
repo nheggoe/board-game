@@ -50,6 +50,7 @@ public class PlayerDashboard extends EventListeningComponent {
     super(eventBus);
     getEventBus().addListener(PlayerMovedEvent.class, this);
     getEventBus().addListener(PlayerRemovedEvent.class, this);
+
     setPrefWidth(320);
     setStyle("-fx-background-color: linear-gradient(to bottom, #1e293b, #0f172a);");
     setPadding(new Insets(10));
