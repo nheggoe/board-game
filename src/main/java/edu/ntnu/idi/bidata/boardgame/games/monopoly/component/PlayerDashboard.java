@@ -8,7 +8,7 @@ import edu.ntnu.idi.bidata.boardgame.common.event.PlayerMovedEvent;
 import edu.ntnu.idi.bidata.boardgame.common.event.PlayerRemovedEvent;
 import edu.ntnu.idi.bidata.boardgame.common.event.PurchaseEvent;
 import edu.ntnu.idi.bidata.boardgame.core.EventListeningComponent;
-import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.Player;
+import edu.ntnu.idi.bidata.boardgame.core.model.Player;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Ownable;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Owner;
 import java.util.HashMap;

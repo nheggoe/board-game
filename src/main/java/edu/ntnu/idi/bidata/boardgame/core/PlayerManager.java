@@ -7,7 +7,7 @@ import static edu.ntnu.idi.bidata.boardgame.common.util.OutputHandler.println;
 
 import edu.ntnu.idi.bidata.boardgame.common.io.csv.CSVHandler;
 import edu.ntnu.idi.bidata.boardgame.common.util.StringFormatter;
-import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.Player;
+import edu.ntnu.idi.bidata.boardgame.core.model.Player;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Owner;
 import java.util.ArrayList;
 import java.util.Arrays;

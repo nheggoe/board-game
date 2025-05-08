@@ -2,12 +2,12 @@ package edu.ntnu.idi.bidata.boardgame.games.monopoly.view;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
 import edu.ntnu.idi.bidata.boardgame.core.View;
+import edu.ntnu.idi.bidata.boardgame.core.model.Player;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.component.DiceView;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.component.MessagePanel;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.component.MonopolyBoardView;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.component.PlayerDashboard;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.component.RollDiceButton;
-import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.Player;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.MonopolyTile;
 import java.util.List;
 import javafx.event.ActionEvent;

@@ -2,7 +2,7 @@ package edu.ntnu.idi.bidata.boardgame.common.io.csv;
 
 import edu.ntnu.idi.bidata.boardgame.common.io.FileUtil;
 import edu.ntnu.idi.bidata.boardgame.common.util.OutputHandler;
-import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.Player;
+import edu.ntnu.idi.bidata.boardgame.core.model.Player;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Owner;
 import java.io.*;
 import java.nio.file.Path;

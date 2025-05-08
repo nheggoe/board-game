@@ -1,6 +1,6 @@
 package edu.ntnu.idi.bidata.boardgame.common.event;
 
-import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.Player;
+import edu.ntnu.idi.bidata.boardgame.core.model.Player;
 import java.util.Objects;
 
 public record PlayerRemovedEvent(Player player) implements Event {

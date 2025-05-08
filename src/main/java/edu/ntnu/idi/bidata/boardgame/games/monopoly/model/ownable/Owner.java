@@ -1,6 +1,6 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable;
 
-import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.Player;
+import edu.ntnu.idi.bidata.boardgame.core.model.Player;
 import java.util.ArrayList;
 import java.util.List;
 

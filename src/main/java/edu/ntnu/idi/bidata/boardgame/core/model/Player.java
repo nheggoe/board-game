@@ -1,4 +1,4 @@
-package edu.ntnu.idi.bidata.boardgame.games.monopoly.model;
+package edu.ntnu.idi.bidata.boardgame.core.model;
 
 import edu.ntnu.idi.bidata.boardgame.common.util.StringFormatter;
 import java.util.UUID;

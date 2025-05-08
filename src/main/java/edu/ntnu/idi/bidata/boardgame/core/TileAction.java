@@ -1,6 +1,6 @@
 package edu.ntnu.idi.bidata.boardgame.core;
 
-import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.Player;
+import edu.ntnu.idi.bidata.boardgame.core.model.Player;
 
 /**
  * Represents a functional interface that defines an action to be performed on a player within a

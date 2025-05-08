@@ -1,6 +1,6 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile;
 
-import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.Player;
+import edu.ntnu.idi.bidata.boardgame.core.model.Player;
 import java.util.HashMap;
 import java.util.Map;
 

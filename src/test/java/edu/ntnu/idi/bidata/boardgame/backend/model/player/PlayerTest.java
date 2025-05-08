@@ -3,7 +3,7 @@ package edu.ntnu.idi.bidata.boardgame.backend.model.player;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
-import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.Player;
+import edu.ntnu.idi.bidata.boardgame.core.model.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +12,7 @@ class PlayerTest {
 
   @BeforeEach
   void setup() {
-    player = new Player("John", Player.Figure.CAR);
+    player = new Player("John", Player.Figure.CAR) {};
   }
 
   @Test

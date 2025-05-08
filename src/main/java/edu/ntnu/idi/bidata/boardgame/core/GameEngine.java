@@ -1,7 +1,7 @@
 package edu.ntnu.idi.bidata.boardgame.core;
 
+import edu.ntnu.idi.bidata.boardgame.core.model.Player;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.Game;
-import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.Player;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.board.Board;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.dice.Dice;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.MonopolyTile;
