@@ -8,7 +8,7 @@ import static edu.ntnu.idi.bidata.boardgame.common.util.OutputHandler.println;
 import edu.ntnu.idi.bidata.boardgame.common.io.csv.CSVHandler;
 import edu.ntnu.idi.bidata.boardgame.common.util.StringFormatter;
 import edu.ntnu.idi.bidata.boardgame.core.model.Player;
-import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Owner;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.MonopolyPlayer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -117,7 +117,7 @@ public class PlayerManager {
       try {
         printInputPrompt("Available figures: " + getAvailableFigures());
         Player.Figure figure = Player.Figure.valueOf(collectValidString().strip().toUpperCase());
-        return new Owner(name, figure);
+        return new MonopolyPlayer(name, figure);
       } catch (IllegalArgumentException e) {
         println("Please choose a valid figure:");
       }

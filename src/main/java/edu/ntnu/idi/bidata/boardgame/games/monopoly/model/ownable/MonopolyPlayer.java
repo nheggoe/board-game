@@ -8,13 +8,13 @@ import java.util.List;
  * @author Nick Heggø
  * @version 2025.05.08
  */
-public class Owner extends Player {
+public class MonopolyPlayer extends Player {
 
   private final List<Ownable> ownedAssets;
 
   private int balance = 0;
 
-  public Owner(String name, Figure figure) {
+  public MonopolyPlayer(String name, Figure figure) {
     super(name, figure);
     this.ownedAssets = new ArrayList<>();
   }

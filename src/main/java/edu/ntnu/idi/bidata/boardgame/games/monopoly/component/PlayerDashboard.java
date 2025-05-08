@@ -9,8 +9,8 @@ import edu.ntnu.idi.bidata.boardgame.common.event.PlayerRemovedEvent;
 import edu.ntnu.idi.bidata.boardgame.common.event.PurchaseEvent;
 import edu.ntnu.idi.bidata.boardgame.core.EventListeningComponent;
 import edu.ntnu.idi.bidata.boardgame.core.model.Player;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.MonopolyPlayer;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Ownable;
-import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Owner;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -197,10 +197,10 @@ public class PlayerDashboard extends EventListeningComponent {
       positionLabel.setText("Tile: " + player.getPosition());
 
       // monopoly
-      if (player instanceof Owner owner) {
-        balanceLabel.setText("Balance: $" + owner.getBalance());
+      if (player instanceof MonopolyPlayer monopolyPlayer) {
+        balanceLabel.setText("Balance: $" + monopolyPlayer.getBalance());
         propertiesList.getChildren().clear();
-        for (Ownable ownable : owner.getOwnedAssets()) {
+        for (Ownable ownable : monopolyPlayer.getOwnedAssets()) {
           Label propLabel = new Label("• " + ownable.toString());
           propLabel.setFont(Font.font(PROPERTY_FONT, FontWeight.SEMI_BOLD, 13));
           propLabel.setTextFill(Color.web("#212529"));

@@ -13,8 +13,8 @@ import edu.ntnu.idi.bidata.boardgame.core.model.Player;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.board.Board;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.dice.DiceRoll;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.InsufficientFundsException;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.MonopolyPlayer;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Ownable;
-import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Owner;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Property;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Railroad;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Utility;
@@ -53,12 +53,12 @@ public class Game {
 
   private final UUID id;
   private final Board board;
-  private final List<Owner> players;
+  private final List<MonopolyPlayer> players;
   private boolean isEnded;
 
   private String gameSaveName;
 
-  public Game(EventBus eventBus, Board board, List<Owner> players) {
+  public Game(EventBus eventBus, Board board, List<MonopolyPlayer> players) {
     this.eventBus = Objects.requireNonNull(eventBus, "EventBus cannot be null!");
     this.id = UUID.randomUUID();
     this.board = Objects.requireNonNull(board, "Board cannot be null!");
@@ -87,7 +87,7 @@ public class Game {
     notifyPlayerMoved(player);
   }
 
-  private Optional<Owner> getPlayerById(UUID playerId) {
+  private Optional<MonopolyPlayer> getPlayerById(UUID playerId) {
     return players.stream().filter(player -> player.getId().equals(playerId)).findFirst();
   }
 
@@ -108,13 +108,13 @@ public class Game {
    *
    * @param player the player to send to jail
    */
-  public void sendPlayerToJail(Owner player) {
+  public void sendPlayerToJail(MonopolyPlayer player) {
     player.setPosition(board.getTilePosition(getJailTile()));
     getJailTile().jailForNumberOfRounds(player, 2);
   }
 
-  public Map.Entry<Integer, List<Owner>> getWinners() {
-    var treeMap = new TreeMap<Integer, List<Owner>>();
+  public Map.Entry<Integer, List<MonopolyPlayer>> getWinners() {
+    var treeMap = new TreeMap<Integer, List<MonopolyPlayer>>();
     players.forEach(
         player ->
             treeMap.computeIfAbsent(player.getNetWorth(), unused -> new ArrayList<>()).add(player));
@@ -129,7 +129,7 @@ public class Game {
    * @param tile the tile the player has landed on
    * @return the corresponding TileAction
    */
-  private TileAction<Owner> tileActionOf(MonopolyTile tile) {
+  private TileAction<MonopolyPlayer> tileActionOf(MonopolyTile tile) {
     return switch (tile) {
       case OwnableMonopolyTile(Ownable ownable) -> ownableAction(ownable);
       case TaxMonopolyTile(int percentage) -> payPercentageTax(percentage);
@@ -140,7 +140,7 @@ public class Game {
     };
   }
 
-  private TileAction<Owner> payPercentageTax(int percentage) {
+  private TileAction<MonopolyPlayer> payPercentageTax(int percentage) {
     return owner -> {
       int amountToPay = (owner.getBalance() * percentage) / 100;
       owner.pay(amountToPay);
@@ -156,11 +156,12 @@ public class Game {
    * @param ownable the ownable asset
    * @return the TileAction for the asset
    */
-  private TileAction<Owner> ownableAction(Ownable ownable) {
+  private TileAction<MonopolyPlayer> ownableAction(Ownable ownable) {
     return player -> {
-      Owner owner = players.stream().filter(p -> p.isOwnerOf(ownable)).findFirst().orElse(null);
+      MonopolyPlayer monopolyPlayer =
+          players.stream().filter(p -> p.isOwnerOf(ownable)).findFirst().orElse(null);
 
-      if (owner == null) {
+      if (monopolyPlayer == null) {
         println(player.getName() + " landed on unowned " + ownable + ".");
         if (confirmPurchase(player, ownable)) {
           player.purchase(ownable);
@@ -168,12 +169,14 @@ public class Game {
         } else {
           println(player.getName() + " declined to purchase " + ownable + ".");
         }
-      } else if (owner != player) {
-        println(player.getName() + " landed on " + owner.getName() + "'s " + ownable + ".");
+      } else if (monopolyPlayer != player) {
+        println(
+            player.getName() + " landed on " + monopolyPlayer.getName() + "'s " + ownable + ".");
         int rent = ownable.rent();
         player.pay(rent);
-        owner.addBalance(rent);
-        println(player.getName() + " paid $" + rent + " in rent to " + owner.getName() + ".");
+        monopolyPlayer.addBalance(rent);
+        println(
+            player.getName() + " paid $" + rent + " in rent to " + monopolyPlayer.getName() + ".");
       } else {
         println(player.getName() + " landed on their own property: " + ownable + ".");
         if (ownable instanceof Property property) {
@@ -190,7 +193,7 @@ public class Game {
    * @param ownable the ownable tile
    * @return true if purchase successful, false otherwise
    */
-  private boolean confirmPurchase(Owner player, Ownable ownable) {
+  private boolean confirmPurchase(MonopolyPlayer player, Ownable ownable) {
     if (player.hasSufficientFunds(ownable.price())) {
       String prompt =
           switch (ownable) {
@@ -221,7 +224,7 @@ public class Game {
    * @param ownable the asset being purchased
    * @return true if successful, false if insufficient funds
    */
-  private boolean processPurchase(Owner player, Ownable ownable) {
+  private boolean processPurchase(MonopolyPlayer player, Ownable ownable) {
     try {
       player.purchase(ownable);
       return true;
@@ -237,7 +240,7 @@ public class Game {
    * @param player the property owner
    * @param property the property to upgrade
    */
-  private void askToUpgrade(Owner player, Property property) {
+  private void askToUpgrade(MonopolyPlayer player, Property property) {
     if (property.hasHotel()) {
       println("You already have a Hotel on this property. No further upgrades possible.");
       return;
@@ -256,7 +259,7 @@ public class Game {
    * @param player the player
    * @param property the property to upgrade
    */
-  private void askToBuildHouse(Owner player, Property property) {
+  private void askToBuildHouse(MonopolyPlayer player, Property property) {
     println("You have %d houses on %s.".formatted(property.countHouses(), property.getName()));
     println("Would you like to build a house? (yes/no)");
     if (nextLine().equalsIgnoreCase("yes")) {
@@ -277,7 +280,7 @@ public class Game {
    * @param player the player
    * @param property the property to upgrade
    */
-  private void askToBuildHotel(Owner player, Property property) {
+  private void askToBuildHotel(MonopolyPlayer player, Property property) {
     println("You have 4 houses on %s.".formatted(property.getName()));
     println("Would you like to upgrade to a Hotel? (yes/no)");
     if (nextLine().equalsIgnoreCase("yes")) {
@@ -326,7 +329,7 @@ public class Game {
     return players.stream().map(Player::getId).toList();
   }
 
-  public List<Owner> getPlayers() {
+  public List<MonopolyPlayer> getPlayers() {
     return players;
   }
 
@@ -334,7 +337,7 @@ public class Game {
     return board.tiles();
   }
 
-  public Stream<Owner> stream() {
+  public Stream<MonopolyPlayer> stream() {
     return players.stream();
   }
 }

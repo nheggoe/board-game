@@ -4,7 +4,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 import edu.ntnu.idi.bidata.boardgame.core.model.Player;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.InsufficientFundsException;
-import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Owner;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.MonopolyPlayer;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Property;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,12 +12,12 @@ import org.junit.jupiter.api.Test;
 class PropertyTest {
 
   private Property property;
-  private Owner player;
+  private MonopolyPlayer player;
 
   @BeforeEach
   void setup() {
     property = new Property("Test property", Property.Color.DARK_BLUE, 100); // value property 100
-    player = new Owner("Duke", Player.Figure.CAT); // player start with balance 0
+    player = new MonopolyPlayer("Duke", Player.Figure.CAT); // player start with balance 0
   }
 
   @Test
