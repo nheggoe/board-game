@@ -1,8 +1,8 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.view;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
-import edu.ntnu.idi.bidata.boardgame.core.View;
 import edu.ntnu.idi.bidata.boardgame.core.model.Player;
+import edu.ntnu.idi.bidata.boardgame.core.ui.View;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.component.DiceView;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.component.MessagePanel;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.component.MonopolyBoardView;
@@ -30,6 +30,8 @@ public class MonopolyGameView extends View {
 
     BorderPane root = new BorderPane();
     getChildren().add(root);
+    root.prefWidthProperty().bind(widthProperty());
+    root.prefHeightProperty().bind(heightProperty());
 
     // Center
     StackPane center = new StackPane();

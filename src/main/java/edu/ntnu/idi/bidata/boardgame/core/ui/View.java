@@ -1,4 +1,4 @@
-package edu.ntnu.idi.bidata.boardgame.core;
+package edu.ntnu.idi.bidata.boardgame.core.ui;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,5 +28,10 @@ public abstract class View extends Region implements AutoCloseable {
         listener.close();
       }
     }
+  }
+
+  public enum Name {
+    MAIN_VIEW,
+    GAME_VIEW
   }
 }

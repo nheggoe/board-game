@@ -1,10 +1,10 @@
-package edu.ntnu.idi.bidata.boardgame.games.monopoly.controller;
+package edu.ntnu.idi.bidata.boardgame.core.ui;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
-import edu.ntnu.idi.bidata.boardgame.core.Controller;
 import edu.ntnu.idi.bidata.boardgame.core.GameEngine;
 import edu.ntnu.idi.bidata.boardgame.core.TurnManager;
 import edu.ntnu.idi.bidata.boardgame.core.model.Player;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.controller.GameController;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.MonopolyGame;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.board.MonopolyBoardFactory;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.MonopolyPlayer;
@@ -27,22 +27,33 @@ public class SceneSwitcher {
 
   public SceneSwitcher(Stage primaryStage) {
     Objects.requireNonNull(primaryStage, "primaryStage must not be null");
-    this.scene = new Scene(new Pane());
+    this.scene = new Scene(new Pane(), primaryStage.getWidth(), primaryStage.getHeight());
     primaryStage.setScene(scene);
-    switchTo(View.GAME_VIEW);
     primaryStage.show();
   }
 
-  public void switchTo(View view) {
-    createScene(view);
+  public void switchTo(View.Name name) {
+    if (controller != null) {
+      try {
+        controller.getView().close();
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    }
+    this.controller = createController(name);
+    scene.setRoot(controller.getView());
+  }
+
+  public Scene getScene() {
+    return scene;
   }
 
   public void setRoot(Parent root) {
     scene.setRoot(Objects.requireNonNull(root, "root must not be null"));
   }
 
-  private void createScene(View view) {
-    switch (view) {
+  private Controller createController(View.Name name) {
+    return switch (name) {
       case GAME_VIEW -> {
         var game =
             new MonopolyGame(
@@ -51,18 +62,10 @@ public class SceneSwitcher {
                 List.of(
                     new MonopolyPlayer("Nick", Player.Figure.HAT),
                     new MonopolyPlayer("Misha", Player.Figure.BATTLE_SHIP)));
-        controller =
-            new GameController(
-                this,
-                eventBus,
-                new GameEngine(game, new TurnManager(eventBus, game.getPlayerIds())));
+        yield new GameController(
+            this, eventBus, new GameEngine(game, new TurnManager(eventBus, game.getPlayerIds())));
       }
-      case MAIN_MENU -> throw new UnsupportedOperationException("Not yet implemented");
-    }
-  }
-
-  public enum View {
-    MAIN_MENU,
-    GAME_VIEW
+      case MAIN_VIEW -> throw new UnsupportedOperationException("Not yet implemented");
+    };
   }
 }

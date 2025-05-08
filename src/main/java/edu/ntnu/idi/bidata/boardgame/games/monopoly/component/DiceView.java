@@ -3,7 +3,7 @@ package edu.ntnu.idi.bidata.boardgame.games.monopoly.component;
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.DiceRolledEvent;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.Event;
-import edu.ntnu.idi.bidata.boardgame.core.EventListeningComponent;
+import edu.ntnu.idi.bidata.boardgame.core.ui.EventListeningComponent;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.dice.DiceRoll;
 import java.util.Random;
 import javafx.animation.KeyFrame;

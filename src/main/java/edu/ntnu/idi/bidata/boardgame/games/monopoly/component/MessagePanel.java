@@ -3,7 +3,7 @@ package edu.ntnu.idi.bidata.boardgame.games.monopoly.component;
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.Event;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.OutputEvent;
-import edu.ntnu.idi.bidata.boardgame.core.EventListeningComponent;
+import edu.ntnu.idi.bidata.boardgame.core.ui.EventListeningComponent;
 import java.util.concurrent.atomic.AtomicInteger;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;

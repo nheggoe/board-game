@@ -1,6 +1,6 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.component;
 
-import edu.ntnu.idi.bidata.boardgame.core.Component;
+import edu.ntnu.idi.bidata.boardgame.core.ui.Component;
 import java.util.Objects;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
