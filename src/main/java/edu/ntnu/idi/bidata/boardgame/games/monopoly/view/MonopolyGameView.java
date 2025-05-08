@@ -20,9 +20,9 @@ import javafx.scene.layout.VBox;
  * @author Nick Heggø
  * @version 2025.05.07
  */
-public class GameView extends View {
+public class MonopolyGameView extends View {
 
-  public GameView(
+  public MonopolyGameView(
       EventBus eventBus,
       List<Player> players,
       List<MonopolyTile> tiles,

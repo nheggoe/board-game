@@ -37,9 +37,9 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 /**
- * The {@link Game} class represents a board game instance. It manages players, their states, and
- * the game board. The game maintains a unique identifier and keeps track of players and their
- * interactions with the board.
+ * The {@link MonopolyGame} class represents a board game instance. It manages players, their
+ * states, and the game board. The game maintains a unique identifier and keeps track of players and
+ * their interactions with the board.
  *
  * <p>This class implements {@link Iterable}, allowing iteration over the collection of players
  * participating in the game.
@@ -47,7 +47,7 @@ import java.util.stream.Stream;
  * @author Nick Heggø
  * @version 2025.05.06
  */
-public class Game {
+public class MonopolyGame {
 
   private final EventBus eventBus;
 
@@ -58,7 +58,8 @@ public class Game {
 
   private String gameSaveName;
 
-  public Game(EventBus eventBus, MonopolyBoard monopolyBoard, List<MonopolyPlayer> players) {
+  public MonopolyGame(
+      EventBus eventBus, MonopolyBoard monopolyBoard, List<MonopolyPlayer> players) {
     this.eventBus = Objects.requireNonNull(eventBus, "EventBus cannot be null!");
     this.id = UUID.randomUUID();
     this.monopolyBoard = Objects.requireNonNull(monopolyBoard, "Board cannot be null!");

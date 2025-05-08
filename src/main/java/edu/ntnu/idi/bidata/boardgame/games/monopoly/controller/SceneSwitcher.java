@@ -5,7 +5,7 @@ import edu.ntnu.idi.bidata.boardgame.core.Controller;
 import edu.ntnu.idi.bidata.boardgame.core.GameEngine;
 import edu.ntnu.idi.bidata.boardgame.core.TurnManager;
 import edu.ntnu.idi.bidata.boardgame.core.model.Player;
-import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.Game;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.MonopolyGame;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.board.MonopolyBoardFactory;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.MonopolyPlayer;
 import java.util.List;
@@ -45,7 +45,7 @@ public class SceneSwitcher {
     switch (view) {
       case GAME_VIEW -> {
         var game =
-            new Game(
+            new MonopolyGame(
                 eventBus,
                 MonopolyBoardFactory.generateBoard(MonopolyBoardFactory.Layout.NORMAL),
                 List.of(

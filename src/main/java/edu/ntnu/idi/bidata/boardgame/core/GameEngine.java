@@ -1,7 +1,7 @@
 package edu.ntnu.idi.bidata.boardgame.core;
 
 import edu.ntnu.idi.bidata.boardgame.core.model.Player;
-import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.Game;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.MonopolyGame;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.board.MonopolyBoard;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.dice.Dice;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.MonopolyTile;
@@ -21,26 +21,26 @@ import java.util.Objects;
  */
 public class GameEngine {
 
-  private final Game game;
+  private final MonopolyGame monopolyGame;
   private final TurnManager turnManager;
 
-  public GameEngine(Game game, TurnManager turnManager) {
-    this.game = Objects.requireNonNull(game, "Game cannot be null!");
+  public GameEngine(MonopolyGame monopolyGame, TurnManager turnManager) {
+    this.monopolyGame = Objects.requireNonNull(monopolyGame, "Game cannot be null!");
     this.turnManager = Objects.requireNonNull(turnManager, "TurnManager cannot be null!");
   }
 
   public List<Player> getPlayers() {
-    return List.copyOf(game.getPlayers());
+    return List.copyOf(monopolyGame.getPlayers());
   }
 
   public List<MonopolyTile> getTiles() {
-    return List.copyOf(game.getTiles());
+    return List.copyOf(monopolyGame.getTiles());
   }
 
   public void nextTurn() {
     var currentPlayer = turnManager.getCurrentPlayerId();
     turnManager.nextTurn();
     var diceRoll = Dice.getInstance().roll(2);
-    game.movePlayer(currentPlayer, diceRoll);
+    monopolyGame.movePlayer(currentPlayer, diceRoll);
   }
 }

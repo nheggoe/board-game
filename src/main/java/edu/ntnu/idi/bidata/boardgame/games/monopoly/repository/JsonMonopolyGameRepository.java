@@ -2,7 +2,7 @@ package edu.ntnu.idi.bidata.boardgame.games.monopoly.repository;
 
 import edu.ntnu.idi.bidata.boardgame.common.io.DAO;
 import edu.ntnu.idi.bidata.boardgame.common.io.json.JsonService;
-import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.Game;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.MonopolyGame;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.UUID;
@@ -11,45 +11,45 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-public class JsonGameRepository implements DataRepository<Game> {
+public class JsonMonopolyGameRepository implements DataRepository<MonopolyGame> {
 
-  private static JsonGameRepository repository;
+  private static JsonMonopolyGameRepository repository;
 
-  private final DAO<Game> jsonService;
-  private final ConcurrentMap<UUID, Game> entities;
-  private final Function<Game, UUID> idExtractor;
+  private final DAO<MonopolyGame> jsonService;
+  private final ConcurrentMap<UUID, MonopolyGame> entities;
+  private final Function<MonopolyGame, UUID> idExtractor;
 
-  private JsonGameRepository() {
-    jsonService = new JsonService<>(Game.class);
+  private JsonMonopolyGameRepository() {
+    jsonService = new JsonService<>(MonopolyGame.class);
     entities = new ConcurrentHashMap<>();
-    idExtractor = Game::getId;
+    idExtractor = MonopolyGame::getId;
     refresh();
   }
 
-  public static synchronized JsonGameRepository getInstance() {
+  public static synchronized JsonMonopolyGameRepository getInstance() {
     if (repository == null) {
-      repository = new JsonGameRepository();
+      repository = new JsonMonopolyGameRepository();
     }
     return repository;
   }
 
   @Override
-  public Stream<Game> getAll() {
+  public Stream<MonopolyGame> getAll() {
     return entities.values().stream();
   }
 
   @Override
-  public Optional<Game> getById(UUID id) {
+  public Optional<MonopolyGame> getById(UUID id) {
     return Optional.ofNullable(entities.get(id));
   }
 
   @Override
-  public Game add(Game entity) {
+  public MonopolyGame add(MonopolyGame entity) {
     return entities.put(idExtractor.apply(entity), entity);
   }
 
   @Override
-  public Game update(Game entity) {
+  public MonopolyGame update(MonopolyGame entity) {
     return entities.computeIfPresent(idExtractor.apply(entity), (k, v) -> entity);
   }
 
@@ -65,7 +65,7 @@ public class JsonGameRepository implements DataRepository<Game> {
   }
 
   @Override
-  public Stream<Game> loadFromSource() {
+  public Stream<MonopolyGame> loadFromSource() {
     return jsonService.loadEntities();
   }
 
