@@ -60,7 +60,7 @@ public class FileUtil {
    */
   public static void ensureFileAndDirectoryExists(File file) {
     if (file == null) {
-      throw new IllegalStateException("The file cannot be null");
+      throw new IllegalArgumentException("The file cannot be null");
     }
     createDirectory(file);
     createFile(file);
