@@ -3,7 +3,7 @@ package edu.ntnu.idi.bidata.boardgame.common.io.json;
 import com.google.gson.reflect.TypeToken;
 import edu.ntnu.idi.bidata.boardgame.core.model.Player;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.Game;
-import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.board.Board;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.board.MonopolyBoard;
 import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Set;
@@ -20,7 +20,7 @@ import java.util.Set;
 public class JsonType {
   private static final Map<Class<?>, Type> TYPE_MAP =
       Map.of(
-          Game.class, new TypeToken<Set<Board>>() {}.getType(),
+          Game.class, new TypeToken<Set<MonopolyBoard>>() {}.getType(),
           Player.class, new TypeToken<Set<Player>>() {}.getType());
 
   private JsonType() {}

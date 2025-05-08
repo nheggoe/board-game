@@ -21,9 +21,9 @@ import java.util.Map;
  * @author Mihailo Hranisavljevic and Nick Heggø
  * @version 2025.04.22
  */
-public record Board(List<MonopolyTile> tiles) {
+public record MonopolyBoard(List<MonopolyTile> tiles) {
 
-  public Board {
+  public MonopolyBoard {
     assertValidLayout(tiles);
     tiles = List.copyOf(shuffleTiles(tiles));
   }

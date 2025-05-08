@@ -10,7 +10,7 @@ import edu.ntnu.idi.bidata.boardgame.common.util.OutputHandler;
 import edu.ntnu.idi.bidata.boardgame.common.util.StringFormatter;
 import edu.ntnu.idi.bidata.boardgame.core.TileAction;
 import edu.ntnu.idi.bidata.boardgame.core.model.Player;
-import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.board.Board;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.board.MonopolyBoard;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.dice.DiceRoll;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.InsufficientFundsException;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.MonopolyPlayer;
@@ -52,16 +52,16 @@ public class Game {
   private final EventBus eventBus;
 
   private final UUID id;
-  private final Board board;
+  private final MonopolyBoard monopolyBoard;
   private final List<MonopolyPlayer> players;
   private boolean isEnded;
 
   private String gameSaveName;
 
-  public Game(EventBus eventBus, Board board, List<MonopolyPlayer> players) {
+  public Game(EventBus eventBus, MonopolyBoard monopolyBoard, List<MonopolyPlayer> players) {
     this.eventBus = Objects.requireNonNull(eventBus, "EventBus cannot be null!");
     this.id = UUID.randomUUID();
-    this.board = Objects.requireNonNull(board, "Board cannot be null!");
+    this.monopolyBoard = Objects.requireNonNull(monopolyBoard, "Board cannot be null!");
     this.players = new ArrayList<>(Objects.requireNonNull(players, "Players cannot be null!"));
     this.isEnded = false;
     players.forEach(player -> player.addBalance(200));
@@ -70,7 +70,7 @@ public class Game {
   // ------------------------  APIs  ------------------------
 
   public void printTiles() {
-    board.tiles().forEach(OutputHandler::println);
+    monopolyBoard.tiles().forEach(OutputHandler::println);
   }
 
   public void movePlayer(UUID playerId, DiceRoll roll) {
@@ -78,7 +78,7 @@ public class Game {
         getPlayerById(playerId)
             .orElseThrow(() -> new IllegalArgumentException("Player not found!"));
     int oldPositon = player.getPosition();
-    int newPosition = (player.getPosition() + roll.getTotal()) % board.size();
+    int newPosition = (player.getPosition() + roll.getTotal()) % monopolyBoard.size();
     player.setPosition(newPosition);
     if (oldPositon > newPosition) {
       player.addBalance(200);
@@ -92,11 +92,11 @@ public class Game {
   }
 
   public JailMonopolyTile getJailTile() {
-    return board.getJailTile();
+    return monopolyBoard.getJailTile();
   }
 
   public MonopolyTile getTile(int position) {
-    return board.getTile(position);
+    return monopolyBoard.getTile(position);
   }
 
   public void endGame() {
@@ -109,7 +109,7 @@ public class Game {
    * @param player the player to send to jail
    */
   public void sendPlayerToJail(MonopolyPlayer player) {
-    player.setPosition(board.getTilePosition(getJailTile()));
+    player.setPosition(monopolyBoard.getTilePosition(getJailTile()));
     getJailTile().jailForNumberOfRounds(player, 2);
   }
 
@@ -334,7 +334,7 @@ public class Game {
   }
 
   public List<MonopolyTile> getTiles() {
-    return board.tiles();
+    return monopolyBoard.tiles();
   }
 
   public Stream<MonopolyPlayer> stream() {

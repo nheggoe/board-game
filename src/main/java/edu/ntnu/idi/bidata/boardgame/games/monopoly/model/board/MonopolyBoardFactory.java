@@ -12,19 +12,19 @@ import java.util.List;
  * @author Mihailo Hranisavljevic and Nick Heggø
  * @version 2025.04.22
  */
-public class BoardFactory {
+public class MonopolyBoardFactory {
 
-  public static Board generateBoard(Layout layout) {
+  public static MonopolyBoard generateBoard(Layout layout) {
     return switch (layout) {
       case NORMAL, EASY, UNFAIR -> generateNormalBoard();
     };
   }
 
-  private static Board generateNormalBoard() {
+  private static MonopolyBoard generateNormalBoard() {
     var tmp = TileFactory.generateOwnableTiles();
     List<MonopolyTile> tiles = new ArrayList<>(tmp);
     tiles.addAll(TileFactory.generateCornerTiles());
-    return new Board(tiles);
+    return new MonopolyBoard(tiles);
   }
 
   public enum Layout {
