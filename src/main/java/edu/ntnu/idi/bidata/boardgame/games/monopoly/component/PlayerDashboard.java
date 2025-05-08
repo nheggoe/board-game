@@ -10,6 +10,7 @@ import edu.ntnu.idi.bidata.boardgame.common.event.PurchaseEvent;
 import edu.ntnu.idi.bidata.boardgame.core.EventListeningComponent;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.Player;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Ownable;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Owner;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -31,7 +32,7 @@ import javafx.scene.text.FontWeight;
  * styled card including: name, balance, position, figure image, and owned properties.
  *
  * @author Mihailo Hranisavljevic
- * @version 2025.04.25
+ * @version 2025.05.08
  */
 public class PlayerDashboard extends EventListeningComponent {
 
@@ -193,26 +194,29 @@ public class PlayerDashboard extends EventListeningComponent {
 
     public void refresh() {
       nameLabel.setText(player.getName());
-      balanceLabel.setText("Balance: $" + player.getBalance());
       positionLabel.setText("Tile: " + player.getPosition());
 
-      propertiesList.getChildren().clear();
-      for (Ownable ownable : player.getOwnedAssets()) {
-        Label propLabel = new Label("• " + ownable.toString());
-        propLabel.setFont(Font.font(PROPERTY_FONT, FontWeight.SEMI_BOLD, 13));
-        propLabel.setTextFill(Color.web("#212529"));
-        propLabel.setBackground(
-            new Background(
-                new BackgroundFill(Color.web("#ffffffcc"), new CornerRadii(4), Insets.EMPTY)));
-        propLabel.setBorder(
-            new Border(
-                new BorderStroke(
-                    Color.web("#ced4da"),
-                    BorderStrokeStyle.SOLID,
-                    new CornerRadii(4),
-                    BorderWidths.DEFAULT)));
-        propLabel.setPadding(new Insets(3, 6, 3, 6));
-        propertiesList.getChildren().add(propLabel);
+      // monopoly
+      if (player instanceof Owner owner) {
+        balanceLabel.setText("Balance: $" + owner.getBalance());
+        propertiesList.getChildren().clear();
+        for (Ownable ownable : owner.getOwnedAssets()) {
+          Label propLabel = new Label("• " + ownable.toString());
+          propLabel.setFont(Font.font(PROPERTY_FONT, FontWeight.SEMI_BOLD, 13));
+          propLabel.setTextFill(Color.web("#212529"));
+          propLabel.setBackground(
+              new Background(
+                  new BackgroundFill(Color.web("#ffffffcc"), new CornerRadii(4), Insets.EMPTY)));
+          propLabel.setBorder(
+              new Border(
+                  new BorderStroke(
+                      Color.web("#ced4da"),
+                      BorderStrokeStyle.SOLID,
+                      new CornerRadii(4),
+                      BorderWidths.DEFAULT)));
+          propLabel.setPadding(new Insets(3, 6, 3, 6));
+          propertiesList.getChildren().add(propLabel);
+        }
       }
 
       if (propertiesList.getChildren().isEmpty()) {

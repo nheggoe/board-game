@@ -3,6 +3,7 @@ package edu.ntnu.idi.bidata.boardgame.common.io.csv;
 import edu.ntnu.idi.bidata.boardgame.common.io.FileUtil;
 import edu.ntnu.idi.bidata.boardgame.common.util.OutputHandler;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.Player;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Owner;
 import java.io.*;
 import java.nio.file.Path;
 import java.util.logging.Logger;
@@ -14,7 +15,7 @@ import java.util.stream.Stream;
  * "Name" and "Figure".
  *
  * @author Mihailo Hranisavljevic
- * @version 2025.03.12
+ * @version 2025.05.08
  */
 public class CSVHandler {
   private static final Logger LOGGER = Logger.getLogger(CSVHandler.class.getName());
@@ -95,7 +96,7 @@ public class CSVHandler {
 
         String[] data = line.split(",");
         if (data.length == 2) {
-          Player player = new Player(data[0], Player.Figure.valueOf(data[1]));
+          Player player = new Owner(data[0], Player.Figure.valueOf(data[1]));
           playerStreamBuilder.add(player);
           OutputHandler.println("Loaded player: " + data[0] + " - " + data[1]);
         }

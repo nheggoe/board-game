@@ -8,6 +8,7 @@ import static edu.ntnu.idi.bidata.boardgame.common.util.OutputHandler.println;
 import edu.ntnu.idi.bidata.boardgame.common.io.csv.CSVHandler;
 import edu.ntnu.idi.bidata.boardgame.common.util.StringFormatter;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.Player;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Owner;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
  * seamless way to load saved players or create new ones.
  *
  * @author Mihailo Hranisavljevic and Nick Heggø
- * @version 2025.04.18
+ * @version 2025.05.08
  */
 public class PlayerManager {
   private final CSVHandler csvHandler;
@@ -116,7 +117,7 @@ public class PlayerManager {
       try {
         printInputPrompt("Available figures: " + getAvailableFigures());
         Player.Figure figure = Player.Figure.valueOf(collectValidString().strip().toUpperCase());
-        return new Player(name, figure);
+        return new Owner(name, figure);
       } catch (IllegalArgumentException e) {
         println("Please choose a valid figure:");
       }

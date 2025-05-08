@@ -1,16 +1,21 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable;
 
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Owner {
+/**
+ * @author Nick Heggø
+ * @version 2025.05.08
+ */
+public class Owner extends Player {
 
   private final List<Ownable> ownedAssets;
 
-  private String name;
   private int balance = 0;
 
-  protected Owner() {
+  public Owner(String name, Figure figure) {
+    super(name, figure);
     this.ownedAssets = new ArrayList<>();
   }
 
@@ -78,16 +83,6 @@ public abstract class Owner {
 
   // ------------------------  getters and setters  ------------------------
 
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    if (name == null || name.isBlank()) {
-      throw new IllegalArgumentException("Name cannot be empty!");
-    }
-    this.name = name;
-  }
 
   public int getBalance() {
     return balance;

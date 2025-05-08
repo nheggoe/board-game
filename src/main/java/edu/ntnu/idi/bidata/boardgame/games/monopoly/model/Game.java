@@ -4,7 +4,6 @@ import static edu.ntnu.idi.bidata.boardgame.common.util.InputHandler.nextLine;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.DiceRolledEvent;
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
-import edu.ntnu.idi.bidata.boardgame.common.event.EventListener;
 import edu.ntnu.idi.bidata.boardgame.common.event.OutputEvent;
 import edu.ntnu.idi.bidata.boardgame.common.event.PlayerMovedEvent;
 import edu.ntnu.idi.bidata.boardgame.common.util.OutputHandler;
@@ -14,6 +13,7 @@ import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.board.Board;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.dice.DiceRoll;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.InsufficientFundsException;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Ownable;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Owner;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Property;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Railroad;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Utility;
@@ -44,7 +44,7 @@ import java.util.stream.Stream;
  * participating in the game.
  *
  * @author Nick Heggø
- * @version 2025.04.22
+ * @version 2025.05.06
  */
 public class Game {
 
@@ -52,12 +52,12 @@ public class Game {
 
   private final UUID id;
   private final Board board;
-  private final List<Player> players;
+  private final List<Owner> players;
   private boolean isEnded;
 
   private String gameSaveName;
 
-  public Game(EventBus eventBus, Board board, List<Player> players) {
+  public Game(EventBus eventBus, Board board, List<Owner> players) {
     this.eventBus = Objects.requireNonNull(eventBus, "EventBus cannot be null!");
     this.id = UUID.randomUUID();
     this.board = Objects.requireNonNull(board, "Board cannot be null!");
@@ -86,7 +86,7 @@ public class Game {
     notifyPlayerMoved(player);
   }
 
-  private Optional<Player> getPlayerById(UUID playerId) {
+  private Optional<Owner> getPlayerById(UUID playerId) {
     return players.stream().filter(player -> player.getId().equals(playerId)).findFirst();
   }
 
@@ -102,22 +102,18 @@ public class Game {
     isEnded = true;
   }
 
-  public void attach(EventListener observer) {}
-
-  public void detach(EventListener observer) {}
-
   /**
    * Sends a player to jail by teleporting them to the jail tile and marking them as jailed.
    *
    * @param player the player to send to jail
    */
-  public void sendPlayerToJail(Player player) {
+  public void sendPlayerToJail(Owner player) {
     player.setPosition(board.getTilePosition(getJailTile()));
     getJailTile().jailForNumberOfRounds(player, 2);
   }
 
-  public Map.Entry<Integer, List<Player>> getWinners() {
-    var treeMap = new TreeMap<Integer, List<Player>>();
+  public Map.Entry<Integer, List<Owner>> getWinners() {
+    var treeMap = new TreeMap<Integer, List<Owner>>();
     players.forEach(
         player ->
             treeMap.computeIfAbsent(player.getNetWorth(), unused -> new ArrayList<>()).add(player));
@@ -132,7 +128,7 @@ public class Game {
    * @param tile the tile the player has landed on
    * @return the corresponding TileAction
    */
-  private TileAction tileActionOf(MonopolyTile tile) {
+  private TileAction<Owner> tileActionOf(MonopolyTile tile) {
     return switch (tile) {
       case OwnableMonopolyTile(Ownable ownable) -> ownableAction(ownable);
       case TaxMonopolyTile(int percentage) -> payPercentageTax(percentage);
@@ -143,13 +139,13 @@ public class Game {
     };
   }
 
-  private TileAction payPercentageTax(int percentage) {
-    return player -> {
-      int amountToPay = (player.getBalance() * percentage) / 100;
-      player.pay(amountToPay);
+  private TileAction<Owner> payPercentageTax(int percentage) {
+    return owner -> {
+      int amountToPay = (owner.getBalance() * percentage) / 100;
+      owner.pay(amountToPay);
       println(
           "%s paid a tax of $%d (%d%% of balance)."
-              .formatted(player.getName(), amountToPay, percentage));
+              .formatted(owner.getName(), amountToPay, percentage));
     };
   }
 
@@ -159,9 +155,9 @@ public class Game {
    * @param ownable the ownable asset
    * @return the TileAction for the asset
    */
-  private TileAction ownableAction(Ownable ownable) {
+  private TileAction<Owner> ownableAction(Ownable ownable) {
     return player -> {
-      Player owner = players.stream().filter(p -> p.isOwnerOf(ownable)).findFirst().orElse(null);
+      Owner owner = players.stream().filter(p -> p.isOwnerOf(ownable)).findFirst().orElse(null);
 
       if (owner == null) {
         println(player.getName() + " landed on unowned " + ownable + ".");
@@ -193,7 +189,7 @@ public class Game {
    * @param ownable the ownable tile
    * @return true if purchase successful, false otherwise
    */
-  private boolean confirmPurchase(Player player, Ownable ownable) {
+  private boolean confirmPurchase(Owner player, Ownable ownable) {
     if (player.hasSufficientFunds(ownable.price())) {
       String prompt =
           switch (ownable) {
@@ -224,7 +220,7 @@ public class Game {
    * @param ownable the asset being purchased
    * @return true if successful, false if insufficient funds
    */
-  private boolean processPurchase(Player player, Ownable ownable) {
+  private boolean processPurchase(Owner player, Ownable ownable) {
     try {
       player.purchase(ownable);
       return true;
@@ -240,7 +236,7 @@ public class Game {
    * @param player the property owner
    * @param property the property to upgrade
    */
-  private void askToUpgrade(Player player, Property property) {
+  private void askToUpgrade(Owner player, Property property) {
     if (property.hasHotel()) {
       println("You already have a Hotel on this property. No further upgrades possible.");
       return;
@@ -259,7 +255,7 @@ public class Game {
    * @param player the player
    * @param property the property to upgrade
    */
-  private void askToBuildHouse(Player player, Property property) {
+  private void askToBuildHouse(Owner player, Property property) {
     println("You have %d houses on %s.".formatted(property.countHouses(), property.getName()));
     println("Would you like to build a house? (yes/no)");
     if (nextLine().equalsIgnoreCase("yes")) {
@@ -280,7 +276,7 @@ public class Game {
    * @param player the player
    * @param property the property to upgrade
    */
-  private void askToBuildHotel(Player player, Property property) {
+  private void askToBuildHotel(Owner player, Property property) {
     println("You have 4 houses on %s.".formatted(property.getName()));
     println("Would you like to upgrade to a Hotel? (yes/no)");
     if (nextLine().equalsIgnoreCase("yes")) {
@@ -329,7 +325,7 @@ public class Game {
     return players.stream().map(Player::getId).toList();
   }
 
-  public List<Player> getPlayers() {
+  public List<Owner> getPlayers() {
     return players;
   }
 
@@ -337,7 +333,7 @@ public class Game {
     return board.tiles();
   }
 
-  public Stream<Player> stream() {
+  public Stream<Owner> stream() {
     return players.stream();
   }
 }

@@ -3,30 +3,21 @@ package edu.ntnu.idi.bidata.boardgame.core;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.Player;
 
 /**
- * {@code TileAction} defines the executable action that occurs when a player lands on a tile.
+ * Represents a functional interface that defines an action to be performed on a player within a
+ * board game context. Actions implemented using this interface typically represent a specific
+ * tile-related effect that alters the state of a player when they land on or interact with a tile.
  *
- * <p>This functional interface is responsible for:
- *
- * <ul>
- *   <li>Handling purchases of ownable tiles like properties, utilities, and railroads
- *   <li>Charging rent to players when landing on owned properties
- *   <li>Applying tax penalties
- *   <li>Sending players to jail, free parking, or start
- *   <li>Allowing players to upgrade properties with houses or hotels
- * </ul>
- *
- * <p>It uses pattern matching to process different tile types in a clean, structured way.
- *
+ * @param <T> the type of player the action applies to, extending the {@link Player} class
  * @author Mihailo Hranisavljevic, Nick Heggø
- * @version 2025.04.26
+ * @version 2025.05.08
  */
 @FunctionalInterface
-public interface TileAction {
+public interface TileAction<T extends Player> {
 
   /**
-   * Executes the defined tile action for the given player.
+   * Executes the action associated with the given player.
    *
-   * @param player the player who landed on the tile
+   * @param t the player on whom the action is executed, must not be null
    */
-  void execute(Player player);
+  void execute(T t);
 }

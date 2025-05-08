@@ -1,7 +1,6 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.model;
 
 import edu.ntnu.idi.bidata.boardgame.common.util.StringFormatter;
-import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Owner;
 import java.util.UUID;
 
 /**
@@ -9,12 +8,13 @@ import java.util.UUID;
  * current tile position on the board.
  *
  * @author Mihailo Hranisavljevic and Nick Heggø
- * @version 2025.04.18
+ * @version 2025.05.08
  */
-public class Player extends Owner {
+public abstract class Player {
 
   // player info
   private final UUID id;
+  private String name;
   private Figure figure;
 
   // game state
@@ -27,14 +27,24 @@ public class Player extends Owner {
    * @param name the name of the player
    * @param figure the figure player has chosen to play as
    */
-  public Player(String name, Figure figure) {
-    super();
+  protected Player(String name, Figure figure) {
     id = UUID.randomUUID();
     setName(name);
     setFigure(figure);
   }
 
   // ------------------------  getters and setters  ------------------------
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    if (name == null || name.isBlank()) {
+      throw new IllegalArgumentException("Name cannot be empty!");
+    }
+    this.name = name;
+  }
 
   /**
    * Returns the figure of the player.
@@ -77,7 +87,7 @@ public class Player extends Owner {
 
   @Override
   public String toString() {
-    return "%s[figure=%s, position=%d, balance=%d]"
-        .formatted(getName(), StringFormatter.formatEnum(getFigure()), getPosition(), getBalance());
+    return "%s[figure=%s, position=%d]"
+        .formatted(getName(), StringFormatter.formatEnum(getFigure()), getPosition());
   }
 }
