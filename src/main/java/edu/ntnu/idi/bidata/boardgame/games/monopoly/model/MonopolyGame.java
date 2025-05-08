@@ -2,16 +2,11 @@ package edu.ntnu.idi.bidata.boardgame.games.monopoly.model;
 
 import static edu.ntnu.idi.bidata.boardgame.common.util.InputHandler.nextLine;
 
-import edu.ntnu.idi.bidata.boardgame.common.event.DiceRolledEvent;
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
-import edu.ntnu.idi.bidata.boardgame.common.event.OutputEvent;
-import edu.ntnu.idi.bidata.boardgame.common.event.PlayerMovedEvent;
-import edu.ntnu.idi.bidata.boardgame.common.util.OutputHandler;
 import edu.ntnu.idi.bidata.boardgame.common.util.StringFormatter;
 import edu.ntnu.idi.bidata.boardgame.core.TileAction;
-import edu.ntnu.idi.bidata.boardgame.core.model.Player;
+import edu.ntnu.idi.bidata.boardgame.core.model.Game;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.board.MonopolyBoard;
-import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.dice.DiceRoll;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.InsufficientFundsException;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.MonopolyPlayer;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Ownable;
@@ -30,11 +25,7 @@ import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.upgrade.UpgradeType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.TreeMap;
-import java.util.UUID;
-import java.util.stream.Stream;
 
 /**
  * The {@link MonopolyGame} class represents a board game instance. It manages players, their
@@ -45,63 +36,39 @@ import java.util.stream.Stream;
  * participating in the game.
  *
  * @author Nick Heggø
- * @version 2025.05.06
+ * @version 2025.05.08
  */
-public class MonopolyGame {
-
-  private final EventBus eventBus;
-
-  private final UUID id;
-  private final MonopolyBoard monopolyBoard;
-  private final List<MonopolyPlayer> players;
-  private boolean isEnded;
-
-  private String gameSaveName;
+public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
 
   public MonopolyGame(
       EventBus eventBus, MonopolyBoard monopolyBoard, List<MonopolyPlayer> players) {
-    this.eventBus = Objects.requireNonNull(eventBus, "EventBus cannot be null!");
-    this.id = UUID.randomUUID();
-    this.monopolyBoard = Objects.requireNonNull(monopolyBoard, "Board cannot be null!");
-    this.players = new ArrayList<>(Objects.requireNonNull(players, "Players cannot be null!"));
-    this.isEnded = false;
+    super(eventBus, monopolyBoard, players);
     players.forEach(player -> player.addBalance(200));
+  }
+
+  @Override
+  protected void completeRoundAction(MonopolyPlayer player) {
+    player.addBalance(200);
+  }
+
+  @Override
+  public Map.Entry<Integer, List<MonopolyPlayer>> getWinners() {
+    var treeMap = new TreeMap<Integer, List<MonopolyPlayer>>();
+    for (var player : getPlayers()) {
+      treeMap.computeIfAbsent(player.getNetWorth(), unused -> new ArrayList<>()).add(player);
+    }
+    return treeMap.reversed().firstEntry();
+  }
+
+  @Override
+  protected MonopolyBoard getBoard() {
+    return (MonopolyBoard) super.getBoard();
   }
 
   // ------------------------  APIs  ------------------------
 
-  public void printTiles() {
-    monopolyBoard.tiles().forEach(OutputHandler::println);
-  }
-
-  public void movePlayer(UUID playerId, DiceRoll roll) {
-    var player =
-        getPlayerById(playerId)
-            .orElseThrow(() -> new IllegalArgumentException("Player not found!"));
-    int oldPositon = player.getPosition();
-    int newPosition = (player.getPosition() + roll.getTotal()) % monopolyBoard.size();
-    player.setPosition(newPosition);
-    if (oldPositon > newPosition) {
-      player.addBalance(200);
-    }
-    notifyDiceRolled(roll);
-    notifyPlayerMoved(player);
-  }
-
-  private Optional<MonopolyPlayer> getPlayerById(UUID playerId) {
-    return players.stream().filter(player -> player.getId().equals(playerId)).findFirst();
-  }
-
   public JailMonopolyTile getJailTile() {
-    return monopolyBoard.getJailTile();
-  }
-
-  public MonopolyTile getTile(int position) {
-    return monopolyBoard.getTile(position);
-  }
-
-  public void endGame() {
-    isEnded = true;
+    return getBoard().getJailTile();
   }
 
   /**
@@ -110,16 +77,8 @@ public class MonopolyGame {
    * @param player the player to send to jail
    */
   public void sendPlayerToJail(MonopolyPlayer player) {
-    player.setPosition(monopolyBoard.getTilePosition(getJailTile()));
+    player.setPosition(getBoard().getTilePosition(getJailTile()));
     getJailTile().jailForNumberOfRounds(player, 2);
-  }
-
-  public Map.Entry<Integer, List<MonopolyPlayer>> getWinners() {
-    var treeMap = new TreeMap<Integer, List<MonopolyPlayer>>();
-    players.forEach(
-        player ->
-            treeMap.computeIfAbsent(player.getNetWorth(), unused -> new ArrayList<>()).add(player));
-    return treeMap.reversed().firstEntry();
   }
 
   // ------------------------  private  ------------------------
@@ -160,7 +119,7 @@ public class MonopolyGame {
   private TileAction<MonopolyPlayer> ownableAction(Ownable ownable) {
     return player -> {
       MonopolyPlayer monopolyPlayer =
-          players.stream().filter(p -> p.isOwnerOf(ownable)).findFirst().orElse(null);
+          getPlayers().stream().filter(p -> p.isOwnerOf(ownable)).findFirst().orElse(null);
 
       if (monopolyPlayer == null) {
         println(player.getName() + " landed on unowned " + ownable + ".");
@@ -296,49 +255,6 @@ public class MonopolyGame {
     }
   }
 
-  private void notifyPlayerMoved(Player player) {
-    eventBus.publishEvent(new PlayerMovedEvent(player));
-  }
-
-  private void notifyDiceRolled(DiceRoll diceRoll) {
-    eventBus.publishEvent(new DiceRolledEvent(diceRoll));
-  }
-
-  private void println(Object o) {
-    eventBus.publishEvent(new OutputEvent(o.toString()));
-  }
-
   // ------------------------  getters and setters  ------------------------
 
-  public UUID getId() {
-    return id;
-  }
-
-  public boolean isEnded() {
-    return isEnded;
-  }
-
-  public void setGameSaveName(String gameSaveName) {
-    this.gameSaveName = gameSaveName;
-  }
-
-  public String getGameSaveName() {
-    return gameSaveName;
-  }
-
-  public List<UUID> getPlayerIds() {
-    return players.stream().map(Player::getId).toList();
-  }
-
-  public List<MonopolyPlayer> getPlayers() {
-    return players;
-  }
-
-  public List<MonopolyTile> getTiles() {
-    return monopolyBoard.tiles();
-  }
-
-  public Stream<MonopolyPlayer> stream() {
-    return players.stream();
-  }
 }

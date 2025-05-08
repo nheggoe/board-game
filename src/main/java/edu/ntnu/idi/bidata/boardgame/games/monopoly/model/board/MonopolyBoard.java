@@ -1,5 +1,6 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.model.board;
 
+import edu.ntnu.idi.bidata.boardgame.core.model.Board;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.CornerMonopolyTile;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.JailMonopolyTile;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.MonopolyTile;
@@ -21,7 +22,7 @@ import java.util.Map;
  * @author Mihailo Hranisavljevic and Nick Heggø
  * @version 2025.04.22
  */
-public record MonopolyBoard(List<MonopolyTile> tiles) {
+public record MonopolyBoard(List<MonopolyTile> tiles) implements Board<MonopolyTile> {
 
   public MonopolyBoard {
     assertValidLayout(tiles);
@@ -80,7 +81,7 @@ public record MonopolyBoard(List<MonopolyTile> tiles) {
    * @return the {@link MonopolyTile} object at the specified position
    * @throws IndexOutOfBoundsException if the position is out of bounds
    */
-  public MonopolyTile getTile(int position) {
+  public MonopolyTile getTileAtIndex(int position) {
     return tiles.get(position);
   }
 
