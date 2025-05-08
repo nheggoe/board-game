@@ -63,7 +63,7 @@ public class JsonService<T> implements DAO<T> {
    *     newly created
    */
   @Override
-  public Stream<T> loadEntities() {
+  public Stream<T> deserializeFromSource() {
     return jsonReader.parseJsonStream();
   }
 
@@ -76,7 +76,7 @@ public class JsonService<T> implements DAO<T> {
    * @param entities the set of objects to be written into the JSON file
    */
   @Override
-  public void persistEntities(Set<T> entities) {
+  public void serializeToSource(Set<T> entities) {
     jsonWriter.writeJsonFile(entities);
   }
 }
