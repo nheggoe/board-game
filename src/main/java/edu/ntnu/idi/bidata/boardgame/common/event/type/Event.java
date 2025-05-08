@@ -1,4 +1,8 @@
-package edu.ntnu.idi.bidata.boardgame.common.event;
+package edu.ntnu.idi.bidata.boardgame.common.event.type;
+
+import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
+import edu.ntnu.idi.bidata.boardgame.common.event.EventListener;
+import edu.ntnu.idi.bidata.boardgame.common.event.EventPublisher;
 
 /**
  * Represents an abstract base for events used within the application.
@@ -14,7 +18,7 @@ package edu.ntnu.idi.bidata.boardgame.common.event;
  * EventListener}, and {@link EventPublisher} to allow for event-driven programming paradigms.
  *
  * @author Nick Heggø
- * @version 2025.05.06
+ * @version 2025.05.08
  */
 public sealed interface Event
     permits DiceRolledEvent, OutputEvent, PlayerMovedEvent, PlayerRemovedEvent, PurchaseEvent {}

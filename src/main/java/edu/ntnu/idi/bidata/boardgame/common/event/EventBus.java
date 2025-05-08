@@ -1,5 +1,6 @@
 package edu.ntnu.idi.bidata.boardgame.common.event;
 
+import edu.ntnu.idi.bidata.boardgame.common.event.type.Event;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;

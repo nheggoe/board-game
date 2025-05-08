@@ -1,5 +1,7 @@
 package edu.ntnu.idi.bidata.boardgame.common.event;
 
+import edu.ntnu.idi.bidata.boardgame.common.event.type.Event;
+
 /**
  * An interface to represent an event listener that can respond to updates.
  *

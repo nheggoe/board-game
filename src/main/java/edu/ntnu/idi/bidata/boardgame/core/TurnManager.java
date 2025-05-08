@@ -1,9 +1,9 @@
 package edu.ntnu.idi.bidata.boardgame.core;
 
-import edu.ntnu.idi.bidata.boardgame.common.event.Event;
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
 import edu.ntnu.idi.bidata.boardgame.common.event.EventListener;
-import edu.ntnu.idi.bidata.boardgame.common.event.PlayerRemovedEvent;
+import edu.ntnu.idi.bidata.boardgame.common.event.type.Event;
+import edu.ntnu.idi.bidata.boardgame.common.event.type.PlayerRemovedEvent;
 import edu.ntnu.idi.bidata.boardgame.core.model.Player;
 import java.util.List;
 import java.util.NoSuchElementException;

@@ -1,9 +1,9 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.component;
 
-import edu.ntnu.idi.bidata.boardgame.common.event.Event;
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
 import edu.ntnu.idi.bidata.boardgame.common.event.EventListener;
-import edu.ntnu.idi.bidata.boardgame.common.event.PlayerMovedEvent;
+import edu.ntnu.idi.bidata.boardgame.common.event.type.Event;
+import edu.ntnu.idi.bidata.boardgame.common.event.type.PlayerMovedEvent;
 import edu.ntnu.idi.bidata.boardgame.core.EventListeningComponent;
 import edu.ntnu.idi.bidata.boardgame.core.model.Player;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Ownable;

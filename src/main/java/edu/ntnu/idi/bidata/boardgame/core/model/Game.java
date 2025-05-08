@@ -1,9 +1,9 @@
 package edu.ntnu.idi.bidata.boardgame.core.model;
 
-import edu.ntnu.idi.bidata.boardgame.common.event.DiceRolledEvent;
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
-import edu.ntnu.idi.bidata.boardgame.common.event.OutputEvent;
-import edu.ntnu.idi.bidata.boardgame.common.event.PlayerMovedEvent;
+import edu.ntnu.idi.bidata.boardgame.common.event.type.DiceRolledEvent;
+import edu.ntnu.idi.bidata.boardgame.common.event.type.OutputEvent;
+import edu.ntnu.idi.bidata.boardgame.common.event.type.PlayerMovedEvent;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.dice.DiceRoll;
 import java.util.ArrayList;
 import java.util.List;
