@@ -40,7 +40,7 @@ public class GameEngine {
   public void nextTurn() {
     var currentPlayer = turnManager.getCurrentPlayerId();
     turnManager.nextTurn();
-    var diceRoll = Dice.getInstance().roll(2);
+    var diceRoll = Dice.roll(2);
     monopolyGame.movePlayer(currentPlayer, diceRoll);
   }
 }
