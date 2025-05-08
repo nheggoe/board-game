@@ -1,4 +1,4 @@
-package edu.ntnu.idi.bidata.boardgame.games.monopoly.model.dice;
+package edu.ntnu.idi.bidata.boardgame.core.model.dice;
 
 import java.util.Random;
 
@@ -7,7 +7,7 @@ import java.util.Random;
  * only one instance is created when needed. Uses Singleton to ensure non-biased dice rolls.
  *
  * @author Mihailo Hranisavljevic and Nick Heggø
- * @version 2025.04.15
+ * @version 2025.05.08
  */
 public class Dice {
 

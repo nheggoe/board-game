@@ -4,7 +4,7 @@ import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.DiceRolledEvent;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.OutputEvent;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.PlayerMovedEvent;
-import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.dice.DiceRoll;
+import edu.ntnu.idi.bidata.boardgame.core.model.dice.DiceRoll;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

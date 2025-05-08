@@ -1,9 +1,9 @@
 package edu.ntnu.idi.bidata.boardgame.core;
 
 import edu.ntnu.idi.bidata.boardgame.core.model.Player;
+import edu.ntnu.idi.bidata.boardgame.core.model.dice.Dice;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.MonopolyGame;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.board.MonopolyBoard;
-import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.dice.Dice;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.MonopolyTile;
 import java.util.List;
 import java.util.Objects;

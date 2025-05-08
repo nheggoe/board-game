@@ -1,6 +1,6 @@
 package edu.ntnu.idi.bidata.boardgame.common.event.type;
 
-import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.dice.DiceRoll;
+import edu.ntnu.idi.bidata.boardgame.core.model.dice.DiceRoll;
 import java.util.Objects;
 
 /**

@@ -1,4 +1,4 @@
-package edu.ntnu.idi.bidata.boardgame.games.monopoly.model.dice;
+package edu.ntnu.idi.bidata.boardgame.core.model.dice;
 
 import java.util.Arrays;
 
@@ -8,7 +8,7 @@ import java.util.Arrays;
  * encapsulate the roll results.
  *
  * @author Nick Heggø
- * @version 2025.04.15
+ * @version 2025.05.08
  */
 public record DiceRoll(int... rolls) {
 
