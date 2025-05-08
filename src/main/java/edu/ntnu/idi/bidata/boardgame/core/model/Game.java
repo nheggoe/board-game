@@ -39,6 +39,12 @@ public abstract class Game<T extends Tile, P extends Player> {
 
   public void printTiles() {
     StringBuilder sb = new StringBuilder();
+    sb.append("Tiles on the board:\n");
+    for (var tile : getTiles()) {
+      sb.append(tile).append("\n");
+    }
+    sb.delete(sb.length() - 3, sb.length());
+    println(sb);
   }
 
   public void movePlayer(UUID playerId, DiceRoll roll) {

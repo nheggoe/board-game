@@ -16,7 +16,7 @@ public class BoardGame extends Application {
   @Override
   public void start(Stage primaryStage) {
     setup(primaryStage);
-    new SceneSwitcher(primaryStage).switchTo(View.Name.GAME_VIEW);
+    new SceneSwitcher(primaryStage).switchTo(View.Name.MONOPOLY_GAME_VIEW);
   }
 
   private static void setup(Stage primaryStage) {

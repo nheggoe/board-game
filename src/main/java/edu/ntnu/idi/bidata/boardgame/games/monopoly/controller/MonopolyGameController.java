@@ -10,9 +10,10 @@ import edu.ntnu.idi.bidata.boardgame.games.monopoly.view.MonopolyGameView;
  * @author Nick Heggø
  * @version 2025.05.08
  */
-public class GameController extends Controller {
+public class MonopolyGameController extends Controller {
 
-  public GameController(SceneSwitcher sceneSwitcher, EventBus eventBus, GameEngine gameEngine) {
+  public MonopolyGameController(
+      SceneSwitcher sceneSwitcher, EventBus eventBus, GameEngine gameEngine) {
     super(
         sceneSwitcher,
         new MonopolyGameView(

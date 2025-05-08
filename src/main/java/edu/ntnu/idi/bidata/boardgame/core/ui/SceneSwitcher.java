@@ -4,7 +4,7 @@ import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
 import edu.ntnu.idi.bidata.boardgame.core.GameEngine;
 import edu.ntnu.idi.bidata.boardgame.core.TurnManager;
 import edu.ntnu.idi.bidata.boardgame.core.model.Player;
-import edu.ntnu.idi.bidata.boardgame.games.monopoly.controller.GameController;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.controller.MonopolyGameController;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.MonopolyGame;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.board.MonopolyBoardFactory;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.MonopolyPlayer;
@@ -41,7 +41,26 @@ public class SceneSwitcher {
       }
     }
     this.controller = createController(name);
-    scene.setRoot(controller.getView());
+    setRoot(controller.getView());
+  }
+
+  private Controller createController(View.Name name) {
+    return switch (name) {
+      case MAIN_VIEW -> throw new UnsupportedOperationException("Not yet implemented");
+      case SNAKE_GAME_VIEW ->
+          throw new UnsupportedOperationException("Snake game is not yet implemented");
+      case MONOPOLY_GAME_VIEW -> {
+        var game =
+            new MonopolyGame(
+                eventBus,
+                MonopolyBoardFactory.generateBoard(MonopolyBoardFactory.Layout.NORMAL),
+                List.of(
+                    new MonopolyPlayer("Nick", Player.Figure.HAT),
+                    new MonopolyPlayer("Misha", Player.Figure.BATTLE_SHIP)));
+        yield new MonopolyGameController(
+            this, eventBus, new GameEngine(game, new TurnManager(eventBus, game.getPlayerIds())));
+      }
+    };
   }
 
   public Scene getScene() {
@@ -50,22 +69,5 @@ public class SceneSwitcher {
 
   public void setRoot(Parent root) {
     scene.setRoot(Objects.requireNonNull(root, "root must not be null"));
-  }
-
-  private Controller createController(View.Name name) {
-    return switch (name) {
-      case GAME_VIEW -> {
-        var game =
-            new MonopolyGame(
-                eventBus,
-                MonopolyBoardFactory.generateBoard(MonopolyBoardFactory.Layout.NORMAL),
-                List.of(
-                    new MonopolyPlayer("Nick", Player.Figure.HAT),
-                    new MonopolyPlayer("Misha", Player.Figure.BATTLE_SHIP)));
-        yield new GameController(
-            this, eventBus, new GameEngine(game, new TurnManager(eventBus, game.getPlayerIds())));
-      }
-      case MAIN_VIEW -> throw new UnsupportedOperationException("Not yet implemented");
-    };
   }
 }

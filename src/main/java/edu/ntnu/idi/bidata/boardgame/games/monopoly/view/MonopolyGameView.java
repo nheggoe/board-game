@@ -28,6 +28,7 @@ public class MonopolyGameView extends View {
       List<MonopolyTile> tiles,
       EventHandler<ActionEvent> rollDiceHandler) {
 
+    // root
     BorderPane root = new BorderPane();
     getChildren().add(root);
     root.prefWidthProperty().bind(widthProperty());

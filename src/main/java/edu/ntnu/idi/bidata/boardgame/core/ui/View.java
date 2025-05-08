@@ -7,7 +7,7 @@ import javafx.scene.layout.Region;
 
 /**
  * @author Nick Heggø
- * @version 2025.05.06
+ * @version 2025.05.08
  */
 public abstract class View extends Region implements AutoCloseable {
 
@@ -32,6 +32,7 @@ public abstract class View extends Region implements AutoCloseable {
 
   public enum Name {
     MAIN_VIEW,
-    GAME_VIEW
+    MONOPOLY_GAME_VIEW,
+    SNAKE_GAME_VIEW,
   }
 }
