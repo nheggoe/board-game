@@ -7,6 +7,14 @@ import edu.ntnu.idi.bidata.boardgame.games.monopoly.controller.MonopolyGameContr
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.MonopolyGame;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.board.MonopolyBoardFactory;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.MonopolyPlayer;
+import edu.ntnu.idi.bidata.boardgame.games.snake.controller.SnakeGameController;
+import edu.ntnu.idi.bidata.boardgame.games.snake.model.SnakeAndLadderBoard;
+import edu.ntnu.idi.bidata.boardgame.games.snake.model.SnakeAndLadderGame;
+import edu.ntnu.idi.bidata.boardgame.games.snake.model.SnakeAndLadderPlayer;
+import edu.ntnu.idi.bidata.boardgame.games.snake.model.tile.LadderTile;
+import edu.ntnu.idi.bidata.boardgame.games.snake.model.tile.NormalTile;
+import edu.ntnu.idi.bidata.boardgame.games.snake.model.tile.SnakeAndLadderTile;
+import edu.ntnu.idi.bidata.boardgame.games.snake.model.tile.SnakeTile;
 import java.util.List;
 import java.util.Objects;
 import javafx.scene.Parent;
@@ -46,8 +54,22 @@ public class SceneSwitcher {
   private Controller createController(View.Name name) {
     return switch (name) {
       case MAIN_VIEW -> throw new UnsupportedOperationException("Not yet implemented");
-      case SNAKE_GAME_VIEW ->
-          throw new UnsupportedOperationException("Snake game is not yet implemented");
+      case SNAKE_GAME_VIEW -> {
+        var tiles =
+            List.<SnakeAndLadderTile>of(
+                new LadderTile(2),
+                new NormalTile(),
+                new NormalTile(),
+                new NormalTile(),
+                new SnakeTile(2));
+        var board = new SnakeAndLadderBoard(tiles);
+        var players =
+            List.of(
+                new SnakeAndLadderPlayer("Nick", Player.Figure.HAT),
+                new SnakeAndLadderPlayer("Misha", Player.Figure.BATTLE_SHIP));
+        var game = new SnakeAndLadderGame(eventBus, board, players);
+        yield new SnakeGameController(this, eventBus, new GameEngine<>(game), board);
+      }
       case MONOPOLY_GAME_VIEW -> {
         var game =
             new MonopolyGame(

@@ -20,7 +20,7 @@ import java.util.function.Consumer;
  */
 public class SnakeAndLadderGame extends Game<SnakeAndLadderPlayer, SnakeAndLadderTile> {
 
-  protected SnakeAndLadderGame(
+  public SnakeAndLadderGame(
       EventBus eventBus, Board<SnakeAndLadderTile> board, List<SnakeAndLadderPlayer> players) {
     super(eventBus, board, players);
   }
