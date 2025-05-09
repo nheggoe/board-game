@@ -6,6 +6,7 @@ import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
 import edu.ntnu.idi.bidata.boardgame.common.util.StringFormatter;
 import edu.ntnu.idi.bidata.boardgame.core.TileAction;
 import edu.ntnu.idi.bidata.boardgame.core.model.Game;
+import edu.ntnu.idi.bidata.boardgame.core.model.dice.Dice;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.board.MonopolyBoard;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.InsufficientFundsException;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.MonopolyPlayer;
@@ -28,15 +29,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * The {@link MonopolyGame} class represents a board game instance. It manages players, their
- * states, and the game board. The game maintains a unique identifier and keeps track of players and
- * their interactions with the board.
- *
- * <p>This class implements {@link Iterable}, allowing iteration over the collection of players
- * participating in the game.
- *
  * @author Nick Heggø
- * @version 2025.05.08
+ * @version 2025.05.09
  */
 public class MonopolyGame extends Game<MonopolyPlayer, MonopolyTile> {
 
@@ -47,7 +41,9 @@ public class MonopolyGame extends Game<MonopolyPlayer, MonopolyTile> {
   }
 
   @Override
-  public void nextTurn() {}
+  public void nextTurn() {
+    movePlayer(getNextPlayer(), Dice.roll(2));
+  }
 
   @Override
   protected void completeRoundAction(MonopolyPlayer player) {

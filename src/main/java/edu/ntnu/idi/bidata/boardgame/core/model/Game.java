@@ -12,7 +12,7 @@ import java.util.UUID;
 
 /**
  * @author Nick Heggø
- * @version 2025.05.08
+ * @version 2025.05.09
  */
 public abstract class Game<P extends Player, T extends Tile> {
 
@@ -113,6 +113,10 @@ public abstract class Game<P extends Player, T extends Tile> {
 
   protected EventBus getEventBus() {
     return eventBus;
+  }
+
+  protected P getNextPlayer() {
+    return turnManager.getNextPlayer();
   }
 
   protected Board<T> getBoard() {
