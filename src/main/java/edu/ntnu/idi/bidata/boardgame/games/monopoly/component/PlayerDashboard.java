@@ -47,7 +47,7 @@ public class PlayerDashboard extends EventListeningComponent {
     Color.web("#e2e3e5")
   };
 
-  public PlayerDashboard(EventBus eventBus, List<Player> players) {
+  public PlayerDashboard(EventBus eventBus, List<? extends Player> players) {
     super(eventBus);
     getEventBus().addListener(PlayerMovedEvent.class, this);
     getEventBus().addListener(PlayerRemovedEvent.class, this);

@@ -6,6 +6,7 @@ import edu.ntnu.idi.bidata.boardgame.common.event.type.Event;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.PlayerMovedEvent;
 import edu.ntnu.idi.bidata.boardgame.core.model.Player;
 import edu.ntnu.idi.bidata.boardgame.core.ui.EventListeningComponent;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.MonopolyPlayer;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Ownable;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Property;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Railroad;
@@ -36,14 +37,15 @@ public class MonopolyBoardView extends EventListeningComponent implements EventL
 
   private final GridPane board;
 
-  public MonopolyBoardView(EventBus eventBus, List<MonopolyTile> tiles, List<Player> players) {
+  public MonopolyBoardView(
+      EventBus eventBus, List<MonopolyPlayer> players, List<MonopolyTile> tiles) {
     super(eventBus);
     getEventBus().addListener(PlayerMovedEvent.class, this);
 
     board = new GridPane();
     getChildren().add(board);
     setAlignment(Pos.CENTER);
-    initialize(tiles, players);
+    initialize(players, tiles);
   }
 
   /**
@@ -182,7 +184,7 @@ public class MonopolyBoardView extends EventListeningComponent implements EventL
     };
   }
 
-  private void initialize(List<MonopolyTile> tiles, List<Player> players) {
+  private void initialize(List<MonopolyPlayer> players, List<MonopolyTile> tiles) {
     board.setGridLinesVisible(true); // optional: show grid lines
     board.setAlignment(Pos.CENTER);
 

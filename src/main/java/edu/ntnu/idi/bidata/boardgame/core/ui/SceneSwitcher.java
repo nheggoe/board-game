@@ -2,7 +2,6 @@ package edu.ntnu.idi.bidata.boardgame.core.ui;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
 import edu.ntnu.idi.bidata.boardgame.core.GameEngine;
-import edu.ntnu.idi.bidata.boardgame.core.TurnManager;
 import edu.ntnu.idi.bidata.boardgame.core.model.Player;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.controller.MonopolyGameController;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.MonopolyGame;
@@ -57,8 +56,7 @@ public class SceneSwitcher {
                 List.of(
                     new MonopolyPlayer("Nick", Player.Figure.HAT),
                     new MonopolyPlayer("Misha", Player.Figure.BATTLE_SHIP)));
-        yield new MonopolyGameController(
-            this, eventBus, new GameEngine(game, new TurnManager(eventBus, game.getPlayerIds())));
+        yield new MonopolyGameController(this, eventBus, new GameEngine(game));
       }
     };
   }

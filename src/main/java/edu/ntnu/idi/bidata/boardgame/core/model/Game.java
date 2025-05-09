@@ -23,8 +23,9 @@ public abstract class Game<P extends Player, T extends Tile> {
   private final UUID id;
   private String gameSaveName;
   private boolean isEnded;
+  private final TurnManager<P> turnManager;
 
-  // dependencies
+  // injected dependencies
   private final EventBus eventBus;
   private final Board<T> board;
   private final List<P> players;
@@ -32,10 +33,13 @@ public abstract class Game<P extends Player, T extends Tile> {
   protected Game(EventBus eventBus, Board<T> board, List<P> players) {
     this.id = UUID.randomUUID();
     this.isEnded = false;
+    this.turnManager = new TurnManager<>(players);
     this.eventBus = Objects.requireNonNull(eventBus, "EventBus cannot be null!");
     this.board = Objects.requireNonNull(board, "Board cannot be null!");
     this.players = new ArrayList<>(Objects.requireNonNull(players, "Players cannot be null!"));
   }
+
+  public abstract void nextTrun();
 
   public void printTiles() {
     StringBuilder sb = new StringBuilder();

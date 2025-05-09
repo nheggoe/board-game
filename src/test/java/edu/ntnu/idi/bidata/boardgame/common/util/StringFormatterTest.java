@@ -1,8 +1,7 @@
-package edu.ntnu.idi.bidata.boardgame.backend.util;
+package edu.ntnu.idi.bidata.boardgame.common.util;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-import edu.ntnu.idi.bidata.boardgame.common.util.StringFormatter;
 import edu.ntnu.idi.bidata.boardgame.core.model.Player;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.CornerMonopolyTile;
 import org.junit.jupiter.api.Test;

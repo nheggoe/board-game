@@ -47,6 +47,9 @@ public class MonopolyGame extends Game<MonopolyPlayer, MonopolyTile> {
   }
 
   @Override
+  public void nextTrun() {}
+
+  @Override
   protected void completeRoundAction(MonopolyPlayer player) {
     player.addBalance(200);
   }
