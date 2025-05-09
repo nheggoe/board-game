@@ -83,7 +83,6 @@ public class MonopolyPlayer extends Player {
 
   // ------------------------  getters and setters  ------------------------
 
-
   public int getBalance() {
     return balance;
   }

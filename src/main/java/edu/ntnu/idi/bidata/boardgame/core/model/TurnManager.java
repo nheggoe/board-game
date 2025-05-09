@@ -9,19 +9,25 @@ import java.util.Objects;
  * @author Nick Heggø
  * @version 2025.05.09
  */
-public class TurnManager<T extends Player> {
+public class TurnManager<P extends Player> {
 
-  private final List<T> players;
+  private final List<P> players;
   private int roundNumber = 0;
-  private Iterator<T> iterator;
-  private T currentPlayer;
+  private Iterator<P> iterator;
+  private P currentPlayer;
 
-  protected TurnManager(List<T> players) {
+  protected TurnManager(List<P> players) {
+    Objects.requireNonNull(players, "Players cannot be null!");
     this.players = new ArrayList<>(players);
     this.iterator = players.iterator();
+    this.currentPlayer = players.getFirst();
   }
 
-  protected T getNextPlayer() {
+  protected P getCurrentPlayer() {
+    return currentPlayer;
+  }
+
+  protected P getNextPlayer() {
     if (!iterator.hasNext()) {
       iterator = players.iterator();
       roundNumber++;
@@ -50,5 +56,9 @@ public class TurnManager<T extends Player> {
 
   protected int getRoundNumber() {
     return roundNumber;
+  }
+
+  protected List<P> getPlayers() {
+    return List.copyOf(players);
   }
 }

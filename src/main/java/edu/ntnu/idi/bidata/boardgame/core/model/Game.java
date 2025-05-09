@@ -5,13 +5,10 @@ import edu.ntnu.idi.bidata.boardgame.common.event.type.DiceRolledEvent;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.OutputEvent;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.PlayerMovedEvent;
 import edu.ntnu.idi.bidata.boardgame.core.model.dice.DiceRoll;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 /**
  * @author Nick Heggø
@@ -28,7 +25,6 @@ public abstract class Game<P extends Player, T extends Tile> {
   // injected dependencies
   private final EventBus eventBus;
   private final Board<T> board;
-  private final List<P> players;
 
   protected Game(EventBus eventBus, Board<T> board, List<P> players) {
     this.id = UUID.randomUUID();
@@ -36,10 +32,11 @@ public abstract class Game<P extends Player, T extends Tile> {
     this.turnManager = new TurnManager<>(players);
     this.eventBus = Objects.requireNonNull(eventBus, "EventBus cannot be null!");
     this.board = Objects.requireNonNull(board, "Board cannot be null!");
-    this.players = new ArrayList<>(Objects.requireNonNull(players, "Players cannot be null!"));
   }
 
-  public abstract void nextTrun();
+  // ------------------------  API  ------------------------
+
+  public abstract void nextTurn();
 
   public void printTiles() {
     StringBuilder sb = new StringBuilder();
@@ -51,10 +48,25 @@ public abstract class Game<P extends Player, T extends Tile> {
     println(sb);
   }
 
-  public void movePlayer(UUID playerId, DiceRoll roll) {
-    var player =
-        getPlayerById(playerId)
-            .orElseThrow(() -> new IllegalArgumentException("Player not found!"));
+  public void endGame() {
+    isEnded = true;
+  }
+
+  // ------------------------  internal  ------------------------
+
+  protected void println(Object o) {
+    eventBus.publishEvent(new OutputEvent(o.toString()));
+  }
+
+  protected void notifyPlayerMoved(Player player) {
+    eventBus.publishEvent(new PlayerMovedEvent(player));
+  }
+
+  protected void notifyDiceRolled(DiceRoll diceRoll) {
+    eventBus.publishEvent(new DiceRolledEvent(diceRoll));
+  }
+
+  protected void movePlayer(P player, DiceRoll roll) {
     int oldPositon = player.getPosition();
     int newPosition = (player.getPosition() + roll.getTotal()) % board.size();
     player.setPosition(newPosition);
@@ -67,69 +79,47 @@ public abstract class Game<P extends Player, T extends Tile> {
 
   protected abstract void completeRoundAction(P player);
 
-  private Optional<P> getPlayerById(UUID playerId) {
-    return players.stream().filter(player -> player.getId().equals(playerId)).findFirst();
+  // ------------------------  Getters and Setters  ------------------------
+
+  public abstract Map.Entry<Integer, List<P>> getWinners();
+
+  public P getCurrentPlayer() {
+    return turnManager.getNextPlayer();
   }
 
   public Tile getTile(int position) {
     return board.getTileAtIndex(position);
   }
 
-  public void endGame() {
-    isEnded = true;
-  }
-
-  public abstract Map.Entry<Integer, List<P>> getWinners();
-
-  protected void notifyPlayerMoved(Player player) {
-    eventBus.publishEvent(new PlayerMovedEvent(player));
-  }
-
-  protected void notifyDiceRolled(DiceRoll diceRoll) {
-    eventBus.publishEvent(new DiceRolledEvent(diceRoll));
-  }
-
-  protected void println(Object o) {
-    eventBus.publishEvent(new OutputEvent(o.toString()));
-  }
-
   public UUID getId() {
     return id;
-  }
-
-  public boolean isEnded() {
-    return isEnded;
-  }
-
-  public void setGameSaveName(String gameSaveName) {
-    this.gameSaveName = gameSaveName;
   }
 
   public String getGameSaveName() {
     return gameSaveName;
   }
 
-  public List<UUID> getPlayerIds() {
-    return players.stream().map(Player::getId).toList();
-  }
-
-  public List<P> getPlayers() {
-    return players;
-  }
-
-  protected Board<T> getBoard() {
-    return board;
-  }
-
-  protected EventBus getEventBus() {
-    return eventBus;
+  public void setGameSaveName(String gameSaveName) {
+    this.gameSaveName = gameSaveName;
   }
 
   public List<T> getTiles() {
     return board.tiles();
   }
 
-  public Stream<P> stream() {
-    return players.stream();
+  public boolean isEnded() {
+    return isEnded;
+  }
+
+  protected EventBus getEventBus() {
+    return eventBus;
+  }
+
+  protected Board<T> getBoard() {
+    return board;
+  }
+
+  public List<P> getPlayers() {
+    return turnManager.getPlayers();
   }
 }

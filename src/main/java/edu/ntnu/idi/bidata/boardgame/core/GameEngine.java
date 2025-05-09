@@ -27,6 +27,6 @@ public class GameEngine<P extends Player, T extends Tile> {
   }
 
   public void nextTurn() {
-    game.nextTrun();
+    game.nextTurn();
   }
 }

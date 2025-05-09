@@ -34,6 +34,5 @@ class SnakeAndLadderGameTest {
     assertNotNull(game.getPlayers());
     assertNotNull(game.getId());
     assertNotNull(game.getWinners());
-    assertNotNull(game.getPlayerIds());
   }
 }

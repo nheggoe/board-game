@@ -27,11 +27,25 @@ class TurnManagerTest {
 
   @Test
   void testBasic() {
+    assertNotNull(turnManager.getCurrentPlayer());
+    assertNotNull(turnManager.getNextPlayer());
+  }
+
+  @Test
+  void testLoop() {
     for (int i = 0; i < 10; i++) {
       assertEquals(playerOne, turnManager.getNextPlayer());
       assertEquals(playerTwo, turnManager.getNextPlayer());
       assertEquals(playerThree, turnManager.getNextPlayer());
       assertEquals(playerFour, turnManager.getNextPlayer());
     }
+  }
+
+  @Test
+  void testRemovePlayer() {
+
+    turnManager.getNextPlayer();
+    turnManager.getNextPlayer();
+    assertEquals(playerTwo, turnManager.getCurrentPlayer());
   }
 }

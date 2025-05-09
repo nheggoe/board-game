@@ -56,7 +56,7 @@ public class SceneSwitcher {
                 List.of(
                     new MonopolyPlayer("Nick", Player.Figure.HAT),
                     new MonopolyPlayer("Misha", Player.Figure.BATTLE_SHIP)));
-        yield new MonopolyGameController(this, eventBus, new GameEngine(game));
+        yield new MonopolyGameController(this, eventBus, new GameEngine<>(game));
       }
     };
   }

@@ -21,7 +21,7 @@ public class SnakeAndLadderGame extends Game<SnakeAndLadderPlayer, SnakeAndLadde
   }
 
   @Override
-  public void nextTrun() {}
+  public void nextTurn() {}
 
   @Override
   protected void completeRoundAction(SnakeAndLadderPlayer player) {
