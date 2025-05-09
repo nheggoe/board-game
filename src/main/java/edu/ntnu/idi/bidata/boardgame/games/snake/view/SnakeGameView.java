@@ -14,14 +14,14 @@ public class SnakeGameView extends View {
   public SnakeGameView(EventBus eventBus, SnakeAndLadderBoard board) {
     getChildren().add(root);
 
-    // component
+    // center
     var render = new SnakeAndLadderBoardRender(eventBus, board);
     render.prefWidthProperty().bind(widthProperty().multiply(0.8));
     render.prefHeightProperty().bind(heightProperty().multiply(0.6));
     root.setCenter(render);
     addComponents(render);
 
-    // text box
+    // bottom
     var messageBox = new MessagePanel(eventBus);
     messageBox.prefWidthProperty().bind(widthProperty());
     messageBox.prefHeightProperty().bind(heightProperty().multiply(0.3));

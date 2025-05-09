@@ -1,6 +1,7 @@
 package edu.ntnu.idi.bidata.boardgame.games.snake.model;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
+import edu.ntnu.idi.bidata.boardgame.core.TileAction;
 import edu.ntnu.idi.bidata.boardgame.core.model.Board;
 import edu.ntnu.idi.bidata.boardgame.core.model.Game;
 import edu.ntnu.idi.bidata.boardgame.core.model.dice.Dice;
@@ -12,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.function.Consumer;
 
 /**
  * @author Nick Heggø
@@ -35,7 +35,7 @@ public class SnakeAndLadderGame extends Game<SnakeAndLadderPlayer, SnakeAndLadde
     movePlayer(player, diceRoll.getTotal());
     println("Player %s moved to tile %d".formatted(player.getName(), player.getPosition()));
 
-    tileActionOf(getTile(player.getPosition())).accept(player);
+    tileActionOf(getTile(player.getPosition())).execute(player);
 
     if (diceRoll.getTotal() == 6) {
       println("Player %s rolled a 6, they are forced to move again.".formatted(player.getName()));
@@ -43,7 +43,7 @@ public class SnakeAndLadderGame extends Game<SnakeAndLadderPlayer, SnakeAndLadde
     }
   }
 
-  private Consumer<SnakeAndLadderPlayer> tileActionOf(SnakeAndLadderTile tile) {
+  private TileAction<SnakeAndLadderPlayer> tileActionOf(SnakeAndLadderTile tile) {
     return switch (tile) {
       case SnakeTile(int tilesToSlideBack) -> snakeTileAction(tilesToSlideBack);
       case LadderTile(int tilesToSkip) -> ladderTileAction(tilesToSkip);
@@ -51,7 +51,7 @@ public class SnakeAndLadderGame extends Game<SnakeAndLadderPlayer, SnakeAndLadde
     };
   }
 
-  private Consumer<SnakeAndLadderPlayer> snakeTileAction(int tilesToSlideBack) {
+  private TileAction<SnakeAndLadderPlayer> snakeTileAction(int tilesToSlideBack) {
     return player -> {
       movePlayer(player, tilesToSlideBack);
       println(
@@ -60,7 +60,7 @@ public class SnakeAndLadderGame extends Game<SnakeAndLadderPlayer, SnakeAndLadde
     };
   }
 
-  private Consumer<SnakeAndLadderPlayer> ladderTileAction(int tilesToSkip) {
+  private TileAction<SnakeAndLadderPlayer> ladderTileAction(int tilesToSkip) {
     return player -> {
       movePlayer(player, tilesToSkip);
       println(
