@@ -1,9 +1,8 @@
-package edu.ntnu.idi.bidata.boardgame.backend.model.dice;
+package edu.ntnu.idi.bidata.boardgame.core.model.dice;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
-import edu.ntnu.idi.bidata.boardgame.core.model.dice.DiceRoll;
 import org.junit.jupiter.api.Test;
 
 class DiceRollTest {
@@ -38,5 +37,11 @@ class DiceRollTest {
     assertThatThrownBy(() -> new DiceRoll(1, 3, 7))
         .withFailMessage("Face value of dice cannot exceed 6")
         .isInstanceOf(IllegalArgumentException.class);
+  }
+
+  @Test
+  void testToString() {
+    assertThat(new DiceRoll(1, 2, 3).toString()).isEqualTo("1, 2, 3 (6)");
+    assertThat(new DiceRoll(1, 1).toString()).isEqualTo("2 equal dice of 1! (2)");
   }
 }

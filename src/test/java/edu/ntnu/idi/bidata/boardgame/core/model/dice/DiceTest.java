@@ -1,9 +1,7 @@
-package edu.ntnu.idi.bidata.boardgame.backend.model.dice;
+package edu.ntnu.idi.bidata.boardgame.core.model.dice;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-import edu.ntnu.idi.bidata.boardgame.core.model.dice.Dice;
-import edu.ntnu.idi.bidata.boardgame.core.model.dice.DiceRoll;
 import org.junit.jupiter.api.Test;
 
 class DiceTest {

@@ -17,7 +17,7 @@ import java.util.stream.Stream;
  * @author Nick Heggø
  * @version 2025.05.08
  */
-public abstract class Game<T extends Tile, P extends Player> {
+public abstract class Game<P extends Player, T extends Tile> {
 
   // state
   private final UUID id;

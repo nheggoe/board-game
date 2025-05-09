@@ -7,7 +7,7 @@ import edu.ntnu.idi.bidata.boardgame.core.model.Player;
  * @author Nick Heggø
  * @version 2025.05.08
  */
-public class SnakePlayer extends Player {
+public class SnakeAndLadderPlayer extends Player {
   /**
    * Constructs a new player with the specified name and places them at the start tile (position 0)
    * of the board.
@@ -15,7 +15,7 @@ public class SnakePlayer extends Player {
    * @param name the name of the player
    * @param figure the figure player has chosen to play as
    */
-  public SnakePlayer(String name, Figure figure) {
+  public SnakeAndLadderPlayer(String name, Figure figure) {
     super(name, figure);
   }
 }

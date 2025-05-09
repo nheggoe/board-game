@@ -38,7 +38,7 @@ import java.util.TreeMap;
  * @author Nick Heggø
  * @version 2025.05.08
  */
-public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
+public class MonopolyGame extends Game<MonopolyPlayer, MonopolyTile> {
 
   public MonopolyGame(
       EventBus eventBus, MonopolyBoard monopolyBoard, List<MonopolyPlayer> players) {

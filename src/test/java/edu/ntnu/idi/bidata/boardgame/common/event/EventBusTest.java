@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.Event;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.PlayerRemovedEvent;
 import edu.ntnu.idi.bidata.boardgame.core.model.Player;
-import edu.ntnu.idi.bidata.boardgame.games.snake.model.SnakePlayer;
+import edu.ntnu.idi.bidata.boardgame.games.snake.model.SnakeAndLadderPlayer;
 import org.junit.jupiter.api.Test;
 
 class EventBusTest {
@@ -50,7 +50,7 @@ class EventBusTest {
   void testPublishEvent() {
     var eventBus = new EventBus();
     eventBus.addListener(PlayerRemovedEvent.class, listener);
-    var player = new SnakePlayer("John", Player.Figure.CAR);
+    var player = new SnakeAndLadderPlayer("John", Player.Figure.CAR);
     var event = new PlayerRemovedEvent(player);
     assertThrows(UnsupportedOperationException.class, () -> eventBus.publishEvent(event));
     assertThrows(NullPointerException.class, () -> eventBus.publishEvent(null));
