@@ -42,7 +42,9 @@ public class MonopolyGame extends Game<MonopolyPlayer, MonopolyTile> {
 
   @Override
   public void nextTurn() {
-    movePlayer(getNextPlayer(), Dice.roll(2));
+    var diceRoll = Dice.roll(2);
+    notifyDiceRolled(diceRoll);
+    movePlayer(getNextPlayer(), diceRoll.getTotal());
   }
 
   @Override

@@ -66,14 +66,13 @@ public abstract class Game<P extends Player, T extends Tile> {
     eventBus.publishEvent(new DiceRolledEvent(diceRoll));
   }
 
-  protected void movePlayer(P player, DiceRoll roll) {
+  protected void movePlayer(P player, int numberOfTiles) {
     int oldPositon = player.getPosition();
-    int newPosition = (player.getPosition() + roll.getTotal()) % board.size();
+    int newPosition = (player.getPosition() + numberOfTiles) % board.size();
     player.setPosition(newPosition);
     if (oldPositon > newPosition) {
       completeRoundAction(player);
     }
-    notifyDiceRolled(roll);
     notifyPlayerMoved(player);
   }
 
@@ -87,7 +86,7 @@ public abstract class Game<P extends Player, T extends Tile> {
     return turnManager.getNextPlayer();
   }
 
-  public Tile getTile(int position) {
+  public T getTile(int position) {
     return board.getTileAtIndex(position);
   }
 
