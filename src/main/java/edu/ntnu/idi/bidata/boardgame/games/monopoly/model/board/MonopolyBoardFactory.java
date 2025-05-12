@@ -14,7 +14,9 @@ import java.util.List;
  */
 public class MonopolyBoardFactory {
 
-  public static MonopolyBoard generateBoard(Layout layout) {
+  private MonopolyBoardFactory() {}
+
+  public static MonopolyBoard generateBoard(MonopolyBoard.Layout layout) {
     return switch (layout) {
       case NORMAL, EASY, UNFAIR -> generateNormalBoard();
     };
@@ -25,11 +27,5 @@ public class MonopolyBoardFactory {
     List<MonopolyTile> tiles = new ArrayList<>(tmp);
     tiles.addAll(TileFactory.generateCornerTiles());
     return new MonopolyBoard(tiles);
-  }
-
-  public enum Layout {
-    NORMAL,
-    UNFAIR,
-    EASY
   }
 }

@@ -18,7 +18,7 @@ import java.util.TreeMap;
  * @author Nick Heggø
  * @version 2025.05.09
  */
-public class SnakeAndLadderGame extends Game<SnakeAndLadderPlayer, SnakeAndLadderTile> {
+public class SnakeAndLadderGame extends Game<SnakeAndLadderTile, SnakeAndLadderPlayer> {
 
   public SnakeAndLadderGame(
       EventBus eventBus, Board<SnakeAndLadderTile> board, List<SnakeAndLadderPlayer> players) {
@@ -70,6 +70,11 @@ public class SnakeAndLadderGame extends Game<SnakeAndLadderPlayer, SnakeAndLadde
         endGame();
       }
     };
+  }
+
+  @Override
+  public SnakeAndLadderBoard getBoard() {
+    return (SnakeAndLadderBoard) super.getBoard();
   }
 
   @Override

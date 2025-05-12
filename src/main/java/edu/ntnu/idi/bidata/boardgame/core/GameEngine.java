@@ -10,12 +10,10 @@ import java.util.Objects;
  * @author Nick Heggø
  * @version 2025.05.09
  */
-public class GameEngine<P extends Player, T extends Tile> {
+public record GameEngine<T extends Tile, P extends Player>(Game<T, P> game) {
 
-  private final Game<P, T> game;
-
-  public GameEngine(Game<P, T> game) {
-    this.game = Objects.requireNonNull(game, "Game cannot be null!");
+  public GameEngine {
+    Objects.requireNonNull(game, "Game cannot be null!");
   }
 
   public List<P> getPlayers() {

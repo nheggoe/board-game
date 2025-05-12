@@ -32,7 +32,7 @@ import java.util.TreeMap;
  * @author Nick Heggø
  * @version 2025.05.09
  */
-public class MonopolyGame extends Game<MonopolyPlayer, MonopolyTile> {
+public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
 
   public MonopolyGame(
       EventBus eventBus, MonopolyBoard monopolyBoard, List<MonopolyPlayer> players) {
@@ -62,7 +62,7 @@ public class MonopolyGame extends Game<MonopolyPlayer, MonopolyTile> {
   }
 
   @Override
-  protected MonopolyBoard getBoard() {
+  public MonopolyBoard getBoard() {
     return (MonopolyBoard) super.getBoard();
   }
 
@@ -164,8 +164,7 @@ public class MonopolyGame extends Game<MonopolyPlayer, MonopolyTile> {
                         property.getName(),
                         StringFormatter.formatEnum(property.getColor()),
                         property.price());
-            case Railroad railroad ->
-                "Do you want to purchase a railroad for $" + railroad.price() + "?";
+            case Railroad(int price) -> "Do you want to purchase a railroad for $" + price + "?";
             case Utility(String name, int price) ->
                 "Do you want to purchase %s for $%d?".formatted(name, price);
           };

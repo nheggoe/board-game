@@ -13,7 +13,7 @@ public class SnakeGameController extends Controller {
   public <P extends Player, T extends Tile> SnakeGameController(
       SceneSwitcher sceneSwitcher,
       EventBus eventBus,
-      GameEngine<P, T> gameEngine,
+      GameEngine<T, P> gameEngine,
       SnakeAndLadderBoard board) {
     super(sceneSwitcher, new SnakeGameView(eventBus, board));
   }

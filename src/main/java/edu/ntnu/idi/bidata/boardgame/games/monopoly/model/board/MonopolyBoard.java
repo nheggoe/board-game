@@ -94,6 +94,14 @@ public record MonopolyBoard(List<MonopolyTile> tiles) implements Board<MonopolyT
     return tiles.size();
   }
 
+  public enum Layout {
+    NORMAL,
+    UNFAIR,
+    EASY
+  }
+
+  // ------------------------  validations  ------------------------
+
   private List<MonopolyTile> shuffleTiles(List<MonopolyTile> tiles) {
     Collections.shuffle(tiles);
 

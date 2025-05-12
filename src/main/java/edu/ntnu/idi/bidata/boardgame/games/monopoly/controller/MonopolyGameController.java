@@ -17,7 +17,7 @@ public class MonopolyGameController extends Controller {
   public MonopolyGameController(
       SceneSwitcher sceneSwitcher,
       EventBus eventBus,
-      GameEngine<MonopolyPlayer, MonopolyTile> gameEngine) {
+      GameEngine<MonopolyTile, MonopolyPlayer> gameEngine) {
     super(
         sceneSwitcher,
         new MonopolyGameView(

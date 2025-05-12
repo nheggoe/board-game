@@ -14,7 +14,7 @@ import java.util.UUID;
  * @author Nick Heggø
  * @version 2025.05.09
  */
-public abstract class Game<P extends Player, T extends Tile> {
+public abstract class Game<T extends Tile, P extends Player> {
 
   // state
   private final UUID id;
@@ -118,7 +118,7 @@ public abstract class Game<P extends Player, T extends Tile> {
     return turnManager.getNextPlayer();
   }
 
-  protected Board<T> getBoard() {
+  public Board<T> getBoard() {
     return board;
   }
 

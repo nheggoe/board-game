@@ -1,10 +1,11 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile;
 
-import edu.ntnu.idi.bidata.boardgame.common.io.csv.OwnableCSVHandler;
+import edu.ntnu.idi.bidata.boardgame.common.io.csv.CsvFileReader;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Ownable;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Property;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Utility;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class TileFactory {
   public static List<MonopolyTile> generateOwnableTiles() {
     try {
       return generateTilesFromCSV(
-          OwnableCSVHandler.readLines("src/main/resources/csv/monopoly_tiles.csv"), 4);
+          CsvFileReader.readLines(Path.of("src/main/resources/csv/monopoly_tiles.csv")), 4);
     } catch (IOException ignored) {
       return List.of();
     }
