@@ -8,7 +8,7 @@ import java.util.UUID;
  * current tile position on the board.
  *
  * @author Mihailo Hranisavljevic and Nick Heggø
- * @version 2025.05.08
+ * @version 2025.05.14
  */
 public abstract class Player {
 
@@ -89,5 +89,18 @@ public abstract class Player {
   public String toString() {
     return "%s[figure=%s, position=%d]"
         .formatted(getName(), StringFormatter.formatEnum(getFigure()), getPosition());
+  }
+
+  @Override
+  public final boolean equals(Object o) {
+    if (!(o instanceof Player player)) {
+      return false;
+    }
+    return id.equals(player.id);
+  }
+
+  @Override
+  public int hashCode() {
+    return id.hashCode();
   }
 }
