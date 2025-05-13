@@ -30,6 +30,9 @@ public record DiceRoll(int... rolls) {
    * @return true if all dice have the same face value, false otherwise
    */
   public boolean areDiceEqual() {
+    if (rolls.length < 2) {
+      throw new UnsupportedOperationException("Dice roll must contain at least two dice");
+    }
     return Arrays.stream(rolls).allMatch(face -> face == rolls[0]);
   }
 

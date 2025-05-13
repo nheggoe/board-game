@@ -30,7 +30,7 @@ import java.util.TreeMap;
 
 /**
  * @author Nick Heggø
- * @version 2025.05.09
+ * @version 2025.05.14
  */
 public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
 
@@ -42,9 +42,27 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
 
   @Override
   public void nextTurn() {
+    playTurn(getNextPlayer());
+  }
+
+  /**
+   * In Monopoly, a player gets to roll again immediately if:
+   * <li>They roll doubles (same number on both dice) But, if a player rolls doubles three times in
+   *     a row, they go to jail immediately instead of taking a third extra turn.
+   *
+   * @param player
+   */
+  private void playTurn(MonopolyPlayer player) {
     var diceRoll = Dice.roll(2);
     notifyDiceRolled(diceRoll);
-    movePlayer(getNextPlayer(), diceRoll.getTotal());
+    movePlayer(player, diceRoll.getTotal());
+    var action = tileActionOf(getTile(player.getPosition()));
+    action.execute(player);
+    if (diceRoll.areDiceEqual()) {
+      println(
+          "Player %s rolled a double! They are forced to move again.".formatted(player.getName()));
+      playTurn(player); // recursive
+    }
   }
 
   @Override
