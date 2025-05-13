@@ -7,6 +7,7 @@ import edu.ntnu.idi.bidata.boardgame.common.util.StringFormatter;
 import edu.ntnu.idi.bidata.boardgame.core.TileAction;
 import edu.ntnu.idi.bidata.boardgame.core.model.Game;
 import edu.ntnu.idi.bidata.boardgame.core.model.dice.Dice;
+import edu.ntnu.idi.bidata.boardgame.core.model.dice.DiceRoll;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.board.MonopolyBoard;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.InsufficientFundsException;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.MonopolyPlayer;
@@ -42,7 +43,21 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
 
   @Override
   public void nextTurn() {
-    playTurn(getNextPlayer());
+    int doubleCount = 0;
+    var player = getNextPlayer();
+    var diceRoll = playTurn(player);
+
+    while (diceRoll.areDiceEqual()) {
+      if (doubleCount >= 3) {
+        println("Player has rolled doubles 3 times in a row. They are forced to go to jail.");
+        sendPlayerToJail(player);
+        break;
+      }
+      println(
+          "Player %s rolled a double! They are forced to move again.".formatted(player.getName()));
+      diceRoll = playTurn(player);
+      doubleCount++;
+    }
   }
 
   /**
@@ -50,19 +65,15 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
    * <li>They roll doubles (same number on both dice) But, if a player rolls doubles three times in
    *     a row, they go to jail immediately instead of taking a third extra turn.
    *
-   * @param player
+   * @param player the player to play a turn (roll -> move -> action)
    */
-  private void playTurn(MonopolyPlayer player) {
+  private DiceRoll playTurn(MonopolyPlayer player) {
     var diceRoll = Dice.roll(2);
     notifyDiceRolled(diceRoll);
     movePlayer(player, diceRoll.getTotal());
     var action = tileActionOf(getTile(player.getPosition()));
     action.execute(player);
-    if (diceRoll.areDiceEqual()) {
-      println(
-          "Player %s rolled a double! They are forced to move again.".formatted(player.getName()));
-      playTurn(player); // recursive
-    }
+    return diceRoll;
   }
 
   @Override
