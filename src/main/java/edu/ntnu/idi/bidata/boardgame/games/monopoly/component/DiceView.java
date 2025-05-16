@@ -31,14 +31,14 @@ import javafx.util.Duration;
  * diceView.animateDiceRoll(new DiceRoll(1, 2));
  * }</pre>
  *
- * @version 2025.04.28
+ * @version 2025.05.16
  */
 public class DiceView extends EventListeningComponent {
 
   private static final String BASE_PATH = "/images/dice";
   private static final int FACE_COUNT = 6;
   private static final int STEPS = 30; // More frames for smoother animation
-  private static final int TOTAL_DURATION_MS = 1500; // 1.5 seconds
+  private static final int TOTAL_DURATION_MS = 1000; // 1.5 seconds
   private static final int FRAME_DURATION_MS = TOTAL_DURATION_MS / STEPS;
 
   private final Random random = new Random();
@@ -59,14 +59,16 @@ public class DiceView extends EventListeningComponent {
   public void animateDiceRoll(DiceRoll diceRoll) {
     getChildren().clear();
     int diceCount = diceRoll.rolls().length;
-    ImageView[] diceImages = new ImageView[diceCount];
+    var diceImages = new ImageView[diceCount];
     for (int i = 0; i < diceCount; i++) {
       ImageView imageView = new ImageView();
       imageView.setFitWidth(64);
       imageView.setFitHeight(64);
       diceImages[i] = imageView;
     }
-    getChildren().add(new HBox(diceImages));
+    var diceContainer = new HBox(diceImages);
+    diceContainer.setAlignment(Pos.CENTER);
+    getChildren().add(diceContainer);
 
     Timeline timeline = new Timeline();
     timeline.setCycleCount(STEPS);

@@ -173,11 +173,7 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
 
   private void handlePurchase(Ownable ownable, MonopolyPlayer player) {
     var sb = new StringBuilder();
-    sb.append(player.getName())
-        .append(" landed on unowned ")
-        .append(ownable)
-        .append(".")
-        .append(System.lineSeparator());
+    sb.append(player.getName()).append(" landed on unowned ").append(ownable).append(".");
     println(sb);
 
     var output =
