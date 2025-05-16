@@ -107,16 +107,6 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
     return getBoard().getJailTile();
   }
 
-  /**
-   * Sends a player to jail by teleporting them to the jail tile and marking them as jailed.
-   *
-   * @param player the player to send to jail
-   */
-  public void sendPlayerToJail(MonopolyPlayer player) {
-    player.setPosition(getBoard().getTilePosition(getJailTile()));
-    getJailTile().jailForNumberOfRounds(player, 2);
-  }
-
   // ------------------------  private  ------------------------
 
   /**
@@ -128,21 +118,30 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
   private TileAction<MonopolyPlayer> tileActionOf(MonopolyTile tile) {
     return switch (tile) {
       case OwnableMonopolyTile(Ownable ownable) -> ownableAction(ownable);
-      case TaxMonopolyTile(int percentage) -> payPercentageTax(percentage);
-      case GoToJailMonopolyTile unused -> this::sendPlayerToJail;
-      case FreeParkingMonopolyTile unused -> player -> println("Free parking");
-      case JailMonopolyTile unused -> player -> println("Visiting Jail");
-      case StartMonopolyTile unused ->
-          player -> println("%s landed on start Tile (+$200)".formatted(player.getName()));
+      case TaxMonopolyTile(int percentage) -> payTaxAction(percentage);
+      case GoToJailMonopolyTile unused -> goToJailAction();
+      case FreeParkingMonopolyTile unused -> freeParkingAction();
+      case JailMonopolyTile unused -> visitJailAction();
+      case StartMonopolyTile unused -> startTileAction();
     };
   }
 
-  /**
-   * Returns the action associated with ownable tiles like properties, railroads, and utilities.
-   *
-   * @param ownable the ownable asset
-   * @return the TileAction for the asset
-   */
+  private TileAction<MonopolyPlayer> goToJailAction() {
+    return this::sendPlayerToJail;
+  }
+
+  private TileAction<MonopolyPlayer> startTileAction() {
+    return player -> println("%s landed on start Tile (+$200)".formatted(player.getName()));
+  }
+
+  private TileAction<MonopolyPlayer> visitJailAction() {
+    return player -> println("Visiting Jail");
+  }
+
+  private TileAction<MonopolyPlayer> freeParkingAction() {
+    return player -> println("Free parking");
+  }
+
   private TileAction<MonopolyPlayer> ownableAction(Ownable ownable) {
     return player -> {
       var optionalOwner = getOwner(ownable);
@@ -161,7 +160,7 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
     };
   }
 
-  private TileAction<MonopolyPlayer> payPercentageTax(int percentage) {
+  private TileAction<MonopolyPlayer> payTaxAction(int percentage) {
     return owner -> {
       int amountToPay = (owner.getBalance() * percentage) / 100;
       owner.pay(amountToPay);
@@ -212,6 +211,11 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
         .append(".");
 
     println(sb);
+  }
+
+  private void sendPlayerToJail(MonopolyPlayer player) {
+    player.setPosition(getBoard().getTilePosition(getJailTile()));
+    getJailTile().jailForNumberOfRounds(player, 2);
   }
 
   private PurchaseOption processTransaction(MonopolyPlayer player, Ownable ownable) {
