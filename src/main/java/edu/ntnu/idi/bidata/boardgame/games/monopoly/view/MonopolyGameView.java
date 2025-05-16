@@ -31,43 +31,53 @@ public class MonopolyGameView extends View {
       List<MonopolyTile> tiles,
       EventHandler<ActionEvent> rollDiceHandler) {
 
-    // root
-    var root = new BorderPane();
+    var root = createRootPane();
+    root.setCenter(createCenterPane(eventBus, players, tiles));
+    root.setRight(createRightPane(eventBus, players, rollDiceHandler));
+    root.setBottom(createBottomPane(eventBus));
+
     getChildren().add(root);
+  }
+
+  private BorderPane createRootPane() {
+    var root = new BorderPane();
     root.prefWidthProperty().bind(this.widthProperty());
     root.prefHeightProperty().bind(this.heightProperty());
+    return root;
+  }
 
-    // Center
+  private StackPane createCenterPane(
+      EventBus eventBus, List<MonopolyPlayer> players, List<MonopolyTile> tiles) {
     var center = new StackPane();
+    center.prefWidthProperty().bind(this.widthProperty().multiply(0.6));
+    center.prefHeightProperty().bind(this.heightProperty().multiply(0.6));
+
     var backGround = new Background(new BackgroundFill(Color.BLACK, null, null));
     center.setBackground(backGround);
-    root.setCenter(center);
-    center.prefWidthProperty().bind(this.widthProperty().multiply(0.6));
-    center.prefHeightProperty().bind(this.heightProperty().multiply(0.7));
 
     var monopolyBoardView = new MonopolyBoardView(eventBus, players, tiles);
     var diceView = new DiceView(eventBus);
     addComponents(monopolyBoardView, diceView);
-
     center.getChildren().addAll(monopolyBoardView, diceView);
+    return center;
+  }
 
-    // Bottom
-    var messagePanel = new MessagePanel(eventBus);
-    messagePanel.prefHeightProperty().bind(this.heightProperty().multiply(0.28));
-    addComponents(messagePanel);
-    root.setBottom(messagePanel);
-
-    // Right
+  private VBox createRightPane(
+      EventBus eventBus, List<MonopolyPlayer> players, EventHandler<ActionEvent> rollDiceHandler) {
     var right = new VBox();
     right.prefWidthProperty().bind(this.widthProperty().multiply(0.2));
     right.prefHeightProperty().bind(this.heightProperty().multiply(0.7));
-
-    root.setRight(right);
-
     var playerDashboard = new PlayerDashboard(eventBus, players);
     var rollDiceButton = new RollDiceButton(rollDiceHandler);
     addComponents(playerDashboard, rollDiceButton);
-
     right.getChildren().addAll(playerDashboard, rollDiceButton);
+    return right;
+  }
+
+  private MessagePanel createBottomPane(EventBus eventBus) {
+    var messagePanel = new MessagePanel(eventBus);
+    messagePanel.prefHeightProperty().bind(this.heightProperty().multiply(0.28));
+    addComponents(messagePanel);
+    return messagePanel;
   }
 }
