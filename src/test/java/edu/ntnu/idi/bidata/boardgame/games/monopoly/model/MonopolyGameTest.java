@@ -854,11 +854,4 @@ class MonopolyGameTest {
     // Verify the board is returned correctly
     assertThat(game.getBoard()).isEqualTo(mockBoard);
   }
-
-  @Test
-  @DisplayName("getJailTile returns the jail tile from the board")
-  void getJailTile_returnsJailTileFromBoard() {
-    // Verify the jail tile is returned correctly
-    assertThat(game.getJailTile()).isEqualTo(mockJailTile);
-  }
 }

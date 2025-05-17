@@ -111,7 +111,7 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
 
   // ------------------------  APIs  ------------------------
 
-  public JailMonopolyTile getJailTile() {
+  private JailMonopolyTile getJailTile() {
     return getBoard().getJailTile();
   }
 
