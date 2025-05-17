@@ -120,7 +120,7 @@ public abstract class Game<T extends Tile, P extends Player> {
     return eventBus;
   }
 
-  protected P getNextPlayer() {
+  public P getNextPlayer() {
     return turnManager.getNextPlayer();
   }
 
