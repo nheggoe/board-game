@@ -12,9 +12,12 @@ import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Ownable;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Property;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Railroad;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Utility;
-import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.CornerMonopolyTile;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.FreeParkingMonopolyTile;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.GoToJailMonopolyTile;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.JailMonopolyTile;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.MonopolyTile;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.OwnableMonopolyTile;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.StartMonopolyTile;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.TaxMonopolyTile;
 import java.util.List;
 import javafx.geometry.Insets;
@@ -250,9 +253,36 @@ public class MonopolyBoardView extends EventListeningComponent implements EventL
     tilePane.setPrefSize(tileSize, tileSize);
 
     switch (tile) {
-      case CornerMonopolyTile cornerTile ->
-          tilePane.setBackground(
-              new Background(new BackgroundFill(Color.GREY, CornerRadii.EMPTY, Insets.EMPTY)));
+      case FreeParkingMonopolyTile freeParkingMonopolyTile -> {
+        var image = new Image("icons/free-parking-tile.png", tileSize, tileSize, true, true);
+        var imageView = new ImageView(image);
+        imageView.setPreserveRatio(true);
+        imageView.setSmooth(true);
+        tilePane.getChildren().add(imageView);
+
+        tilePane.setBackground(
+            new Background(new BackgroundFill(Color.GREY, CornerRadii.EMPTY, Insets.EMPTY)));
+      }
+      case GoToJailMonopolyTile goToJailMonopolyTile -> {
+        var image = new Image("icons/go-to-jail-tile.png", tileSize, tileSize, true, true);
+        var imageView = new ImageView(image);
+        imageView.setPreserveRatio(true);
+        imageView.setSmooth(true);
+        tilePane.getChildren().add(imageView);
+      }
+      case JailMonopolyTile jailMonopolyTile -> {
+        var image = new Image("icons/jail-tile.png", tileSize, tileSize, true, true);
+        var imageView = new ImageView(image);
+        imageView.setPreserveRatio(true);
+        tilePane.getChildren().add(imageView);
+      }
+      case StartMonopolyTile startMonopolyTile -> {
+        var image = new Image("icons/go-tile.png", tileSize, tileSize, true, true);
+        var imageView = new ImageView(image);
+        imageView.setPreserveRatio(true);
+        imageView.setSmooth(true);
+        tilePane.getChildren().add(imageView);
+      }
       case OwnableMonopolyTile(Ownable ownable) -> {
         switch (ownable) {
           case Property property -> {
@@ -261,7 +291,7 @@ public class MonopolyBoardView extends EventListeningComponent implements EventL
                     new BackgroundFill(
                         colorAdapter(property.getColor()), CornerRadii.EMPTY, Insets.EMPTY)));
 
-            var image = new Image("icons/propertyv2.png", tileSize, tileSize, true, true);
+            var image = new Image("icons/propertyTileIcon.png", tileSize, tileSize, true, true);
             var imageView = new ImageView(image);
             imageView.setPreserveRatio(true);
             imageView.setSmooth(true);
@@ -319,7 +349,7 @@ public class MonopolyBoardView extends EventListeningComponent implements EventL
             new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
         tilePane
             .getChildren()
-            .add(new ImageView(new Image("icons/propertyv2.png", 60, 60, true, false)));
+            .add(new ImageView(new Image("icons/propertyTileIcon.png", 60, 60, true, false)));
       }
     }
     tilePane.setStyle("-fx-border-color: black;");
