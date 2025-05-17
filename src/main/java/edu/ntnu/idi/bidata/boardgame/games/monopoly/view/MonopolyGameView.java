@@ -12,6 +12,8 @@ import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.MonopolyTile;
 import java.util.List;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
@@ -49,6 +51,12 @@ public class MonopolyGameView extends View {
   private StackPane createCenterPane(
       EventBus eventBus, List<MonopolyPlayer> players, List<MonopolyTile> tiles) {
     var center = new StackPane();
+    var image = new Image("/images/monopoly-background.png");
+    var imageView = new ImageView(image);
+    imageView.setPreserveRatio(true);
+    imageView.setFitHeight(600);
+    imageView.setFitWidth(800);
+    center.getChildren().add(imageView);
     center.prefWidthProperty().bind(this.widthProperty().multiply(0.6));
     center.prefHeightProperty().bind(this.heightProperty().multiply(0.6));
 
