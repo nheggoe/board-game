@@ -3,7 +3,7 @@ package edu.ntnu.idi.bidata.boardgame.games.monopoly.model;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.PurchaseEvent;
-import edu.ntnu.idi.bidata.boardgame.common.util.AlertFacotry;
+import edu.ntnu.idi.bidata.boardgame.common.util.AlertFactory;
 import edu.ntnu.idi.bidata.boardgame.common.util.StringFormatter;
 import edu.ntnu.idi.bidata.boardgame.core.TileAction;
 import edu.ntnu.idi.bidata.boardgame.core.model.Game;
@@ -267,7 +267,7 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
               "Do you want to purchase %s for $%d?".formatted(name, price);
         };
 
-    var result = AlertFacotry.createAlert(Alert.AlertType.CONFIRMATION, prompt).showAndWait();
+    var result = AlertFactory.createAlert(Alert.AlertType.CONFIRMATION, prompt).showAndWait();
 
     if (result.isEmpty() || result.get() == ButtonType.CANCEL) {
       return PurchaseOption.DENY;
@@ -325,7 +325,7 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
         "%s has %d houses on %s."
             .formatted(player.getName(), property.countHouses(), property.getName()));
     var alert =
-        AlertFacotry.createAlert(
+        AlertFactory.createAlert(
             Alert.AlertType.CONFIRMATION,
             "Would you like to build a house on %s for $50?".formatted(property.getName()));
     var result = alert.showAndWait();
@@ -351,7 +351,7 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
   private void askToBuildHotel(MonopolyPlayer player, Property property) {
     println("%s has 4 houses on %s.".formatted(player.getName(), property.getName()));
     var alert =
-        AlertFacotry.createAlert(
+        AlertFactory.createAlert(
             Alert.AlertType.CONFIRMATION,
             "Would you like to upgrade to a Hotel on %s for $100?".formatted(property.getName()));
     var result = alert.showAndWait();

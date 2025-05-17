@@ -22,7 +22,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 
 /**
@@ -111,13 +110,11 @@ public class PlayerDashboard extends EventListeningComponent {
   private static class PlayerInfoBox extends VBox {
     private static final String TITLE_FONT = "Georgia";
     private static final String BODY_FONT = "Verdana";
-    private static final String PROPERTY_FONT = "Arial";
 
     private final Player player;
     private final Label nameLabel;
     private final Label balanceLabel;
     private final Label positionLabel;
-    private final VBox propertiesList;
     private final ImageView figureImage;
 
     private PlayerInfoBox(Player player, Color backgroundColor) {
@@ -148,17 +145,9 @@ public class PlayerDashboard extends EventListeningComponent {
       figureImage.setPreserveRatio(true);
       loadFigureImage(player.getFigure());
 
-      Label propsHeader = label(Font.font(BODY_FONT, FontWeight.BOLD, 13), "#333");
-      propsHeader.setText("Properties:");
-
-      propertiesList = new VBox(4);
-      propertiesList.setAlignment(Pos.TOP_LEFT);
-      propertiesList.setPadding(new Insets(4, 0, 0, 12));
-
       refresh();
 
-      getChildren()
-          .addAll(nameLabel, balanceLabel, positionLabel, figureImage, propsHeader, propertiesList);
+      getChildren().addAll(nameLabel, balanceLabel, positionLabel, figureImage);
     }
 
     private Label label(Font font, String hexColor) {
@@ -185,44 +174,6 @@ public class PlayerDashboard extends EventListeningComponent {
     public void refresh() {
       nameLabel.setText(player.getName());
       positionLabel.setText("Tile: " + player.getPosition());
-
-      // monopoly
-      if (player instanceof MonopolyPlayer monopolyPlayer) {
-        var labels = generatePropertyLabels(monopolyPlayer);
-        propertiesList.getChildren().addAll(labels);
-      }
-
-      if (propertiesList.getChildren().isEmpty()) {
-        Label none = new Label("(none)");
-        none.setFont(Font.font(PROPERTY_FONT, FontPosture.ITALIC, 12));
-        none.setTextFill(Color.web("#6c757d"));
-        propertiesList.getChildren().add(none);
-      }
-    }
-
-    private List<Label> generatePropertyLabels(MonopolyPlayer player) {
-      balanceLabel.setText("Balance: $" + player.getBalance());
-      propertiesList.getChildren().clear();
-      var labels =
-          player.getOwnedAssets().stream()
-              .map(ownable -> new Label("• " + ownable.toString()))
-              .toList();
-      for (Label label : labels) {
-        label.setFont(Font.font(PROPERTY_FONT, FontWeight.SEMI_BOLD, 13));
-        label.setTextFill(Color.web("#212529"));
-        label.setBackground(
-            new Background(
-                new BackgroundFill(Color.web("#ffffffcc"), new CornerRadii(4), Insets.EMPTY)));
-        label.setBorder(
-            new Border(
-                new BorderStroke(
-                    Color.web("#ced4da"),
-                    BorderStrokeStyle.SOLID,
-                    new CornerRadii(4),
-                    BorderWidths.DEFAULT)));
-        label.setPadding(new Insets(3, 6, 3, 6));
-      }
-      return labels;
     }
 
     /** Toggles a bright animated blue glow effect if it's the player's turn. */
