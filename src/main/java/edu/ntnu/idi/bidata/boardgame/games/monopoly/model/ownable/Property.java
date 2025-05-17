@@ -38,7 +38,7 @@ public final class Property implements Ownable {
 
   @Override
   public int rent() {
-    int baseRent = (int) (price * 0.1);
+    int baseRent = (int) (price * 0.7);
     int bonusRent = upgrades.stream().mapToInt(Upgrade::getRentMultiplierPercentage).sum();
     return baseRent + (baseRent * bonusRent / 100);
   }
