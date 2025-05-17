@@ -64,27 +64,27 @@ public class MonopolyBoardView extends EventListeningComponent implements EventL
     int row = 0;
     int col = 0;
 
-    // Position logic matches the initialize method's tile placement
+    // Position logic for clockwise movement
     if (position == 0) {
       // Bottom right corner
       row = size - 1;
       col = size - 1;
     } else if (position < size) {
-      // Right column (going up)
-      row = size - 1 - position;
-      col = size - 1;
-    } else if (position < size * 2 - 1) {
-      // Top row (going left)
-      row = 0;
-      col = size - 1 - (position - (size - 1));
-    } else if (position < size * 3 - 2) {
-      // Left column (going down)
-      row = position - (size * 2 - 2);
-      col = 0;
-    } else {
-      // Bottom row (going right)
+      // Bottom row (going left)
       row = size - 1;
-      col = position - (size * 3 - 3);
+      col = size - 1 - position;
+    } else if (position < size * 2 - 1) {
+      // Left column (going up)
+      row = size - 1 - (position - (size - 1));
+      col = 0;
+    } else if (position < size * 3 - 2) {
+      // Top row (going right)
+      row = 0;
+      col = position - (size * 2 - 2);
+    } else {
+      // Right column (going down)
+      row = position - (size * 3 - 3);
+      col = size - 1;
     }
 
     // Get the tile at the calculated position
