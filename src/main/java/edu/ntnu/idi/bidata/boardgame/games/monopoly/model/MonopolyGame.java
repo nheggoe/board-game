@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.TreeMap;
+import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 
@@ -48,6 +49,11 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
 
   @Override
   public void nextTurn() {
+
+    if (isEnded()) {
+      return;
+    }
+
     int doubleCount = 0;
     var player = getNextPlayer();
     var diceRoll = playTurn(player);
@@ -88,16 +94,18 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
   protected void removePlayer(MonopolyPlayer player) {
     println("%s has gone bankrupt and is removed from the game.".formatted(player.getName()));
     super.removePlayer(player);
+
     if (getPlayers().size() == 1) {
-      getWinners()
-          .getValue()
-          .forEach(
-              winner ->
-                  AlertFacotry.createAlert(
-                          Alert.AlertType.INFORMATION,
-                          "%s has won the game!".formatted(winner.getName()))
-                      .showAndWait());
-      endGame();
+      MonopolyPlayer winner = getPlayers().getFirst();
+      println("%s has won the game!".formatted(winner.getName()));
+
+      Platform.runLater(() -> {
+        AlertFactory.createAlert(
+                Alert.AlertType.INFORMATION,
+                "%s has won the game!".formatted(winner.getName()))
+            .showAndWait();
+        endGame();
+      });
     }
   }
 
