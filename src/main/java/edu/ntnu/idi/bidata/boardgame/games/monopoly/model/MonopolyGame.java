@@ -66,8 +66,8 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
 
   /**
    * In Monopoly, a player gets to roll again immediately if:
-   * <li>They roll doubles (same number on both dice) But, if a player rolls doubles three times in
-   *     a row, they go to jail immediately instead of taking a third extra turn.
+   * <li>They roll doubles (the same number on both dice) But, if a player rolls doubles three times
+   *     in a row, they go to jail immediately instead of taking a third extra turn.
    *
    * @param player the player to play a turn (roll -> move -> action)
    */
@@ -88,6 +88,17 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
   protected void removePlayer(MonopolyPlayer player) {
     println("%s has gone bankrupt and is removed from the game.".formatted(player.getName()));
     super.removePlayer(player);
+    if (getPlayers().size() == 1) {
+      getWinners()
+          .getValue()
+          .forEach(
+              winner ->
+                  AlertFacotry.createAlert(
+                          Alert.AlertType.INFORMATION,
+                          "%s has won the game!".formatted(winner.getName()))
+                      .showAndWait());
+      endGame();
+    }
   }
 
   @Override
@@ -198,7 +209,7 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
 
   private void handleRent(MonopolyPlayer owner, MonopolyPlayer player, Ownable ownable) {
     if (Objects.equals(owner, player)) {
-      println("%s landed on your own property.".formatted(player.getName()));
+      println("%s landed on his own property.".formatted(player.getName()));
       return;
     }
     var sb = new StringBuilder();
@@ -212,8 +223,16 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
         .append(System.lineSeparator());
 
     int rent = ownable.rent();
-    player.pay(rent);
-    owner.addBalance(rent);
+    try {
+      player.pay(rent);
+      owner.addBalance(rent);
+    } catch (InsufficientFundsException e) {
+      println(
+          "%s couldn't afford $%d in rent to %s."
+              .formatted(player.getName(), rent, owner.getName()));
+      removePlayer(player);
+      return;
+    }
 
     sb.append(player.getName())
         .append(" paid $")
@@ -259,7 +278,7 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
   }
 
   /**
-   * Attempts to finalize a purchase, deducting the player's balance.
+   * Attempts to finalise a purchase, deducting the player's balance.
    *
    * @param player the player
    * @param ownable the asset being purchased
@@ -316,9 +335,9 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
       if (player.hasSufficientFunds(houseCost)) {
         player.pay(houseCost);
         property.addUpgrade(new Upgrade(UpgradeType.HOUSE, 20));
-        println("You built a house on " + property.getName() + "!");
+        println("%s built a house on %s!".formatted(player.getName(), property.getName()));
       } else {
-        println("You don't have enough money to build a house.");
+        println("%s don't have enough money to build a house.".formatted(player.getName()));
       }
     }
   }
@@ -330,7 +349,7 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
    * @param property the property to upgrade
    */
   private void askToBuildHotel(MonopolyPlayer player, Property property) {
-    println("You have 4 houses on %s.".formatted(property.getName()));
+    println("%s has 4 houses on %s.".formatted(player.getName(), property.getName()));
     var alert =
         AlertFacotry.createAlert(
             Alert.AlertType.CONFIRMATION,
@@ -342,9 +361,9 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
       if (player.hasSufficientFunds(hotelCost)) {
         player.pay(hotelCost);
         property.addUpgrade(new Upgrade(UpgradeType.HOTEL, 100));
-        println("You upgraded to a Hotel on " + property.getName() + "!");
+        println("%s upgraded to a Hotel on %s!".formatted(player.getName(), property.getName()));
       } else {
-        println("You don't have enough money to build a hotel.");
+        println("%s doesn't have enough money to build a hotel.".formatted(player.getName()));
       }
     }
   }
