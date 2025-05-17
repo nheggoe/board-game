@@ -1,6 +1,5 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.model;
 
-import static edu.ntnu.idi.bidata.boardgame.common.util.InputHandler.nextLine;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.PurchaseEvent;
@@ -59,8 +58,7 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
         sendPlayerToJail(player);
         break;
       }
-      println(
-          "Player %s rolled a double! They are forced to move again.".formatted(player.getName()));
+      println("Player %s rolled a double! They need to move again.".formatted(player.getName()));
       diceRoll = playTurn(player);
       doubleCount++;
     }
@@ -78,8 +76,18 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
     notifyDiceRolled(diceRoll);
     movePlayer(player, diceRoll.getTotal());
     var action = tileActionOf(getTile(player.getPosition()));
-    action.execute(player);
+    try {
+      action.execute(player);
+    } catch (InsufficientFundsException e) {
+      removePlayer(player);
+    }
     return diceRoll;
+  }
+
+  @Override
+  protected void removePlayer(MonopolyPlayer player) {
+    println("%s has gone bankrupt and is removed from the game.".formatted(player.getName()));
+    super.removePlayer(player);
   }
 
   @Override
@@ -289,8 +297,13 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
    */
   private void askToBuildHouse(MonopolyPlayer player, Property property) {
     println("You have %d houses on %s.".formatted(property.countHouses(), property.getName()));
-    println("Would you like to build a house? (yes/no)");
-    if (nextLine().equalsIgnoreCase("yes")) {
+    var alert =
+        AlertFacotry.createAlert(
+            Alert.AlertType.CONFIRMATION,
+            "Would you like to build a house on %s for $50?".formatted(property.getName()));
+    var result = alert.showAndWait();
+
+    if (result.isPresent() && result.get() == ButtonType.OK) {
       int houseCost = 50;
       if (player.hasSufficientFunds(houseCost)) {
         player.pay(houseCost);
@@ -310,8 +323,13 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
    */
   private void askToBuildHotel(MonopolyPlayer player, Property property) {
     println("You have 4 houses on %s.".formatted(property.getName()));
-    println("Would you like to upgrade to a Hotel? (yes/no)");
-    if (nextLine().equalsIgnoreCase("yes")) {
+    var alert =
+        AlertFacotry.createAlert(
+            Alert.AlertType.CONFIRMATION,
+            "Would you like to upgrade to a Hotel on %s for $100?".formatted(property.getName()));
+    var result = alert.showAndWait();
+
+    if (result.isPresent() && result.get() == ButtonType.OK) {
       int hotelCost = 100;
       if (player.hasSufficientFunds(hotelCost)) {
         player.pay(hotelCost);
@@ -322,6 +340,7 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
       }
     }
   }
+
 
   private Optional<MonopolyPlayer> getOwner(Ownable ownable) {
     return getPlayers().stream().filter(player -> player.isOwnerOf(ownable)).findFirst();
