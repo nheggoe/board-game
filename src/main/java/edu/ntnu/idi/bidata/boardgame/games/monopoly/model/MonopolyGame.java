@@ -197,6 +197,10 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
   }
 
   private void handleRent(MonopolyPlayer owner, MonopolyPlayer player, Ownable ownable) {
+    if (Objects.equals(owner, player)) {
+      println("%s landed on your own property.".formatted(player.getName()));
+      return;
+    }
     var sb = new StringBuilder();
     sb.append(player.getName())
         .append(" landed on ")
@@ -278,7 +282,9 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
    */
   private void handleUpgrade(MonopolyPlayer owner, Property property) {
     if (property.hasHotel()) {
-      println("You already have a Hotel on this property. No further upgrades possible.");
+      println(
+          "%s already have a Hotel on this property. No further upgrades possible."
+              .formatted(owner.getName()));
       return;
     }
 
@@ -296,7 +302,9 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
    * @param property the property to upgrade
    */
   private void askToBuildHouse(MonopolyPlayer player, Property property) {
-    println("You have %d houses on %s.".formatted(property.countHouses(), property.getName()));
+    println(
+        "%s has %d houses on %s."
+            .formatted(player.getName(), property.countHouses(), property.getName()));
     var alert =
         AlertFacotry.createAlert(
             Alert.AlertType.CONFIRMATION,
