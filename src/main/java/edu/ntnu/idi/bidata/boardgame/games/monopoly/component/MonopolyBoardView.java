@@ -4,6 +4,7 @@ import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
 import edu.ntnu.idi.bidata.boardgame.common.event.EventListener;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.Event;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.PlayerMovedEvent;
+import edu.ntnu.idi.bidata.boardgame.common.event.type.PurchaseEvent;
 import edu.ntnu.idi.bidata.boardgame.core.model.Player;
 import edu.ntnu.idi.bidata.boardgame.core.ui.EventListeningComponent;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.MonopolyPlayer;
@@ -23,11 +24,18 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 
 /**
  * @author Nick Heggø
@@ -36,12 +44,24 @@ import javafx.scene.paint.Color;
 public class MonopolyBoardView extends EventListeningComponent implements EventListener {
 
   private final GridPane board;
+  private final List<MonopolyPlayer> players;
+  private final List<MonopolyTile> tiles;
+  private static final Color[] PLAYER_COLORS = {
+    Color.web("#fff3cd"),
+    Color.web("#d1e7dd"),
+    Color.web("#cfe2ff"),
+    Color.web("#f8d7da"),
+    Color.web("#e2e3e5")
+  };
 
   public MonopolyBoardView(
       EventBus eventBus, List<MonopolyPlayer> players, List<MonopolyTile> tiles) {
     super(eventBus);
     getEventBus().addListener(PlayerMovedEvent.class, this);
+    getEventBus().addListener(PurchaseEvent.class, this);
 
+    this.players = players;
+    this.tiles = tiles;
     board = new GridPane();
     getChildren().add(board);
     setAlignment(Pos.CENTER);
@@ -247,10 +267,20 @@ public class MonopolyBoardView extends EventListeningComponent implements EventL
             imageView.setSmooth(true);
 
             tilePane.getChildren().add(imageView);
-            var label = new Label(property.getName());
-            tilePane.getChildren().add(label);
-            StackPane.setAlignment(imageView, Pos.CENTER);
-            StackPane.setAlignment(label, Pos.BOTTOM_CENTER);
+
+            // Add owner indicator and property name
+            var nameLabel = new Label(property.getName());
+            tilePane.getChildren().add(nameLabel);
+            StackPane.setAlignment(nameLabel, Pos.BOTTOM_CENTER);
+
+            // Property will store its data for updating owner later
+            tilePane.setUserData(property);
+
+            // Check for ownership and add owner initial if owned
+            updatePropertyOwnership(tilePane, property);
+
+            // Add upgrade indicators (houses and hotels)
+            updatePropertyUpgrades(tilePane, property);
           }
           case Railroad railroad -> {
             tilePane.setBackground(
@@ -261,6 +291,12 @@ public class MonopolyBoardView extends EventListeningComponent implements EventL
                 .add(
                     new ImageView(
                         new Image("icons/railroad.png", tileSize, tileSize, true, false)));
+
+            // Railroad will store its data for updating owner later
+            tilePane.setUserData(railroad);
+
+            // Check for ownership and add owner initial if owned
+            updatePropertyOwnership(tilePane, railroad);
           }
           case Utility utility -> {
             tilePane.setBackground(
@@ -269,6 +305,12 @@ public class MonopolyBoardView extends EventListeningComponent implements EventL
                 .getChildren()
                 .add(
                     new ImageView(new Image("icons/utility.png", tileSize, tileSize, true, false)));
+
+            // Utility will store its data for updating owner later
+            tilePane.setUserData(utility);
+
+            // Check for ownership and add owner initial if owned
+            updatePropertyOwnership(tilePane, utility);
           }
         }
       }
@@ -283,6 +325,136 @@ public class MonopolyBoardView extends EventListeningComponent implements EventL
     tilePane.setStyle("-fx-border-color: black;");
 
     return tilePane;
+  }
+
+  /**
+   * Updates the visual representation of property ownership by adding the owner's initial with the
+   * corresponding player color from the dashboard.
+   *
+   * @param tilePane the tile to update
+   * @param ownable the property to check for ownership
+   */
+  private void updatePropertyOwnership(StackPane tilePane, Ownable ownable) {
+    // Remove any existing owner labels
+    tilePane
+        .getChildren()
+        .removeIf(
+            node ->
+                node instanceof Label && node.getId() != null && node.getId().equals("ownerLabel"));
+
+    // Check each player to see if they own this property
+    for (int i = 0; i < players.size(); i++) {
+      MonopolyPlayer player = players.get(i);
+      if (player.isOwnerOf(ownable)) {
+        // Create owner label with first capital letter
+        String initial = player.getName().substring(0, 1).toUpperCase();
+        Label ownerLabel = new Label(initial);
+        ownerLabel.setId("ownerLabel");
+        ownerLabel.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+        ownerLabel.setTextFill(Color.BLACK);
+
+        // Use the same color as in PlayerDashboard
+        Color playerColor = PLAYER_COLORS[i % PLAYER_COLORS.length];
+        ownerLabel.setBackground(
+            new Background(new BackgroundFill(playerColor, new CornerRadii(10), Insets.EMPTY)));
+        ownerLabel.setPadding(new Insets(2, 6, 2, 6));
+        ownerLabel.setBorder(
+            new Border(
+                new BorderStroke(
+                    Color.BLACK,
+                    BorderStrokeStyle.SOLID,
+                    new CornerRadii(10),
+                    BorderWidths.DEFAULT)));
+
+        // Add to tile and position in top-right corner
+        tilePane.getChildren().add(ownerLabel);
+        StackPane.setAlignment(ownerLabel, Pos.TOP_RIGHT);
+        StackPane.setMargin(ownerLabel, new Insets(5, 5, 0, 0));
+        break; // Found the owner, no need to check other players
+      }
+    }
+  }
+
+  /**
+   * Updates the visual representation of property upgrades by adding green squares for houses and
+   * red squares for hotels.
+   *
+   * @param tilePane the tile to update
+   * @param property the property to check for upgrades
+   */
+  private void updatePropertyUpgrades(StackPane tilePane, Property property) {
+    // Remove any existing upgrade indicators
+    tilePane
+        .getChildren()
+        .removeIf(
+            node ->
+                node instanceof Pane
+                    && (node.getId() != null
+                        && (node.getId().equals("houseIndicator")
+                            || node.getId().equals("hotelIndicator"))));
+
+    // Check for hotel (red square)
+    if (property.hasHotel()) {
+      Pane hotelIndicator = new Pane();
+      hotelIndicator.setId("hotelIndicator");
+      hotelIndicator.setPrefSize(15, 15);
+      hotelIndicator.setBackground(
+          new Background(new BackgroundFill(Color.RED, new CornerRadii(3), Insets.EMPTY)));
+      hotelIndicator.setBorder(
+          new Border(
+              new BorderStroke(
+                  Color.BLACK, BorderStrokeStyle.SOLID, new CornerRadii(3), BorderWidths.DEFAULT)));
+
+      tilePane.getChildren().add(hotelIndicator);
+      StackPane.setAlignment(hotelIndicator, Pos.TOP_LEFT);
+      StackPane.setMargin(hotelIndicator, new Insets(5, 0, 0, 5));
+    }
+    // Check for houses (green squares)
+    else {
+      int houseCount = property.countHouses();
+      if (houseCount > 0) {
+        HBox houseContainer = new HBox(2);
+        houseContainer.setId("houseIndicator");
+
+        // Add a green square for each house
+        for (int i = 0; i < houseCount; i++) {
+          Pane houseIndicator = new Pane();
+          houseIndicator.setPrefSize(10, 10);
+          houseIndicator.setBackground(
+              new Background(new BackgroundFill(Color.GREEN, new CornerRadii(2), Insets.EMPTY)));
+          houseIndicator.setBorder(
+              new Border(
+                  new BorderStroke(
+                      Color.BLACK,
+                      BorderStrokeStyle.SOLID,
+                      new CornerRadii(2),
+                      BorderWidths.DEFAULT)));
+
+          houseContainer.getChildren().add(houseIndicator);
+        }
+
+        tilePane.getChildren().add(houseContainer);
+        StackPane.setAlignment(houseContainer, Pos.TOP_LEFT);
+        StackPane.setMargin(houseContainer, new Insets(5, 0, 0, 5));
+      }
+    }
+  }
+
+  /**
+   * Updates all properties on the board to reflect current ownership and upgrades. Called after
+   * purchase events or when the board is refreshed.
+   */
+  private void updateAllProperties() {
+    for (javafx.scene.Node node : board.getChildren()) {
+      if (node instanceof StackPane tilePane && tilePane.getUserData() != null) {
+        if (tilePane.getUserData() instanceof Property property) {
+          updatePropertyOwnership(tilePane, property);
+          updatePropertyUpgrades(tilePane, property);
+        } else if (tilePane.getUserData() instanceof Ownable ownable) {
+          updatePropertyOwnership(tilePane, ownable);
+        }
+      }
+    }
   }
 
   private Color colorAdapter(Property.Color color) {
@@ -302,11 +474,15 @@ public class MonopolyBoardView extends EventListeningComponent implements EventL
   public void onEvent(Event event) {
     if (event instanceof PlayerMovedEvent(Player player)) {
       playerMoved(player, player.getPosition());
+    } else if (event instanceof PurchaseEvent) {
+      // Update all properties to reflect new ownership
+      updateAllProperties();
     }
   }
 
   @Override
   public void close() {
     getEventBus().removeListener(PlayerMovedEvent.class, this);
+    getEventBus().removeListener(PurchaseEvent.class, this);
   }
 }
