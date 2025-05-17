@@ -208,7 +208,7 @@ public class MonopolyBoardView extends EventListeningComponent implements EventL
   }
 
   private void initialize(List<MonopolyPlayer> players, List<MonopolyTile> tiles) {
-    board.setGridLinesVisible(true); // optional: show grid lines
+    board.setGridLinesVisible(false); // optional: show grid lines
     board.setAlignment(Pos.CENTER);
 
     int size = (tiles.size() + 4) / 4;
