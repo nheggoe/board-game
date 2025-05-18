@@ -3,6 +3,7 @@ package edu.ntnu.idi.bidata.boardgame.games.monopoly.model.board;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.MonopolyTile;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.TileFactory;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -26,6 +27,7 @@ public class MonopolyBoardFactory {
     var tmp = TileFactory.generateOwnableTiles();
     List<MonopolyTile> tiles = new ArrayList<>(tmp);
     tiles.addAll(TileFactory.generateCornerTiles());
+    Collections.shuffle(tiles);
     return new MonopolyBoard(tiles);
   }
 }
