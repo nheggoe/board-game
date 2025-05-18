@@ -25,6 +25,9 @@ public record GameEngine<T extends Tile, P extends Player>(Game<T, P> game) {
   }
 
   public void nextTurn() {
+    if (game.isEnded()) {
+      return;
+    }
     game.nextTurn();
   }
 }
