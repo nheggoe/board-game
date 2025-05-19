@@ -5,6 +5,7 @@ import edu.ntnu.idi.bidata.boardgame.core.TileAction;
 import edu.ntnu.idi.bidata.boardgame.core.model.Board;
 import edu.ntnu.idi.bidata.boardgame.core.model.Game;
 import edu.ntnu.idi.bidata.boardgame.core.model.dice.Dice;
+import edu.ntnu.idi.bidata.boardgame.core.ui.GameOverScreen;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.tile.LadderTile;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.tile.NormalTile;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.tile.SnakeAndLadderTile;
@@ -16,7 +17,7 @@ import java.util.TreeMap;
 
 /**
  * @author Nick Heggø, Mihailo Hranisavljevic
- * @version 2025.05.16
+ * @version 2025.05.19
  */
 public class SnakeAndLadderGame extends Game<SnakeAndLadderTile, SnakeAndLadderPlayer> {
 
@@ -35,12 +36,9 @@ public class SnakeAndLadderGame extends Game<SnakeAndLadderTile, SnakeAndLadderP
     movePlayer(player, diceRoll.getTotal());
     println("Player %s moved to tile %d".formatted(player.getName(), player.getPosition()));
 
-    tileActionOf(getTile(player.getPosition())).execute(player);
+    if (player.getPosition() == getBoard().size()) return;
 
-    if (diceRoll.getTotal() == 6) {
-      println("Player %s rolled a 6, they are forced to move again.".formatted(player.getName()));
-      rollAndMovePlayer(player);
-    }
+    tileActionOf(getTile(player.getPosition())).execute(player);
   }
 
   private TileAction<SnakeAndLadderPlayer> tileActionOf(SnakeAndLadderTile tile) {
@@ -66,9 +64,6 @@ public class SnakeAndLadderGame extends Game<SnakeAndLadderTile, SnakeAndLadderP
       println(
           "Player %s moved to tile %d (skipped %d tiles)"
               .formatted(player.getName(), player.getPosition(), tilesToSkip));
-      if (player.getPosition() == getBoard().size() - 1) {
-        endGame();
-      }
     };
   }
 
@@ -80,6 +75,7 @@ public class SnakeAndLadderGame extends Game<SnakeAndLadderTile, SnakeAndLadderP
   @Override
   protected void completeRoundAction(SnakeAndLadderPlayer player) {
     endGame();
+    GameOverScreen.show(player.getName());
   }
 
   @Override
@@ -91,22 +87,28 @@ public class SnakeAndLadderGame extends Game<SnakeAndLadderTile, SnakeAndLadderP
     return treeMap.reversed().firstEntry();
   }
 
-  /** Overrides the default {@code Game.movePlayer} implementation. */
   @Override
   public void movePlayer(SnakeAndLadderPlayer player, int delta) {
     int oldPosition = player.getPosition();
     int target = oldPosition + delta;
 
-    int min = 0;
-    int max = getBoard().size() - 1;
-    if (target < min) target = min;
-    if (target > max) target = max;
+    int max = getBoard().size();
+
+    if (target >= max) {
+      player.setPosition(max);
+      notifyPlayerMoved(player);
+      completeRoundAction(player);
+      return;
+    }
+
+    if (target < 1) target = 1;
 
     player.setPosition(target);
     notifyPlayerMoved(player);
-
-    if (target == max) {
-      completeRoundAction(player);
-    }
   }
+
+
+
+
+
 }

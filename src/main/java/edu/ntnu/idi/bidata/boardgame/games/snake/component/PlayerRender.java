@@ -27,9 +27,9 @@ public class PlayerRender {
   /**
    * @param tileGrid the pane returned by SnakeAndLadderBoardRender#getTileGrid().
    */
-  public PlayerRender(GridPane tileGrid) {
+  public PlayerRender(GridPane tileGrid, int boardDimension) {
     this.tileGrid = tileGrid;
-    this.gridSize = (int) Math.sqrt(tileGrid.getChildren().size());
+    this.gridSize = boardDimension;
   }
 
   /**
@@ -53,20 +53,18 @@ public class PlayerRender {
     }
   }
 
-  /** Converts a 1-based tile number to (column, row) in the grid. */
+  /**
+   * Converts a tile number to grid coordinates.
+   *
+   * <p>This method ensures that the tile number is within the valid range (1 to 100) and then
+   * converts it to grid coordinates using the SnakeBoardLayout class.
+   *
+   * @param tileNumber the tile number to convert
+   * @return the grid coordinates as a Point2D object
+   */
   private Point2D toGrid(int tileNumber) {
-    int index = tileNumber - 1;
-    int rowBase = gridSize - 1 - index / gridSize;
-    int colBase = index % gridSize;
-
-    boolean reversed = (gridSize - 1 - rowBase) % 2 == 1;
-    int col = reversed ? (gridSize - 1 - colBase) : colBase;
-
-    return new Point2D(col, rowBase);
-  }
-
-  private StackPane tileAt(int row, int col) {
-    return (StackPane) tileGrid.getChildren().get(row * gridSize + col);
+    int safeNumber = tileNumber < 1 ? 1 : Math.min(tileNumber, 100);
+    return SnakeBoardLayout.toGrid(safeNumber, gridSize);
   }
 
   private void clearPlayerIcons() {
@@ -77,6 +75,21 @@ public class PlayerRender {
               if (n instanceof StackPane pane)
                 pane.getChildren().removeIf(ImageView.class::isInstance);
             });
+  }
+
+  /**
+   * Returns the {@code StackPane} that sits at the requested grid position. Because panes are added
+   * in tile-number order, we search by the stored column/row indices.
+   */
+  private StackPane tileAt(int row, int col) {
+    for (var node : tileGrid.getChildren()) {
+      int c = GridPane.getColumnIndex(node) == null ? 0 : GridPane.getColumnIndex(node);
+      int r = GridPane.getRowIndex(node) == null ? 0 : GridPane.getRowIndex(node);
+      if (c == col && r == row) {
+        return (StackPane) node;
+      }
+    }
+    throw new IllegalArgumentException("Tile not found at (" + row + ',' + col + ')');
   }
 
   /** Returns a simple coloured square that serves as a temporary figure icon. */

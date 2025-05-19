@@ -24,8 +24,10 @@ public class SnakeAndLadderBoardRender extends EventListeningComponent {
   /** Width/height of a single tile in pixels. */
   private static final int TILE_SIZE = 50;
 
+  /** Side length (in tiles). Read from the model instead of hard-coding “10”. */
+  private final int boardDimension;
+
   private final SnakeAndLadderBoard board;
-  private final int gridSize;
   private final GridPane tileGrid = new GridPane();
 
   /**
@@ -38,7 +40,8 @@ public class SnakeAndLadderBoardRender extends EventListeningComponent {
   public SnakeAndLadderBoardRender(EventBus eventBus, SnakeAndLadderBoard board) {
     super(eventBus);
     this.board = board;
-    this.gridSize = (int) Math.sqrt(board.size());
+
+    this.boardDimension = 10;
 
     buildStaticBoard();
     getChildren().add(new StackPane(tileGrid));
@@ -51,7 +54,7 @@ public class SnakeAndLadderBoardRender extends EventListeningComponent {
 
   /** Returns the length of one board side in tiles (board is assumed square). */
   public int getGridSize() {
-    return gridSize;
+    return boardDimension;
   }
 
   /** Returns the pixel size of a single tile. */
@@ -61,37 +64,41 @@ public class SnakeAndLadderBoardRender extends EventListeningComponent {
 
   /** Draws every tile pane and adds it to {@link #tileGrid}. */
   private void buildStaticBoard() {
-    for (int row = 0; row < gridSize; row++) {
-      for (int col = 0; col < gridSize; col++) {
-        int tileIndex = computeTileIndex(row, col);
-        SnakeAndLadderTile modelTile = board.getTileAtIndex(tileIndex);
-
-        StackPane tilePane = new StackPane();
-        tilePane.setPrefSize(TILE_SIZE, TILE_SIZE);
-        tilePane.setStyle(tileStyle(modelTile));
-
-        Label nr = new Label(String.valueOf(tileIndex + 1));
-        nr.setStyle("-fx-font-size: 13; -fx-font-weight: bold;");
-        tilePane.getChildren().add(nr);
-
-        tileGrid.add(tilePane, col, row);
-      }
+    for (int tile = 1; tile <= 100; tile++) {
+      Point2D p = SnakeBoardLayout.toGrid(tile, boardDimension);
+      StackPane tilePane = createTileVisual(tile);
+      tileGrid.add(tilePane, (int) p.getX(), (int) p.getY());
     }
   }
 
-  /** Converts a grid coordinate to the underlying tile index. */
-  private int computeTileIndex(int row, int col) {
-    int invertedRow = gridSize - 1 - row;
-    return invertedRow * gridSize + col;
+  /** Builds a single tile pane with number and colouring. */
+  private StackPane createTileVisual(int tileNumber) {
+
+    SnakeAndLadderTile modelTile =
+        (tileNumber <= board.tiles().size()) ? board.tiles().get(tileNumber - 1) : null;
+
+    StackPane pane = new StackPane();
+    pane.setPrefSize(TILE_SIZE, TILE_SIZE);
+
+    var label = new Label(String.valueOf(tileNumber));
+    label.setStyle("-fx-font-size: 11;");
+    StackPane.setAlignment(label, javafx.geometry.Pos.TOP_LEFT);
+    pane.getChildren().add(label);
+
+    pane.setStyle(tileStyle(modelTile));
+
+    return pane;
   }
 
-  /** Returns a CSS string that reflects the visual type of tile. */
+  /** Returns a CSS style string that reflects the visual type of the tile. */
   private String tileStyle(SnakeAndLadderTile tile) {
-    return switch (tile) {
-      case SnakeTile __ -> "-fx-border-color: black; -fx-background-color: lightcoral;";
-      case LadderTile __ -> "-fx-border-color: black; -fx-background-color: lightgreen;";
-      default -> "-fx-border-color: black; -fx-background-color: lightyellow;";
-    };
+    if (tile instanceof SnakeTile) {
+      return "-fx-border-color: black; -fx-background-color: lightcoral;";
+    } else if (tile instanceof LadderTile) {
+      return "-fx-border-color: black; -fx-background-color: lightgreen;";
+    } else {
+      return "-fx-border-color: black; -fx-background-color: lightyellow;";
+    }
   }
 
   @Override
@@ -102,20 +109,5 @@ public class SnakeAndLadderBoardRender extends EventListeningComponent {
   @Override
   public void close() {
     // Nothing to clean up.
-  }
-
-  /**
-   * Calculates the centre point of a tile.
-   *
-   * @param tileNumber 1-based tile number
-   * @return pixel coordinate of the tile centre within the board pane
-   */
-  public Point2D getTileCentre(int tileNumber) {
-    int index = tileNumber - 1;
-    int row = gridSize - 1 - index / gridSize;
-    int col = index % gridSize;
-    double x = col * TILE_SIZE + TILE_SIZE / 2.0;
-    double y = row * TILE_SIZE + TILE_SIZE / 2.0;
-    return new Point2D(x, y);
   }
 }

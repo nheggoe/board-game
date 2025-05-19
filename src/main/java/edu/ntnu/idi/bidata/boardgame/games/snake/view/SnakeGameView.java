@@ -33,7 +33,7 @@ public class SnakeGameView extends View {
     boardRender.prefWidthProperty().bind(widthProperty().multiply(0.8));
     boardRender.prefHeightProperty().bind(heightProperty().multiply(0.6));
 
-    playerRender = new PlayerRender(boardRender.getTileGrid());
+    this.playerRender = new PlayerRender(boardRender.getTileGrid(), boardRender.getGridSize());
 
     var centre = new StackPane(boardRender);
     root.getChildren().add(centre);
@@ -57,7 +57,7 @@ public class SnakeGameView extends View {
     return playerRender;
   }
 
-  /** Exposes the custom roll-dice component (not a plain Button). */
+  /** Exposes the custom roll-dice component */
   public RollDiceSnakeButton getRollDiceButton() {
     return rollDiceButton;
   }
