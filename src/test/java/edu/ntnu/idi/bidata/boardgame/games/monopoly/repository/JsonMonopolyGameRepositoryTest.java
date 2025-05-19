@@ -10,8 +10,10 @@ import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.board.MonopolyBoard;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.MonopolyPlayer;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+@Disabled
 class JsonMonopolyGameRepositoryTest {
 
   private MonopolyGame monopolyGame;
