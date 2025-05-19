@@ -12,6 +12,7 @@ package edu.ntnu.idi.bidata.boardgame.common.util;
  * @author Nick Heggø
  * @version 2025.04.15
  */
+@Deprecated(forRemoval = true)
 public class OutputHandler {
 
   private OutputHandler() {}

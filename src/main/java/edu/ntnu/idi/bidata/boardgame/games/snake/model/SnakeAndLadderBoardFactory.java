@@ -1,6 +1,6 @@
 package edu.ntnu.idi.bidata.boardgame.games.snake.model;
 
-import edu.ntnu.idi.bidata.boardgame.common.io.csv.CsvFileReader;
+import edu.ntnu.idi.bidata.boardgame.common.io.csv.CSVReader;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.tile.LadderTile;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.tile.NormalTile;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.tile.SnakeAndLadderTile;
@@ -17,7 +17,8 @@ public class SnakeAndLadderBoardFactory {
     try {
 
       var lines =
-          CsvFileReader.readLines(Path.of("src/main/resources/csv/snake_and_ladder_88_tiles.csv"))
+          CSVReader.readLines(
+                  Path.of("src/main/resources/csv/snake_and_ladder_88_tiles.csv").toFile())
               .stream()
               .map(line -> line.split(","))
               .toList();

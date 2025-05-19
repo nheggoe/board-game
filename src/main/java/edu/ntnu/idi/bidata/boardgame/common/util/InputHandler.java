@@ -10,6 +10,7 @@ import java.util.Scanner;
  * @author Nick Heggø
  * @version 2025.04.15
  */
+@Deprecated(forRemoval = true)
 public class InputHandler {
 
   private static final InputHandler instance = new InputHandler(new Scanner(System.in));
