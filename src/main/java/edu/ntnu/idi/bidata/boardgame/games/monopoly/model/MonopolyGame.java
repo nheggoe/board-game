@@ -1,6 +1,5 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.model;
 
-
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.PurchaseEvent;
 import edu.ntnu.idi.bidata.boardgame.common.util.AlertFactory;
@@ -60,11 +59,17 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
 
     while (diceRoll.areDiceEqual()) {
       if (doubleCount >= 3) {
-        println("Player has rolled doubles 3 times in a row. They are forced to go to jail.");
+        AlertFactory.createAlert(
+                Alert.AlertType.INFORMATION,
+                "Player has rolled doubles 3 times in a row. They are forced to go to jail.")
+            .showAndWait();
         sendPlayerToJail(player);
         break;
       }
-      println("Player %s rolled a double! They need to move again.".formatted(player.getName()));
+      AlertFactory.createAlert(
+              Alert.AlertType.INFORMATION,
+              "Player %s rolled a double! They need to move again.".formatted(player.getName()))
+          .showAndWait();
       diceRoll = playTurn(player);
       doubleCount++;
     }
@@ -375,7 +380,6 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
       }
     }
   }
-
 
   private Optional<MonopolyPlayer> getOwner(Ownable ownable) {
     return getPlayers().stream().filter(player -> player.isOwnerOf(ownable)).findFirst();

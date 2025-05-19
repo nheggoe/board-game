@@ -427,7 +427,7 @@ public class MonopolyBoardView extends EventListeningComponent implements EventL
     if (property.hasHotel()) {
       Pane hotelIndicator = new Pane();
       hotelIndicator.setId("hotelIndicator");
-      hotelIndicator.setPrefSize(15, 15);
+      hotelIndicator.setPrefSize(6, 6);
       hotelIndicator.setBackground(
           new Background(new BackgroundFill(Color.RED, new CornerRadii(3), Insets.EMPTY)));
       hotelIndicator.setBorder(

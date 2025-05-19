@@ -100,11 +100,21 @@ public record MonopolyBoard(List<MonopolyTile> tiles) implements Board<MonopolyT
     EASY
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof MonopolyBoard(List<MonopolyTile> tiles1))) return false;
+
+    return tiles.equals(tiles1);
+  }
+
+  @Override
+  public int hashCode() {
+    return tiles.hashCode();
+  }
+
   // ------------------------  validations  ------------------------
 
   private List<MonopolyTile> shuffleTiles(List<MonopolyTile> tiles) {
-    Collections.shuffle(tiles);
-
     List<CornerMonopolyTile> cornerTiles =
         tiles.stream()
             .filter(CornerMonopolyTile.class::isInstance)
