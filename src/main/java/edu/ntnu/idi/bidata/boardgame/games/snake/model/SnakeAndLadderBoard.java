@@ -16,9 +16,9 @@ import java.util.List;
 public record SnakeAndLadderBoard(List<SnakeAndLadderTile> tiles)
     implements Board<SnakeAndLadderTile> {
 
-  public SnakeAndLadderBoard {
+  public SnakeAndLadderBoard(List<SnakeAndLadderTile> tiles) {
     validateTiles(tiles);
-    tiles = List.copyOf(tiles);
+    this.tiles = List.copyOf(tiles);
   }
 
   @Override
@@ -59,5 +59,9 @@ public record SnakeAndLadderBoard(List<SnakeAndLadderTile> tiles)
           "Ladder tile at index %d cannot skip more than the number of tiles it can skip."
               .formatted(index));
     }
+  }
+
+  public SnakeAndLadderTile getStartingTile() {
+    return tiles.getFirst();
   }
 }

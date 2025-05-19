@@ -9,29 +9,32 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 /**
- * {@code DiceControlPane} provides a simple UI component containing the roll button, allowing
- * players to roll the dice during their turn.
+ * A small component that shows a “Roll Dice” button with an icon.
  *
- * <p>When clicked, the button rolls the dice, animates the dice faces, moves the current player,
- * refreshes the UI, and advances to the next player.
- *
- * @author Mihailo
- * @version 2025.05.06
+ * @author Mihailo Hranisavljevic
+ * @version 2025.05.19
  */
 public class RollDiceSnakeButton extends Component {
 
-  /**
-   * Constructs a {@code DiceControlPane} with a roll button that controls the dice animation,
-   * logging, player movement, and UI refresh.
-   */
+  private final Button button;
+
   public RollDiceSnakeButton(EventHandler<ActionEvent> rollDiceAction) {
     Objects.requireNonNull(rollDiceAction);
-    Button button = new Button("Roll Dice");
-    ImageView icon = new ImageView(new Image("/images/rolldice.png"));
+
+    button = new Button("Roll Dice");
+    var url = getClass().getResource("/images/rolldice.png");
+    Objects.requireNonNull(url, "Missing resource: /images/rolldice.png");
+    ImageView icon = new ImageView(new Image(url.toExternalForm()));
     icon.setFitWidth(48);
     icon.setFitHeight(48);
     button.setGraphic(icon);
     button.setOnAction(rollDiceAction);
+
     getChildren().add(button);
+  }
+
+  /** Allows external code to replace the button’s action handler. */
+  public void setOnAction(EventHandler<ActionEvent> handler) {
+    button.setOnAction(handler);
   }
 }

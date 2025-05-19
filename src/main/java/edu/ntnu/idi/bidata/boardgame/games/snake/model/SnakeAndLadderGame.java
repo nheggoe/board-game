@@ -15,8 +15,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * @author Nick Heggø
- * @version 2025.05.09
+ * @author Nick Heggø, Mihailo Hranisavljevic
+ * @version 2025.05.16
  */
 public class SnakeAndLadderGame extends Game<SnakeAndLadderTile, SnakeAndLadderPlayer> {
 
@@ -47,7 +47,7 @@ public class SnakeAndLadderGame extends Game<SnakeAndLadderTile, SnakeAndLadderP
     return switch (tile) {
       case SnakeTile(int tilesToSlideBack) -> snakeTileAction(tilesToSlideBack);
       case LadderTile(int tilesToSkip) -> ladderTileAction(tilesToSkip);
-      case NormalTile unused -> player -> {};
+      case NormalTile ignored -> player -> {};
     };
   }
 
@@ -89,5 +89,24 @@ public class SnakeAndLadderGame extends Game<SnakeAndLadderTile, SnakeAndLadderP
       treeMap.computeIfAbsent(player.getPosition(), unused -> new ArrayList<>()).add(player);
     }
     return treeMap.reversed().firstEntry();
+  }
+
+  /** Overrides the default {@code Game.movePlayer} implementation. */
+  @Override
+  public void movePlayer(SnakeAndLadderPlayer player, int delta) {
+    int oldPosition = player.getPosition();
+    int target = oldPosition + delta;
+
+    int min = 0;
+    int max = getBoard().size() - 1;
+    if (target < min) target = min;
+    if (target > max) target = max;
+
+    player.setPosition(target);
+    notifyPlayerMoved(player);
+
+    if (target == max) {
+      completeRoundAction(player);
+    }
   }
 }
