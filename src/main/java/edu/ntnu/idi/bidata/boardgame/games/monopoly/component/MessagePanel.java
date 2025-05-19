@@ -35,7 +35,7 @@ import javafx.util.Duration;
  * }</pre>
  *
  * @author Mihailo Hranisavljevic
- * @version 2025.05.06
+ * @version 2025.05.16
  */
 public class MessagePanel extends EventListeningComponent {
 
@@ -89,7 +89,7 @@ public class MessagePanel extends EventListeningComponent {
     typewriter =
         new Timeline(
             new KeyFrame(
-                Duration.millis(30),
+                Duration.millis(8),
                 e -> {
                   if (charIndex.get() < currentMessage.length()) {
                     textLabel.setText(

@@ -18,6 +18,12 @@ class DiceRollTest {
   }
 
   @Test
+  void testRollOneDice() {
+    var diceRoll = Dice.roll(1);
+    assertThatThrownBy(diceRoll::areDiceEqual).isInstanceOf(UnsupportedOperationException.class);
+  }
+
+  @Test
   void testIdenticalRolls() {
     assertThat(new DiceRoll(1, 1, 1).areDiceEqual()).isTrue();
     assertThat(new DiceRoll(2, 2, 2, 2, 2, 2, 2, 2).areDiceEqual()).isTrue();

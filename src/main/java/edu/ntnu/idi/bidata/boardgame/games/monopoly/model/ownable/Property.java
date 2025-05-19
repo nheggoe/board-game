@@ -5,6 +5,9 @@ import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.upgrade.UpgradeType;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @version 2025.05.14
+ */
 public final class Property implements Ownable {
 
   private final String name;
@@ -35,7 +38,7 @@ public final class Property implements Ownable {
 
   @Override
   public int rent() {
-    int baseRent = (int) (price * 0.1);
+    int baseRent = (int) (price * 0.7);
     int bonusRent = upgrades.stream().mapToInt(Upgrade::getRentMultiplierPercentage).sum();
     return baseRent + (baseRent * bonusRent / 100);
   }
@@ -66,6 +69,11 @@ public final class Property implements Ownable {
 
   public Color getColor() {
     return color;
+  }
+
+  @Override
+  public String toString() {
+    return "Property[name=%s, price=%d, color=%s]".formatted(name, price, color);
   }
 
   public enum Color {

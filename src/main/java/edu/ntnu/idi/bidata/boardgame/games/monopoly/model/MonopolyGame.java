@@ -1,12 +1,13 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.model;
 
-import static edu.ntnu.idi.bidata.boardgame.common.util.InputHandler.nextLine;
-
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
+import edu.ntnu.idi.bidata.boardgame.common.event.type.PurchaseEvent;
+import edu.ntnu.idi.bidata.boardgame.common.util.AlertFactory;
 import edu.ntnu.idi.bidata.boardgame.common.util.StringFormatter;
 import edu.ntnu.idi.bidata.boardgame.core.TileAction;
 import edu.ntnu.idi.bidata.boardgame.core.model.Game;
 import edu.ntnu.idi.bidata.boardgame.core.model.dice.Dice;
+import edu.ntnu.idi.bidata.boardgame.core.model.dice.DiceRoll;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.board.MonopolyBoard;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.InsufficientFundsException;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.MonopolyPlayer;
@@ -26,11 +27,16 @@ import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.upgrade.UpgradeType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.TreeMap;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 
 /**
  * @author Nick Heggø
- * @version 2025.05.09
+ * @version 2025.05.16
  */
 public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
 
@@ -42,9 +48,70 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
 
   @Override
   public void nextTurn() {
+
+    if (isEnded()) {
+      return;
+    }
+
+    int doubleCount = 0;
+    var player = getNextPlayer();
+    var diceRoll = playTurn(player);
+
+    while (diceRoll.areDiceEqual()) {
+      if (doubleCount >= 3) {
+        AlertFactory.createAlert(
+                Alert.AlertType.INFORMATION,
+                "Player has rolled doubles 3 times in a row. They are forced to go to jail.")
+            .showAndWait();
+        sendPlayerToJail(player);
+        break;
+      }
+      AlertFactory.createAlert(
+              Alert.AlertType.INFORMATION,
+              "Player %s rolled a double! They need to move again.".formatted(player.getName()))
+          .showAndWait();
+      diceRoll = playTurn(player);
+      doubleCount++;
+    }
+  }
+
+  /**
+   * In Monopoly, a player gets to roll again immediately if:
+   * <li>They roll doubles (the same number on both dice) But, if a player rolls doubles three times
+   *     in a row, they go to jail immediately instead of taking a third extra turn.
+   *
+   * @param player the player to play a turn (roll -> move -> action)
+   */
+  private DiceRoll playTurn(MonopolyPlayer player) {
     var diceRoll = Dice.roll(2);
     notifyDiceRolled(diceRoll);
-    movePlayer(getNextPlayer(), diceRoll.getTotal());
+    movePlayer(player, diceRoll.getTotal());
+    var action = tileActionOf(getTile(player.getPosition()));
+    try {
+      action.execute(player);
+    } catch (InsufficientFundsException e) {
+      removePlayer(player);
+    }
+    return diceRoll;
+  }
+
+  @Override
+  protected void removePlayer(MonopolyPlayer player) {
+    println("%s has gone bankrupt and is removed from the game.".formatted(player.getName()));
+    super.removePlayer(player);
+
+    if (getPlayers().size() == 1) {
+      MonopolyPlayer winner = getPlayers().getFirst();
+      println("%s has won the game!".formatted(winner.getName()));
+
+      Platform.runLater(() -> {
+        AlertFactory.createAlert(
+                Alert.AlertType.INFORMATION,
+                "%s has won the game!".formatted(winner.getName()))
+            .showAndWait();
+        endGame();
+      });
+    }
   }
 
   @Override
@@ -68,18 +135,8 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
 
   // ------------------------  APIs  ------------------------
 
-  public JailMonopolyTile getJailTile() {
+  private JailMonopolyTile getJailTile() {
     return getBoard().getJailTile();
-  }
-
-  /**
-   * Sends a player to jail by teleporting them to the jail tile and marking them as jailed.
-   *
-   * @param player the player to send to jail
-   */
-  public void sendPlayerToJail(MonopolyPlayer player) {
-    player.setPosition(getBoard().getTilePosition(getJailTile()));
-    getJailTile().jailForNumberOfRounds(player, 2);
   }
 
   // ------------------------  private  ------------------------
@@ -93,15 +150,49 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
   private TileAction<MonopolyPlayer> tileActionOf(MonopolyTile tile) {
     return switch (tile) {
       case OwnableMonopolyTile(Ownable ownable) -> ownableAction(ownable);
-      case TaxMonopolyTile(int percentage) -> payPercentageTax(percentage);
-      case GoToJailMonopolyTile unused -> this::sendPlayerToJail;
-      case FreeParkingMonopolyTile unused -> player -> println("Free parking");
-      case JailMonopolyTile unused -> player -> println("Visiting Jail");
-      case StartMonopolyTile unused -> player -> println("On start Tile");
+      case TaxMonopolyTile(int percentage) -> payTaxAction(percentage);
+      case GoToJailMonopolyTile unused -> goToJailAction();
+      case FreeParkingMonopolyTile unused -> freeParkingAction();
+      case JailMonopolyTile unused -> visitJailAction();
+      case StartMonopolyTile unused -> startTileAction();
     };
   }
 
-  private TileAction<MonopolyPlayer> payPercentageTax(int percentage) {
+  private TileAction<MonopolyPlayer> goToJailAction() {
+    return this::sendPlayerToJail;
+  }
+
+  private TileAction<MonopolyPlayer> startTileAction() {
+    return player -> println("%s landed on start Tile (+$200)".formatted(player.getName()));
+  }
+
+  private TileAction<MonopolyPlayer> visitJailAction() {
+    return player -> println("Visiting Jail");
+  }
+
+  private TileAction<MonopolyPlayer> freeParkingAction() {
+    return player -> println("Free parking");
+  }
+
+  private TileAction<MonopolyPlayer> ownableAction(Ownable ownable) {
+    return player -> {
+      var optionalOwner = getOwner(ownable);
+
+      if (optionalOwner.isEmpty()) {
+        handlePurchase(ownable, player);
+      } else {
+        var owner = optionalOwner.orElseThrow();
+
+        if (Objects.equals(owner, player) && ownable instanceof Property property) {
+          handleUpgrade(player, property);
+        } else {
+          handleRent(owner, player, ownable);
+        }
+      }
+    };
+  }
+
+  private TileAction<MonopolyPlayer> payTaxAction(int percentage) {
     return owner -> {
       int amountToPay = (owner.getBalance() * percentage) / 100;
       owner.pay(amountToPay);
@@ -111,74 +202,96 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
     };
   }
 
-  /**
-   * Returns the action associated with ownable tiles like properties, railroads, and utilities.
-   *
-   * @param ownable the ownable asset
-   * @return the TileAction for the asset
-   */
-  private TileAction<MonopolyPlayer> ownableAction(Ownable ownable) {
-    return player -> {
-      MonopolyPlayer monopolyPlayer =
-          getPlayers().stream().filter(p -> p.isOwnerOf(ownable)).findFirst().orElse(null);
+  private void handlePurchase(Ownable ownable, MonopolyPlayer player) {
+    var sb = new StringBuilder();
+    sb.append(player.getName()).append(" landed on unowned ").append(ownable).append(".");
+    println(sb);
 
-      if (monopolyPlayer == null) {
-        println(player.getName() + " landed on unowned " + ownable + ".");
-        if (confirmPurchase(player, ownable)) {
-          player.purchase(ownable);
-          println(player.getName() + " purchased " + ownable + "!");
-        } else {
-          println(player.getName() + " declined to purchase " + ownable + ".");
-        }
-      } else if (monopolyPlayer != player) {
-        println(
-            player.getName() + " landed on " + monopolyPlayer.getName() + "'s " + ownable + ".");
-        int rent = ownable.rent();
-        player.pay(rent);
-        monopolyPlayer.addBalance(rent);
-        println(
-            player.getName() + " paid $" + rent + " in rent to " + monopolyPlayer.getName() + ".");
-      } else {
-        println(player.getName() + " landed on their own property: " + ownable + ".");
-        if (ownable instanceof Property property) {
-          askToUpgrade(player, property);
-        }
-      }
-    };
+    var output =
+        switch (processTransaction(player, ownable)) {
+          case TRANSACTION_COMPLETED -> {
+            getEventBus().publishEvent(new PurchaseEvent(player, ownable));
+            yield player.getName() + " purchased " + ownable + "!";
+          }
+          case DENY -> player.getName() + " declined to purchase " + ownable + ".";
+          case INEFFICIENT_FUNDS ->
+              player.getName() + " doesn't have enough money to purchase " + ownable + ".";
+        };
+    println(output);
   }
 
-  /**
-   * Asks the player if they want to purchase an unowned tile.
-   *
-   * @param player the player
-   * @param ownable the ownable tile
-   * @return true if purchase successful, false otherwise
-   */
-  private boolean confirmPurchase(MonopolyPlayer player, Ownable ownable) {
-    if (player.hasSufficientFunds(ownable.price())) {
-      String prompt =
-          switch (ownable) {
-            case Property property ->
-                "Do you want to purchase %s of %s category for $%d?"
-                    .formatted(
-                        property.getName(),
-                        StringFormatter.formatEnum(property.getColor()),
-                        property.price());
-            case Railroad(int price) -> "Do you want to purchase a railroad for $" + price + "?";
-            case Utility(String name, int price) ->
-                "Do you want to purchase %s for $%d?".formatted(name, price);
-          };
-
-      println(prompt);
-      if (nextLine().equalsIgnoreCase("yes")) {
-        return processPurchase(player, ownable);
-      }
+  private void handleRent(MonopolyPlayer owner, MonopolyPlayer player, Ownable ownable) {
+    if (Objects.equals(owner, player)) {
+      println("%s landed on his own property.".formatted(player.getName()));
+      return;
     }
-    return false;
+    var sb = new StringBuilder();
+    sb.append(player.getName())
+        .append(" landed on ")
+        .append(owner.getName())
+        .append("'s ")
+        .append(ownable)
+        .append(".")
+        .append(System.lineSeparator())
+        .append(System.lineSeparator());
+
+    int rent = ownable.rent();
+    try {
+      player.pay(rent);
+      owner.addBalance(rent);
+    } catch (InsufficientFundsException e) {
+      println(
+          "%s couldn't afford $%d in rent to %s."
+              .formatted(player.getName(), rent, owner.getName()));
+      removePlayer(player);
+      return;
+    }
+
+    sb.append(player.getName())
+        .append(" paid $")
+        .append(rent)
+        .append(" in rent to ")
+        .append(owner.getName())
+        .append(".");
+
+    println(sb);
+  }
+
+  private void sendPlayerToJail(MonopolyPlayer player) {
+    player.setPosition(getBoard().getTilePosition(getJailTile()));
+    getJailTile().jailForNumberOfRounds(player, 2);
+  }
+
+  private PurchaseOption processTransaction(MonopolyPlayer player, Ownable ownable) {
+    if (!player.hasSufficientFunds(ownable.price())) {
+      return PurchaseOption.INEFFICIENT_FUNDS;
+    }
+
+    String prompt =
+        switch (ownable) {
+          case Property property ->
+              "Do you want to purchase %s of %s category for $%d?"
+                  .formatted(
+                      property.getName(),
+                      StringFormatter.formatEnum(property.getColor()),
+                      property.price());
+          case Railroad(int price) -> "Do you want to purchase a railroad for $" + price + "?";
+          case Utility(String name, int price) ->
+              "Do you want to purchase %s for $%d?".formatted(name, price);
+        };
+
+    var result = AlertFactory.createAlert(Alert.AlertType.CONFIRMATION, prompt).showAndWait();
+
+    if (result.isEmpty() || result.get() == ButtonType.CANCEL) {
+      return PurchaseOption.DENY;
+    }
+    return processPurchase(player, ownable)
+        ? PurchaseOption.TRANSACTION_COMPLETED
+        : PurchaseOption.INEFFICIENT_FUNDS;
   }
 
   /**
-   * Attempts to finalize a purchase, deducting the player's balance.
+   * Attempts to finalise a purchase, deducting the player's balance.
    *
    * @param player the player
    * @param ownable the asset being purchased
@@ -189,7 +302,6 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
       player.purchase(ownable);
       return true;
     } catch (InsufficientFundsException e) {
-      println(e.getMessage());
       return false;
     }
   }
@@ -197,19 +309,21 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
   /**
    * Allows the player to upgrade a property if possible.
    *
-   * @param player the property owner
+   * @param owner the property owner
    * @param property the property to upgrade
    */
-  private void askToUpgrade(MonopolyPlayer player, Property property) {
+  private void handleUpgrade(MonopolyPlayer owner, Property property) {
     if (property.hasHotel()) {
-      println("You already have a Hotel on this property. No further upgrades possible.");
+      println(
+          "%s already have a Hotel on this property. No further upgrades possible."
+              .formatted(owner.getName()));
       return;
     }
 
     if (property.canBuildHouse()) {
-      askToBuildHouse(player, property);
+      askToBuildHouse(owner, property);
     } else {
-      askToBuildHotel(player, property);
+      askToBuildHotel(owner, property);
     }
   }
 
@@ -220,16 +334,23 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
    * @param property the property to upgrade
    */
   private void askToBuildHouse(MonopolyPlayer player, Property property) {
-    println("You have %d houses on %s.".formatted(property.countHouses(), property.getName()));
-    println("Would you like to build a house? (yes/no)");
-    if (nextLine().equalsIgnoreCase("yes")) {
+    println(
+        "%s has %d houses on %s."
+            .formatted(player.getName(), property.countHouses(), property.getName()));
+    var alert =
+        AlertFactory.createAlert(
+            Alert.AlertType.CONFIRMATION,
+            "Would you like to build a house on %s for $50?".formatted(property.getName()));
+    var result = alert.showAndWait();
+
+    if (result.isPresent() && result.get() == ButtonType.OK) {
       int houseCost = 50;
       if (player.hasSufficientFunds(houseCost)) {
         player.pay(houseCost);
         property.addUpgrade(new Upgrade(UpgradeType.HOUSE, 20));
-        println("You built a house on " + property.getName() + "!");
+        println("%s built a house on %s!".formatted(player.getName(), property.getName()));
       } else {
-        println("You don't have enough money to build a house.");
+        println("%s don't have enough money to build a house.".formatted(player.getName()));
       }
     }
   }
@@ -241,20 +362,32 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
    * @param property the property to upgrade
    */
   private void askToBuildHotel(MonopolyPlayer player, Property property) {
-    println("You have 4 houses on %s.".formatted(property.getName()));
-    println("Would you like to upgrade to a Hotel? (yes/no)");
-    if (nextLine().equalsIgnoreCase("yes")) {
+    println("%s has 4 houses on %s.".formatted(player.getName(), property.getName()));
+    var alert =
+        AlertFactory.createAlert(
+            Alert.AlertType.CONFIRMATION,
+            "Would you like to upgrade to a Hotel on %s for $100?".formatted(property.getName()));
+    var result = alert.showAndWait();
+
+    if (result.isPresent() && result.get() == ButtonType.OK) {
       int hotelCost = 100;
       if (player.hasSufficientFunds(hotelCost)) {
         player.pay(hotelCost);
         property.addUpgrade(new Upgrade(UpgradeType.HOTEL, 100));
-        println("You upgraded to a Hotel on " + property.getName() + "!");
+        println("%s upgraded to a Hotel on %s!".formatted(player.getName(), property.getName()));
       } else {
-        println("You don't have enough money to build a hotel.");
+        println("%s doesn't have enough money to build a hotel.".formatted(player.getName()));
       }
     }
   }
 
-  // ------------------------  getters and setters  ------------------------
+  private Optional<MonopolyPlayer> getOwner(Ownable ownable) {
+    return getPlayers().stream().filter(player -> player.isOwnerOf(ownable)).findFirst();
+  }
 
+  private enum PurchaseOption {
+    TRANSACTION_COMPLETED,
+    DENY,
+    INEFFICIENT_FUNDS,
+  }
 }

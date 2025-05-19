@@ -1,9 +1,7 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.component;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
-import edu.ntnu.idi.bidata.boardgame.common.event.type.DiceRolledEvent;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.Event;
-import edu.ntnu.idi.bidata.boardgame.common.event.type.OutputEvent;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.PlayerMovedEvent;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.PlayerRemovedEvent;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.PurchaseEvent;
@@ -24,20 +22,18 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 
 /**
  * {@code UIPane} is a dynamic sidebar for the Monopoly GUI. It displays each player as a visually
  * styled card including: name, balance, position, figure image, and owned properties.
  *
- * @author Mihailo Hranisavljevic
- * @version 2025.05.08
+ * @author Mihailo Hranisavljevic and Nick Heggø
+ * @version 2025.05.14
  */
 public class PlayerDashboard extends EventListeningComponent {
 
-  private final HashMap<Player, PlayerInfoBox> playerBoxes = new HashMap<>();
-  private Player currentPlayer;
+  private final HashMap<Player, PlayerInfoBox> playerRegistry = new HashMap<>();
 
   private static final Color[] CARD_COLORS = {
     Color.web("#fff3cd"),
@@ -51,6 +47,7 @@ public class PlayerDashboard extends EventListeningComponent {
     super(eventBus);
     getEventBus().addListener(PlayerMovedEvent.class, this);
     getEventBus().addListener(PlayerRemovedEvent.class, this);
+    getEventBus().addListener(PurchaseEvent.class, this);
 
     setPrefWidth(320);
     setStyle("-fx-background-color: linear-gradient(to bottom, #1e293b, #0f172a);");
@@ -62,7 +59,7 @@ public class PlayerDashboard extends EventListeningComponent {
     int i = 0;
     for (Player player : players) {
       PlayerInfoBox box = new PlayerInfoBox(player, CARD_COLORS[i % CARD_COLORS.length]);
-      playerBoxes.put(player, box);
+      playerRegistry.put(player, box);
       content.getChildren().add(box);
       i++;
     }
@@ -76,61 +73,51 @@ public class PlayerDashboard extends EventListeningComponent {
 
   /** Refreshes all player displays in the sidebar. */
   public void refresh() {
-    playerBoxes.values().forEach(PlayerInfoBox::refresh);
-    highlightCurrentPlayer();
+    playerRegistry.values().forEach(PlayerInfoBox::refresh);
   }
 
-  /** Sets the player whose turn it is, and updates the glow. */
-  public void setCurrentPlayer(Player player) {
-    this.currentPlayer = player;
-    highlightCurrentPlayer();
-  }
-
-  /** Highlights the active player and removes glow from others. */
-  private void highlightCurrentPlayer() {
-    for (var entry : playerBoxes.entrySet()) {
+  private void highlightPlayer(Player player) {
+    for (var entry : playerRegistry.entrySet()) {
       PlayerInfoBox box = entry.getValue();
-      box.setGlow(entry.getKey().equals(currentPlayer));
+      box.setGlow(entry.getKey().equals(player));
     }
   }
 
   @Override
   public void onEvent(Event event) {
     switch (event) {
-      case PlayerMovedEvent(Player player) -> {
-        refresh();
-        highlightCurrentPlayer();
+      case PlayerMovedEvent(Player player) -> highlightPlayer(player);
+      case PlayerRemovedEvent(Player player) -> playerRegistry.remove(player);
+      case PurchaseEvent(MonopolyPlayer monopolyPlayer, Ownable ownable) -> {
+        var infoBox = playerRegistry.remove(monopolyPlayer);
+        playerRegistry.put(monopolyPlayer, infoBox);
       }
-      case PlayerRemovedEvent(Player player) -> {
-        playerBoxes.remove(player);
-        refresh();
-      }
-      case DiceRolledEvent diceRolledEvent -> {}
-      case OutputEvent outputEvent -> {}
-      case PurchaseEvent purchaseEvent -> {}
+      default -> throw new IllegalStateException("Unexpected value: " + event);
     }
+    refresh();
   }
 
   @Override
-  public void close() throws Exception {
+  public void close() {
     getEventBus().removeListener(PlayerMovedEvent.class, this);
     getEventBus().removeListener(PlayerRemovedEvent.class, this);
+    getEventBus().removeListener(PurchaseEvent.class, this);
   }
+
+  // ------------------------  inner class  ------------------------
 
   /** {@code PlayerInfoBox} represents a stylized card for one player. */
   private static class PlayerInfoBox extends VBox {
     private static final String TITLE_FONT = "Georgia";
     private static final String BODY_FONT = "Verdana";
-    private static final String PROPERTY_FONT = "Arial";
 
     private final Player player;
     private final Label nameLabel;
     private final Label balanceLabel;
     private final Label positionLabel;
-    private final VBox propertiesList;
     private final ImageView figureImage;
 
-    public PlayerInfoBox(Player player, Color backgroundColor) {
+    private PlayerInfoBox(Player player, Color backgroundColor) {
       this.player = player;
 
       setSpacing(10);
@@ -158,17 +145,9 @@ public class PlayerDashboard extends EventListeningComponent {
       figureImage.setPreserveRatio(true);
       loadFigureImage(player.getFigure());
 
-      Label propsHeader = label(Font.font(BODY_FONT, FontWeight.BOLD, 13), "#333");
-      propsHeader.setText("Properties:");
-
-      propertiesList = new VBox(4);
-      propertiesList.setAlignment(Pos.TOP_LEFT);
-      propertiesList.setPadding(new Insets(4, 0, 0, 12));
-
       refresh();
 
-      getChildren()
-          .addAll(nameLabel, balanceLabel, positionLabel, figureImage, propsHeader, propertiesList);
+      getChildren().addAll(nameLabel, balanceLabel, positionLabel, figureImage);
     }
 
     private Label label(Font font, String hexColor) {
@@ -195,40 +174,10 @@ public class PlayerDashboard extends EventListeningComponent {
     public void refresh() {
       nameLabel.setText(player.getName());
       positionLabel.setText("Tile: " + player.getPosition());
-
-      // monopoly
-      if (player instanceof MonopolyPlayer monopolyPlayer) {
-        balanceLabel.setText("Balance: $" + monopolyPlayer.getBalance());
-        propertiesList.getChildren().clear();
-        for (Ownable ownable : monopolyPlayer.getOwnedAssets()) {
-          Label propLabel = new Label("• " + ownable.toString());
-          propLabel.setFont(Font.font(PROPERTY_FONT, FontWeight.SEMI_BOLD, 13));
-          propLabel.setTextFill(Color.web("#212529"));
-          propLabel.setBackground(
-              new Background(
-                  new BackgroundFill(Color.web("#ffffffcc"), new CornerRadii(4), Insets.EMPTY)));
-          propLabel.setBorder(
-              new Border(
-                  new BorderStroke(
-                      Color.web("#ced4da"),
-                      BorderStrokeStyle.SOLID,
-                      new CornerRadii(4),
-                      BorderWidths.DEFAULT)));
-          propLabel.setPadding(new Insets(3, 6, 3, 6));
-          propertiesList.getChildren().add(propLabel);
-        }
-      }
-
-      if (propertiesList.getChildren().isEmpty()) {
-        Label none = new Label("(none)");
-        none.setFont(Font.font(PROPERTY_FONT, FontPosture.ITALIC, 12));
-        none.setTextFill(Color.web("#6c757d"));
-        propertiesList.getChildren().add(none);
-      }
     }
 
     /** Toggles a bright animated blue glow effect if it's the player's turn. */
-    public void setGlow(boolean active) {
+    private void setGlow(boolean active) {
       if (active) {
         DropShadow glow = new DropShadow();
         glow.setColor(Color.web("#3b82f6"));

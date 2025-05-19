@@ -2,9 +2,9 @@ package edu.ntnu.idi.bidata.boardgame.common.util;
 
 import javafx.scene.control.Alert;
 
-public class AlertFacotry {
+public class AlertFactory {
 
-  private AlertFacotry() {}
+  private AlertFactory() {}
 
   public static Alert createAlert(Alert.AlertType type, String content) {
     return switch (type) {

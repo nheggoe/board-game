@@ -10,8 +10,11 @@ import edu.ntnu.idi.bidata.boardgame.core.ui.View;
  */
 public class MainController extends Controller {
 
-  protected MainController(SceneSwitcher sceneSwitcher) {
+  public MainController(SceneSwitcher sceneSwitcher) {
     super(
-        sceneSwitcher, new MainView(event -> sceneSwitcher.switchTo(View.Name.MONOPOLY_GAME_VIEW)));
+        sceneSwitcher,
+        new MainView(
+            event -> sceneSwitcher.switchTo(View.Name.MONOPOLY_GAME_VIEW),
+            event -> sceneSwitcher.switchTo(View.Name.SNAKE_GAME_VIEW)));
   }
 }

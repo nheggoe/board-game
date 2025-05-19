@@ -4,6 +4,7 @@ import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.DiceRolledEvent;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.OutputEvent;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.PlayerMovedEvent;
+import edu.ntnu.idi.bidata.boardgame.common.event.type.PlayerRemovedEvent;
 import edu.ntnu.idi.bidata.boardgame.core.model.dice.DiceRoll;
 import java.util.List;
 import java.util.Map;
@@ -66,7 +67,7 @@ public abstract class Game<T extends Tile, P extends Player> {
     eventBus.publishEvent(new DiceRolledEvent(diceRoll));
   }
 
-  protected void movePlayer(P player, int numberOfTiles) {
+  public void movePlayer(P player, int numberOfTiles) {
     int oldPositon = player.getPosition();
     int newPosition = (player.getPosition() + numberOfTiles) % board.size();
     player.setPosition(newPosition);
@@ -74,6 +75,11 @@ public abstract class Game<T extends Tile, P extends Player> {
       completeRoundAction(player);
     }
     notifyPlayerMoved(player);
+  }
+
+  protected void removePlayer(P player) {
+    turnManager.removePlayer(player);
+    eventBus.publishEvent(new PlayerRemovedEvent(player));
   }
 
   protected abstract void completeRoundAction(P player);
@@ -114,7 +120,7 @@ public abstract class Game<T extends Tile, P extends Player> {
     return eventBus;
   }
 
-  protected P getNextPlayer() {
+  public P getNextPlayer() {
     return turnManager.getNextPlayer();
   }
 
