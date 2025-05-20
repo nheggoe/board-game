@@ -28,7 +28,7 @@ public class CSVWriter {
         writer.newLine();
       }
     }
-    LOGGER.info(
+    LOGGER.fine(
         () ->
             "Wrote %d rows to %s (append=%s)"
                 .formatted(lines.size(), file.getParentFile(), append));

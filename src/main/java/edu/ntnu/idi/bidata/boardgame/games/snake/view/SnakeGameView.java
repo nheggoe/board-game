@@ -37,7 +37,6 @@ public class SnakeGameView extends View {
     centre.getChildren().add(boardRender);
     root.getChildren().add(centre);
 
-
     /* Roll-dice button */
     rollDiceButton = new RollDiceSnakeButton(e -> {});
     rollDiceButton.setAlignment(Pos.CENTER);

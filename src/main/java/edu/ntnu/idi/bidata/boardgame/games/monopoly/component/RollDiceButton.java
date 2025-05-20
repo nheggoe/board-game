@@ -29,7 +29,7 @@ public class RollDiceButton extends Component {
     requireNonNull(rollDiceAction);
     Button button = new Button("Roll Dice");
     var url =
-        Objects.requireNonNull(
+        requireNonNull(
             getClass().getResource("/images/rolldice.png"),
             "Missing resource /images/rolldice.png");
     ImageView icon = new ImageView(new Image(url.toExternalForm()));

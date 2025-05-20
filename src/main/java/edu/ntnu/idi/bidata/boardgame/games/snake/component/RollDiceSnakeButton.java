@@ -1,7 +1,8 @@
 package edu.ntnu.idi.bidata.boardgame.games.snake.component;
 
+import static java.util.Objects.requireNonNull;
+
 import edu.ntnu.idi.bidata.boardgame.core.ui.Component;
-import java.util.Objects;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
@@ -19,11 +20,11 @@ public class RollDiceSnakeButton extends Component {
   private final Button button;
 
   public RollDiceSnakeButton(EventHandler<ActionEvent> rollDiceAction) {
-    Objects.requireNonNull(rollDiceAction);
+    requireNonNull(rollDiceAction);
 
     button = new Button("Roll Dice");
     var url = getClass().getResource("/images/rolldice.png");
-    Objects.requireNonNull(url, "Missing resource: /images/rolldice.png");
+    requireNonNull(url, "Missing resource: /images/rolldice.png");
     ImageView icon = new ImageView(new Image(url.toExternalForm()));
     icon.setFitWidth(48);
     icon.setFitHeight(48);
