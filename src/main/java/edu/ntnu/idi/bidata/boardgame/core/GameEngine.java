@@ -30,4 +30,8 @@ public record GameEngine<T extends Tile, P extends Player>(Game<T, P> game) {
     }
     game.nextTurn();
   }
+
+  public boolean isEnded() {
+    return game.isEnded();
+  }
 }
