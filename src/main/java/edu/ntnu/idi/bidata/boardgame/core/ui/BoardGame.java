@@ -21,7 +21,6 @@ public class BoardGame extends Application {
 
   private static void setup(Stage primaryStage) {
     primaryStage.setTitle("Board Game");
-    primaryStage.centerOnScreen();
     primaryStage.setMinWidth(1200);
     primaryStage.setMinHeight(900);
   }
