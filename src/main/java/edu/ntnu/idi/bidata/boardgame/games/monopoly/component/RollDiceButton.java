@@ -27,7 +27,11 @@ public class RollDiceButton extends Component {
   public RollDiceButton(EventHandler<ActionEvent> rollDiceAction) {
     Objects.requireNonNull(rollDiceAction);
     Button button = new Button("Roll Dice");
-    ImageView icon = new ImageView(new Image("/images/rolldice.png"));
+    var url =
+        Objects.requireNonNull(
+            getClass().getResource("/images/rolldice.png"),
+            "Missing resource /images/rolldice.png");
+    ImageView icon = new ImageView(new Image(url.toExternalForm()));
     icon.setFitWidth(48);
     icon.setFitHeight(48);
     button.setGraphic(icon);

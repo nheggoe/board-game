@@ -13,7 +13,7 @@ public record SnakeTile(int tilesToSlideBack) implements SnakeAndLadderTile {
     if (tilesToSlideBack < 0) {
       throw new IllegalArgumentException("Tiles to slide back must be non-negative");
     }
-
-    tilesToSlideBack = -tilesToSlideBack;
   }
+
 }
+
