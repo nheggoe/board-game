@@ -1,5 +1,6 @@
-package edu.ntnu.idi.bidata.boardgame.common.ui;
+package edu.ntnu.idi.bidata.boardgame.common.ui.controller;
 
+import edu.ntnu.idi.bidata.boardgame.common.ui.view.MainView;
 import edu.ntnu.idi.bidata.boardgame.core.ui.Controller;
 import edu.ntnu.idi.bidata.boardgame.core.ui.SceneSwitcher;
 import edu.ntnu.idi.bidata.boardgame.core.ui.View;

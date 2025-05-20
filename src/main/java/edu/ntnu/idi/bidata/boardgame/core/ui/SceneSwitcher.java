@@ -3,7 +3,8 @@ package edu.ntnu.idi.bidata.boardgame.core.ui;
 import static java.util.Objects.requireNonNull;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
-import edu.ntnu.idi.bidata.boardgame.common.ui.MainController;
+import edu.ntnu.idi.bidata.boardgame.common.ui.component.PlayerSetupController;
+import edu.ntnu.idi.bidata.boardgame.common.ui.controller.MainController;
 import edu.ntnu.idi.bidata.boardgame.common.util.GameFactory;
 import edu.ntnu.idi.bidata.boardgame.core.GameEngine;
 import edu.ntnu.idi.bidata.boardgame.core.model.Player;
@@ -59,8 +60,13 @@ public class SceneSwitcher {
     return switch (name) {
       case MAIN_VIEW -> createMainController();
       case SNAKE_GAME_VIEW -> createSnakeGameController();
+      case PLAYER_SETUP_VIEW -> createPlayerSetupController();
       case MONOPOLY_GAME_VIEW -> createMonopolyGameController();
     };
+  }
+
+  private PlayerSetupController createPlayerSetupController() {
+    return new PlayerSetupController(this);
   }
 
   private MainController createMainController() {
