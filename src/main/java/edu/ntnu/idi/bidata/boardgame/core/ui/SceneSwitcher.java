@@ -32,6 +32,7 @@ public class SceneSwitcher {
     this.scene = new Scene(new Pane(), primaryStage.getWidth(), primaryStage.getHeight());
     primaryStage.setScene(scene);
     primaryStage.show();
+    primaryStage.centerOnScreen();
   }
 
   public void switchTo(View.Name name) {
@@ -44,6 +45,14 @@ public class SceneSwitcher {
     }
     this.controller = createController(name);
     setRoot(controller.getView());
+  }
+
+  public void reset() {
+    switch (controller) {
+      case SnakeGameController s -> switchTo(View.Name.SNAKE_GAME_VIEW);
+      case MonopolyGameController m -> switchTo(View.Name.MONOPOLY_GAME_VIEW);
+      default -> throw new IllegalStateException("Unexpected value: " + controller);
+    }
   }
 
   private Controller createController(View.Name name) {
