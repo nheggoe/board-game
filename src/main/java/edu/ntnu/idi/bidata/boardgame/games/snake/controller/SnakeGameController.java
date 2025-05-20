@@ -4,7 +4,7 @@ import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
 import edu.ntnu.idi.bidata.boardgame.common.event.EventListener;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.Event;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.PlayerMovedEvent;
-import edu.ntnu.idi.bidata.boardgame.common.ui.EndDialog;
+import edu.ntnu.idi.bidata.boardgame.common.ui.component.EndDialog;
 import edu.ntnu.idi.bidata.boardgame.core.GameEngine;
 import edu.ntnu.idi.bidata.boardgame.core.ui.Controller;
 import edu.ntnu.idi.bidata.boardgame.core.ui.SceneSwitcher;

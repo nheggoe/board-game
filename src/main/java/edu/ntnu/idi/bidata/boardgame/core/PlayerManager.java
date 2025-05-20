@@ -13,39 +13,45 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class PlayerManager<P extends Player> {
+public class PlayerManager {
 
   private final EventBus eventBus;
   private final CSVHandler csvHandler;
-  private final Class<P> genericType;
+  private final Pattern csvPattern;
 
-  public PlayerManager(EventBus eventBus, CSVHandler csvHandler, Class<P> genericType) {
+  public PlayerManager(EventBus eventBus, CSVHandler csvHandler) {
     this.eventBus = requireNonNull(eventBus);
     this.csvHandler = requireNonNull(csvHandler);
-    this.genericType = requireNonNull(genericType);
+    this.csvPattern = Pattern.compile("((\\s+)?,(\\s+)?)");
   }
 
-  public List<P> loadPlayers() throws IOException {
+  public List<MonopolyPlayer> loadCsvAsMonopolyPlayers() throws IOException {
     var lines = csvHandler.readCSV();
-    var players = new ArrayList<P>();
+    var players = new ArrayList<MonopolyPlayer>();
     for (var line : lines) {
       try {
-        var tokens = line.split("((\\s+)?,(\\s+)?)");
-        P player =
-            (P)
-                switch (genericType) {
-                  case Class<?> generic when generic == MonopolyPlayer.class ->
-                      new MonopolyPlayer(tokens[0], Player.Figure.valueOf(tokens[1]));
-                  case Class<?> generic when generic == SnakeAndLadderPlayer.class ->
-                      new SnakeAndLadderPlayer(tokens[0], Player.Figure.valueOf(tokens[1]));
-                  default ->
-                      throw new IllegalArgumentException("Unknown player type: " + genericType);
-                };
-        players.add(player);
+        var tokens = csvPattern.split(line);
+        players.add(new MonopolyPlayer(tokens[0], Player.Figure.valueOf(tokens[1].toUpperCase())));
       } catch (IllegalArgumentException e) {
-        eventBus.publishEvent(new OutputEvent("Invalid player data: " + e.getMessage() + "\n"));
+        eventBus.publishEvent(new OutputEvent("Invalid player data: " + e.getMessage()));
+      }
+    }
+    return players;
+  }
+
+  public List<SnakeAndLadderPlayer> loadCsvAsSnakeAndLadderPlayers() throws IOException {
+    var lines = csvHandler.readCSV();
+    var players = new ArrayList<SnakeAndLadderPlayer>();
+    for (var line : lines) {
+      try {
+        var tokens = csvPattern.split(line);
+        players.add(
+            new SnakeAndLadderPlayer(tokens[0], Player.Figure.valueOf(tokens[1].toUpperCase())));
+      } catch (IllegalArgumentException e) {
+        eventBus.publishEvent(new OutputEvent("Invalid player data: " + e.getMessage()));
       }
     }
     return players;
@@ -57,9 +63,5 @@ public class PlayerManager<P extends Player> {
     return Arrays.stream(Player.Figure.values())
         .map(StringFormatter::formatEnum)
         .collect(Collectors.joining(", "));
-  }
-
-  public List<P> getPlayers() {
-    return null;
   }
 }

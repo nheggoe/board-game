@@ -1,4 +1,4 @@
-package edu.ntnu.idi.bidata.boardgame.common.ui;
+package edu.ntnu.idi.bidata.boardgame.common.ui.view;
 
 import edu.ntnu.idi.bidata.boardgame.core.ui.View;
 import javafx.event.ActionEvent;

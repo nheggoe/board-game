@@ -1,14 +1,14 @@
 package edu.ntnu.idi.bidata.boardgame.games.snake.model;
 
-import edu.ntnu.idi.bidata.boardgame.common.io.csv.CsvFileReader;
+import edu.ntnu.idi.bidata.boardgame.common.io.csv.CSVReader;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.tile.LadderTile;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.tile.NormalTile;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.tile.SnakeAndLadderTile;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.tile.SnakeTile;
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Factory class for creating Snake and Ladder boards from external files or data structures.
@@ -17,6 +17,8 @@ import java.util.List;
  * @version 2025.05.19
  */
 public class SnakeAndLadderBoardFactory {
+
+  private static final Pattern CSV_PATTERN = Pattern.compile("((\\s+)?,(\\s+)?)");
 
   private SnakeAndLadderBoardFactory() {
     // Private constructor to prevent instantiation
@@ -29,60 +31,44 @@ public class SnakeAndLadderBoardFactory {
    * @throws IllegalStateException if the board file cannot be read or is invalid
    */
   public static SnakeAndLadderBoard createBoard() {
-    return createBoardFromCsv("src/main/resources/csv/snake_and_ladder_88_tiles.csv");
+    return createBoardFromCsv(new File("src/main/resources/csv/snake_and_ladder_88_tiles.csv"));
   }
 
   /**
    * Creates a Snake and Ladder board from a specified CSV file. The CSV file should have the
    * following format: Index, Type, Offset 0, Normal, 0 ...
    *
-   * @param filePath path to the CSV file
    * @return a new Snake and Ladder board
    * @throws IllegalStateException if the file cannot be read or is invalid
    */
-  public static SnakeAndLadderBoard createBoardFromCsv(String filePath) {
+  public static SnakeAndLadderBoard createBoardFromCsv(File file) {
     try {
-      List<String[]> lines = parseCsv(filePath);
+      var lines = CSVReader.readLines(file);
       validateCsv(lines);
 
-      List<SnakeAndLadderTile> tiles = new ArrayList<>();
-
-      for (String[] line : lines) {
-        tiles.add(createTile(line));
-      }
+      var tiles = lines.stream().map(SnakeAndLadderBoardFactory::createTile).toList();
 
       return new SnakeAndLadderBoard(tiles);
 
     } catch (IOException e) {
-      throw new IllegalStateException("Failed to read board file at " + filePath, e);
+      throw new IllegalStateException("Failed to read board file at " + file.getAbsolutePath(), e);
     } catch (NumberFormatException e) {
-      throw new IllegalStateException("Invalid number format in the board file at " + filePath, e);
+      throw new IllegalStateException(
+          "Invalid number format in the board file at " + file.getAbsolutePath(), e);
     }
-  }
-
-  /**
-   * Parses the CSV file into a list of string arrays for processing.
-   *
-   * @param filePath path to the CSV file
-   * @return list of string arrays, each representing a row in the CSV file
-   * @throws IOException if the file cannot be read
-   */
-  private static List<String[]> parseCsv(String filePath) throws IOException {
-    return CsvFileReader.readLines(Path.of(filePath)).stream()
-        .map(line -> line.split(","))
-        .toList();
   }
 
   /**
    * Validates the structure of the CSV file before processing. It ensures that all rows have
    * exactly 3 columns.
    *
-   * @param csvLines list of string arrays representing CSV data
+   * @param lines list of string arrays representing CSV data
    * @throws IllegalStateException if the CSV structure is invalid
    */
-  private static void validateCsv(List<String[]> csvLines) {
-    for (String[] line : csvLines) {
-      if (line.length != 3) {
+  private static void validateCsv(List<String> lines) {
+    for (var line : lines) {
+      var tokens = CSV_PATTERN.split(line);
+      if (tokens.length != 3) {
         throw new IllegalStateException(
             "Invalid board file format. Each row must have 3 columns (Index, Type, Offset).");
       }
@@ -95,19 +81,19 @@ public class SnakeAndLadderBoardFactory {
    * @param line the CSV row containing tile data
    * @return the corresponding SnakeAndLadderTile
    */
-  private static SnakeAndLadderTile createTile(String[] line) {
+  private static SnakeAndLadderTile createTile(String line) {
     try {
-      String type = line[1].trim();
-      int offset = line[2].trim().isEmpty() ? 0 : Integer.parseInt(line[2].trim());
-
-      return switch (type) {
-        case "Snake" -> new SnakeTile(offset);
-        case "Ladder" -> new LadderTile(offset);
-        case "Normal" -> new NormalTile();
+      var tokens = CSV_PATTERN.split(line.strip());
+      String type = tokens[1];
+      int offset = tokens[2].isEmpty() ? 0 : Integer.parseInt(tokens[2]);
+      return switch (type.toUpperCase()) {
+        case "SNAKE" -> new SnakeTile(offset);
+        case "LADDER" -> new LadderTile(offset);
+        case "NORMAL" -> new NormalTile();
         default -> throw new IllegalStateException("Invalid tile type: " + type);
       };
-    } catch (NumberFormatException e) {
-      throw new IllegalStateException("Invalid offset value for tile: " + line[2]);
+    } catch (NumberFormatException ignored) {
+      throw new IllegalStateException("Invalid CSV value: " + line);
     }
   }
 }

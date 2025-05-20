@@ -40,9 +40,9 @@ public class PlayerCreationDialogComponent extends EventListeningComponent {
     }
   }
 
-  private <P extends Player> void handlePlayerCreation(PlayersRequiredEvent<?> event) {
-    Class<P> playerType = (Class<P>) event.playerType();
-    Consumer<List<P>> callback = (Consumer<List<P>>) event.playerConsumer();
+  private <P extends Player> void handlePlayerCreation(PlayersRequiredEvent<P> event) {
+    Class<P> playerType = event.playerType();
+    Consumer<List<P>> callback = event.playerConsumer();
 
     // Ask how many players to create
     int playerCount = promptForPlayerCount();
