@@ -8,10 +8,12 @@ import edu.ntnu.idi.bidata.boardgame.core.ui.SceneSwitcher;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.MonopolyPlayer;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.MonopolyTile;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.view.MonopolyGameView;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 
 /**
  * @author Nick Heggø
- * @version 2025.05.08
+ * @version 2025.05.20
  */
 public class MonopolyGameController extends Controller {
 
@@ -19,17 +21,27 @@ public class MonopolyGameController extends Controller {
       SceneSwitcher sceneSwitcher,
       EventBus eventBus,
       GameEngine<MonopolyTile, MonopolyPlayer> gameEngine) {
-    super(
-        sceneSwitcher,
-        new MonopolyGameView(
-            eventBus,
-            gameEngine.getPlayers(),
-            gameEngine.getTiles(),
-            unused -> {
-              gameEngine.nextTurn();
-              if (gameEngine.isEnded()) {
-                new EndDialog(sceneSwitcher).showAndWait();
-              }
-            }));
+    super(sceneSwitcher, createGameView(sceneSwitcher, eventBus, gameEngine));
+  }
+
+  private static MonopolyGameView createGameView(
+      SceneSwitcher sceneSwitcher,
+      EventBus eventBus,
+      GameEngine<MonopolyTile, MonopolyPlayer> gameEngine) {
+    return new MonopolyGameView(
+        eventBus,
+        gameEngine.getPlayers(),
+        gameEngine.getTiles(),
+        nextTurnEventHandler(sceneSwitcher, gameEngine));
+  }
+
+  private static EventHandler<ActionEvent> nextTurnEventHandler(
+      SceneSwitcher sceneSwitcher, GameEngine<MonopolyTile, MonopolyPlayer> gameEngine) {
+    return unused -> {
+      gameEngine.nextTurn();
+      if (gameEngine.isEnded()) {
+        new EndDialog(sceneSwitcher).showAndWait();
+      }
+    };
   }
 }
