@@ -10,10 +10,12 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 public class CSVWriter {
 
   private static final Logger LOGGER = Logger.getLogger(CSVWriter.class.getName());
+  private static final Pattern CSV_PATTERN = Pattern.compile("((\\s+)?,(\\s+)?)");
 
   private CSVWriter() {}
 
@@ -37,7 +39,7 @@ public class CSVWriter {
   private static List<List<String>> convertLinesToCells(List<String> lines) {
     requireNonNull(lines, "Values cannot be null!");
     var dataCells =
-        lines.stream().map(line -> Arrays.stream(line.split("(\\s+)?,(\\s+)?")).toList()).toList();
+        lines.stream().map(line -> Arrays.stream(CSV_PATTERN.split(line)).toList()).toList();
     assertDataCells(lines, dataCells);
     return dataCells;
   }
