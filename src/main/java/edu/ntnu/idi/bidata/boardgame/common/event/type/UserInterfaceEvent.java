@@ -12,16 +12,14 @@ public sealed interface UserInterfaceEvent extends Event {
     }
   }
 
-  record Exception(java.lang.Exception exception) implements UserInterfaceEvent {
-    public Exception {
-      requireNonNull(exception, "Exception cannot be null!");
-    }
-  }
-
-  record UserInputRequest(String message, Consumer<String> callback) {
+  record UserInputRequest<T>(String message, Consumer<T> callback) {
     public UserInputRequest {
       requireNonNull(message, "Message cannot be null!");
       requireNonNull(callback, "Callback cannot be null!");
+    }
+
+    public void accept(T input) {
+      callback.accept(input);
     }
   }
 }
