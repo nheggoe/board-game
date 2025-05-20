@@ -22,7 +22,7 @@ import javafx.scene.layout.StackPane;
 public class SnakeAndLadderBoardRender extends EventListeningComponent {
 
   /** Width/height of a single tile in pixels. */
-  private static final int TILE_SIZE = 50;
+  private static final int TILE_SIZE = 60;
 
   /** Side length (in tiles). Read from the model instead of hard-coding “10”. */
   private final int boardDimension;

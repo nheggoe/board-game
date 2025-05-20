@@ -8,14 +8,12 @@ import edu.ntnu.idi.bidata.boardgame.games.snake.component.RollDiceSnakeButton;
 import edu.ntnu.idi.bidata.boardgame.games.snake.component.SnakeAndLadderBoardRender;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.SnakeAndLadderBoard;
 import javafx.geometry.Pos;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 /** JavaFX view for the Snake & Ladder game. */
 public class SnakeGameView extends View {
 
-  /*  Fields exposed to the controller                                  */
-  private final SnakeAndLadderBoardRender boardRender;
   private final PlayerRender playerRender;
   private final RollDiceSnakeButton rollDiceButton;
 
@@ -29,15 +27,16 @@ public class SnakeGameView extends View {
     root.setSpacing(10);
     getChildren().add(root);
 
-    boardRender = new SnakeAndLadderBoardRender(eventBus, board);
-    boardRender.prefWidthProperty().bind(widthProperty().multiply(0.8));
-    boardRender.prefHeightProperty().bind(heightProperty().multiply(0.6));
+    /*  Fields exposed to the controller                                  */
+    SnakeAndLadderBoardRender boardRender = new SnakeAndLadderBoardRender(eventBus, board);
 
     this.playerRender = new PlayerRender(boardRender.getTileGrid(), boardRender.getGridSize());
 
-    var centre = new StackPane(boardRender);
+    var centre = new HBox();
+    centre.setAlignment(Pos.CENTER);
+    centre.getChildren().add(boardRender);
     root.getChildren().add(centre);
-    addComponents(boardRender);
+
 
     /* Roll-dice button */
     rollDiceButton = new RollDiceSnakeButton(e -> {});
