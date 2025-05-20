@@ -13,7 +13,6 @@ public record LadderTile(int tilesToSkip) implements SnakeAndLadderTile {
     if (tilesToSkip < 0) {
       throw new IllegalArgumentException("Tiles to skip must be non-negative");
     }
-
     if (tilesToSkip > 100) {
       throw new IllegalArgumentException("Tiles to skip exceeds maximum of 100");
     }

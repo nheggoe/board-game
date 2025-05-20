@@ -22,5 +22,9 @@ class SnakeTileTest {
     assertThatThrownBy(() -> new SnakeTile(-1))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessage("Tiles to slide back must be non-negative");
+
+    assertThatThrownBy(() -> new SnakeTile(999))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Tiles to slide back exceeds maximum of 100");
   }
 }
