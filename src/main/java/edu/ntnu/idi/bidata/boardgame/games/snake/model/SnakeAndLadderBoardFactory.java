@@ -97,8 +97,8 @@ public class SnakeAndLadderBoardFactory {
    */
   private static SnakeAndLadderTile createTile(String[] line) {
     try {
-      String type = line[1];
-      int offset = line[2].isEmpty() ? 0 : Integer.parseInt(line[2]);
+      String type = line[1].trim();
+      int offset = line[2].trim().isEmpty() ? 0 : Integer.parseInt(line[2].trim());
 
       return switch (type) {
         case "Snake" -> new SnakeTile(offset);
