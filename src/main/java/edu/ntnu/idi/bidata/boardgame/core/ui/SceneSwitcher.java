@@ -48,13 +48,11 @@ public class SceneSwitcher {
   }
 
   public void reset() {
-    controller =
-        switch (controller) {
-          case SnakeGameController s -> createSnakeGameController();
-          case MonopolyGameController m -> createMonopolyGameController();
-          default -> throw new IllegalStateException("Unexpected value: " + controller);
-        };
-    setRoot(controller.getView());
+    switch (controller) {
+      case SnakeGameController s -> switchTo(View.Name.SNAKE_GAME_VIEW);
+      case MonopolyGameController m -> switchTo(View.Name.MONOPOLY_GAME_VIEW);
+      default -> throw new IllegalStateException("Unexpected value: " + controller);
+    }
   }
 
   private Controller createController(View.Name name) {
