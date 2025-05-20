@@ -1,8 +1,9 @@
 package edu.ntnu.idi.bidata.boardgame.common.ui.view;
 
+import edu.ntnu.idi.bidata.boardgame.common.ui.component.SettingDialog;
+import edu.ntnu.idi.bidata.boardgame.core.ui.SceneSwitcher;
 import edu.ntnu.idi.bidata.boardgame.core.ui.View;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
@@ -10,30 +11,34 @@ import javafx.scene.layout.VBox;
 
 public class MainView extends View {
 
-  @SafeVarargs
-  public MainView(EventHandler<ActionEvent>... eventHandlers) {
-    int actionCount = 2;
-    if (eventHandlers.length != actionCount) {
-      throw new IllegalArgumentException("Must provide %d actions!".formatted(actionCount));
-    }
-
+  public MainView(SceneSwitcher sceneSwitcher) {
     var root = new BorderPane();
-    root.prefWidthProperty().bind(widthProperty());
-    root.prefHeightProperty().bind(heightProperty());
-    getChildren().add(root);
+    setRoot(root);
 
-    root.setCenter(createCenterPane(eventHandlers));
+    root.setCenter(createCenterPane(sceneSwitcher));
+    root.setRight(createRightPane(sceneSwitcher));
   }
 
-  private static VBox createCenterPane(EventHandler<ActionEvent>[] eventHandlers) {
+  private VBox createCenterPane(SceneSwitcher sceneSwitcher) {
     var center = new VBox();
     center.setAlignment(Pos.CENTER);
     center.setSpacing(10);
     var monopolyButton = new Button("Monopoly");
     var snakeAndeLadderButton = new Button("Snake and Ladder");
-    monopolyButton.setOnAction(eventHandlers[0]);
-    snakeAndeLadderButton.setOnAction(eventHandlers[1]);
+    monopolyButton.setOnAction(ignored -> sceneSwitcher.switchTo(Name.MONOPOLY_GAME_VIEW));
+    snakeAndeLadderButton.setOnAction(ignored -> sceneSwitcher.switchTo(Name.SNAKE_GAME_VIEW));
     center.getChildren().addAll(monopolyButton, snakeAndeLadderButton);
     return center;
+  }
+
+  private VBox createRightPane(SceneSwitcher sceneSwitcher) {
+    var right = new VBox();
+    right.setSpacing(10);
+    right.setPadding(new Insets(10));
+    right.setAlignment(Pos.TOP_RIGHT);
+    var settingsButton = new Button("Settings");
+    settingsButton.setOnAction(ignored -> new SettingDialog(sceneSwitcher).showAndWait());
+    right.getChildren().add(settingsButton);
+    return right;
   }
 }

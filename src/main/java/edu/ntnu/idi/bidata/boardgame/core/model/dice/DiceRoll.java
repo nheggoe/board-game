@@ -13,6 +13,9 @@ import java.util.Arrays;
 public record DiceRoll(int... rolls) {
 
   public DiceRoll {
+    if (rolls.length < 1) {
+      throw new IllegalArgumentException("Dice roll must contain at least one dice");
+    }
     for (int roll : rolls) {
       if (roll < 1) {
         throw new IllegalArgumentException("Face value of dice cannot be less than 1");

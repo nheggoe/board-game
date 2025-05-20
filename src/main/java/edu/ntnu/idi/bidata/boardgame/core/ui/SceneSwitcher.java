@@ -13,6 +13,7 @@ import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.MonopolyPlayer
 import edu.ntnu.idi.bidata.boardgame.games.snake.controller.SnakeGameController;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.SnakeAndLadderPlayer;
 import java.util.List;
+import java.util.logging.Logger;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
@@ -23,6 +24,8 @@ import javafx.stage.Stage;
  * @version 2025.05.08
  */
 public class SceneSwitcher {
+
+  private static final Logger LOGGER = Logger.getLogger(SceneSwitcher.class.getName());
 
   private final EventBus eventBus = new EventBus();
   private final Scene scene;
@@ -41,7 +44,8 @@ public class SceneSwitcher {
       try {
         controller.getView().close();
       } catch (Exception e) {
-        throw new RuntimeException(e);
+        LOGGER.severe(e::getMessage);
+        LOGGER.severe(() -> "Failed to close controller: " + controller.getClass().getName());
       }
     }
     this.controller = createController(name);

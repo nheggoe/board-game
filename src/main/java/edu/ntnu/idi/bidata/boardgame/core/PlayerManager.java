@@ -57,7 +57,10 @@ public class PlayerManager {
     return players;
   }
 
-  public void savePlayers() throws IOException {}
+  public void savePlayers(List<Player> players) throws IOException {
+    var lines = players.stream().map(Player::toCsvLine).toList();
+    csvHandler.writeCSV(lines, false);
+  }
 
   private static String getAvailableFigures() {
     return Arrays.stream(Player.Figure.values())

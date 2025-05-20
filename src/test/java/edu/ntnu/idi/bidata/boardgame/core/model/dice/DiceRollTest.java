@@ -47,7 +47,14 @@ class DiceRollTest {
 
   @Test
   void testToString() {
-    assertThat(new DiceRoll(1, 2, 3).toString()).isEqualTo("1, 2, 3 (6)");
-    assertThat(new DiceRoll(1, 1).toString()).isEqualTo("2 equal dice of 1! (2)");
+    assertThat(new DiceRoll(1, 2, 3)).hasToString("1, 2, 3 (6)");
+    assertThat(new DiceRoll(1, 1)).hasToString("2 equal dice of 1! (2)");
+  }
+
+  @Test
+  void test_invalid_dice_roll() {
+    assertThatThrownBy(DiceRoll::new)
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Dice roll must contain at least one dice");
   }
 }
