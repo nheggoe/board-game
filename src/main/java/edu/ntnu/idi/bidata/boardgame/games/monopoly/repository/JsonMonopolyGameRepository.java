@@ -1,5 +1,6 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.repository;
 
+import edu.ntnu.idi.bidata.boardgame.common.io.json.JsonService;
 import edu.ntnu.idi.bidata.boardgame.common.repository.JsonRepository;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.MonopolyGame;
 
@@ -12,6 +13,6 @@ import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.MonopolyGame;
 public class JsonMonopolyGameRepository extends JsonRepository<MonopolyGame> {
 
   public JsonMonopolyGameRepository() {
-    super(MonopolyGame.class, MonopolyGame::getId);
+    super(new JsonService<>(MonopolyGame.class), MonopolyGame::getId);
   }
 }

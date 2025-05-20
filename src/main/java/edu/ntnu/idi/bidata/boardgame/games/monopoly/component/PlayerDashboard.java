@@ -217,8 +217,7 @@ public class PlayerDashboard extends EventListeningComponent {
             case BATTLE_SHIP -> "/images/battleship.png";
             case DUCK -> "/images/duck.png";
           };
-      figureImage.setImage(
-          new Image(requireNonNull(getClass().getResourceAsStream(resourcePath))));
+      figureImage.setImage(new Image(requireNonNull(getClass().getResourceAsStream(resourcePath))));
     }
 
     public void refresh() {

@@ -104,13 +104,13 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
       MonopolyPlayer winner = getPlayers().getFirst();
       println("%s has won the game!".formatted(winner.getName()));
 
-      Platform.runLater(() -> {
-        AlertFactory.createAlert(
-                Alert.AlertType.INFORMATION,
-                "%s has won the game!".formatted(winner.getName()))
-            .showAndWait();
-        endGame();
-      });
+      Platform.runLater(
+          () -> {
+            AlertFactory.createAlert(
+                    Alert.AlertType.INFORMATION, "%s has won the game!".formatted(winner.getName()))
+                .showAndWait();
+            endGame();
+          });
     }
   }
 

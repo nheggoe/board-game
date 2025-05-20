@@ -1,7 +1,8 @@
 package edu.ntnu.idi.bidata.boardgame.common.event.type;
 
+import static java.util.Objects.requireNonNull;
+
 import edu.ntnu.idi.bidata.boardgame.core.model.dice.DiceRoll;
-import java.util.Objects;
 
 /**
  * @param diceRoll the dice roll that was rolled, must not be null
@@ -10,6 +11,6 @@ import java.util.Objects;
  */
 public record DiceRolledEvent(DiceRoll diceRoll) implements Event {
   public DiceRolledEvent {
-    Objects.requireNonNull(diceRoll, "DiceRoll cannot be null!");
+    requireNonNull(diceRoll, "DiceRoll cannot be null!");
   }
 }

@@ -1,6 +1,6 @@
 package edu.ntnu.idi.bidata.boardgame.common.event.type;
 
-import java.util.Objects;
+import static java.util.Objects.requireNonNull;
 
 /**
  * @param output the output string to be displayed, must not be null
@@ -9,6 +9,6 @@ import java.util.Objects;
  */
 public record OutputEvent(String output) implements Event {
   public OutputEvent {
-    Objects.requireNonNull(output, "Output string cannot be null!");
+    requireNonNull(output, "Output string cannot be null!");
   }
 }

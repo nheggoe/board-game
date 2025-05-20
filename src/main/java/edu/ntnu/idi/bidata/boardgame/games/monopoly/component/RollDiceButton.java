@@ -1,7 +1,8 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.component;
 
+import static java.util.Objects.requireNonNull;
+
 import edu.ntnu.idi.bidata.boardgame.core.ui.Component;
-import java.util.Objects;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
@@ -25,7 +26,7 @@ public class RollDiceButton extends Component {
    * logging, player movement, and UI refresh.
    */
   public RollDiceButton(EventHandler<ActionEvent> rollDiceAction) {
-    Objects.requireNonNull(rollDiceAction);
+    requireNonNull(rollDiceAction);
     Button button = new Button("Roll Dice");
     ImageView icon = new ImageView(new Image("/images/rolldice.png"));
     icon.setFitWidth(48);

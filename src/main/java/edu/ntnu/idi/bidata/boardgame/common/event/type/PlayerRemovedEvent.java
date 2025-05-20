@@ -1,7 +1,8 @@
 package edu.ntnu.idi.bidata.boardgame.common.event.type;
 
+import static java.util.Objects.requireNonNull;
+
 import edu.ntnu.idi.bidata.boardgame.core.model.Player;
-import java.util.Objects;
 
 /**
  * @param player the player that was removed, must not be null
@@ -10,6 +11,6 @@ import java.util.Objects;
  */
 public record PlayerRemovedEvent(Player player) implements Event {
   public PlayerRemovedEvent {
-    Objects.requireNonNull(player, "Player cannot be null!");
+    requireNonNull(player, "Player cannot be null!");
   }
 }

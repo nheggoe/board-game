@@ -1,5 +1,7 @@
 package edu.ntnu.idi.bidata.boardgame.core.model;
 
+import static java.util.Objects.requireNonNull;
+
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.DiceRolledEvent;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.OutputEvent;
@@ -8,7 +10,6 @@ import edu.ntnu.idi.bidata.boardgame.common.event.type.PlayerRemovedEvent;
 import edu.ntnu.idi.bidata.boardgame.core.model.dice.DiceRoll;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -21,18 +22,23 @@ public abstract class Game<T extends Tile, P extends Player> {
   private final UUID id;
   private String gameSaveName;
   private boolean isEnded;
-  private final TurnManager<P> turnManager;
+
+  @SuppressWarnings("java:S2065")
+  private final transient TurnManager<P> turnManager;
 
   // injected dependencies
-  private final EventBus eventBus;
+
+  @SuppressWarnings("java:S2065")
+  private final transient EventBus eventBus;
+
   private final Board<T> board;
 
   protected Game(EventBus eventBus, Board<T> board, List<P> players) {
     this.id = UUID.randomUUID();
     this.isEnded = false;
     this.turnManager = new TurnManager<>(players);
-    this.eventBus = Objects.requireNonNull(eventBus, "EventBus cannot be null!");
-    this.board = Objects.requireNonNull(board, "Board cannot be null!");
+    this.eventBus = requireNonNull(eventBus, "EventBus cannot be null!");
+    this.board = requireNonNull(board, "Board cannot be null!");
   }
 
   // ------------------------  API  ------------------------

@@ -69,14 +69,14 @@ public class FileUtil {
   private static void createDirectory(File file) {
     File parentDir = file.getParentFile();
     if (parentDir != null && parentDir.mkdirs()) {
-      LOGGER.info(() -> "Created directory: " + parentDir.getAbsolutePath());
+      LOGGER.fine(() -> "Created directory: " + parentDir.getAbsolutePath());
     }
   }
 
   private static void createFile(File file) {
     try {
       if (file.createNewFile()) {
-        LOGGER.info(() -> "Created file: " + file.getAbsolutePath());
+        LOGGER.fine(() -> "Created file: " + file.getAbsolutePath());
       }
     } catch (IOException e) {
       LOGGER.severe(() -> "Cannot create file: " + file);

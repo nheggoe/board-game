@@ -1,5 +1,7 @@
 package edu.ntnu.idi.bidata.boardgame.core.ui;
 
+import static java.util.Objects.requireNonNull;
+
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
 import edu.ntnu.idi.bidata.boardgame.common.ui.MainController;
 import edu.ntnu.idi.bidata.boardgame.common.util.GameFactory;
@@ -10,7 +12,6 @@ import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.MonopolyPlayer
 import edu.ntnu.idi.bidata.boardgame.games.snake.controller.SnakeGameController;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.SnakeAndLadderPlayer;
 import java.util.List;
-import java.util.Objects;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
@@ -27,7 +28,7 @@ public class SceneSwitcher {
   private Controller controller;
 
   public SceneSwitcher(Stage primaryStage) {
-    Objects.requireNonNull(primaryStage, "primaryStage must not be null");
+    requireNonNull(primaryStage, "primaryStage must not be null");
     this.scene = new Scene(new Pane(), primaryStage.getWidth(), primaryStage.getHeight());
     primaryStage.setScene(scene);
     primaryStage.show();
@@ -80,6 +81,6 @@ public class SceneSwitcher {
   }
 
   public void setRoot(Parent root) {
-    scene.setRoot(Objects.requireNonNull(root, "root must not be null"));
+    scene.setRoot(requireNonNull(root, "root must not be null"));
   }
 }

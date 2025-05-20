@@ -1,10 +1,11 @@
 package edu.ntnu.idi.bidata.boardgame.core;
 
+import static java.util.Objects.requireNonNull;
+
 import edu.ntnu.idi.bidata.boardgame.core.model.Game;
 import edu.ntnu.idi.bidata.boardgame.core.model.Player;
 import edu.ntnu.idi.bidata.boardgame.core.model.Tile;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author Nick Heggø
@@ -13,7 +14,7 @@ import java.util.Objects;
 public record GameEngine<T extends Tile, P extends Player>(Game<T, P> game) {
 
   public GameEngine {
-    Objects.requireNonNull(game, "Game cannot be null!");
+    requireNonNull(game, "Game cannot be null!");
   }
 
   public List<P> getPlayers() {

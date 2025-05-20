@@ -10,10 +10,11 @@ package edu.ntnu.idi.bidata.boardgame.games.snake.model.tile;
  */
 public record SnakeTile(int tilesToSlideBack) implements SnakeAndLadderTile {
   public SnakeTile {
+    if (tilesToSlideBack == 0) {
+      throw new IllegalArgumentException("Tiles to slide back must be non-zero");
+    }
     if (tilesToSlideBack < 0) {
       throw new IllegalArgumentException("Tiles to slide back must be non-negative");
     }
-
-    tilesToSlideBack = -tilesToSlideBack;
   }
 }
