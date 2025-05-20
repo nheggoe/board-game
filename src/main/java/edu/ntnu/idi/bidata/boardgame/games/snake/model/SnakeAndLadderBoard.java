@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * @param tiles the tiles this board will contain
  * @author Nick Heggø
- * @version 2025.05.08
+ * @version 2025.05.20
  */
 public record SnakeAndLadderBoard(List<SnakeAndLadderTile> tiles)
     implements Board<SnakeAndLadderTile> {
@@ -46,9 +46,9 @@ public record SnakeAndLadderBoard(List<SnakeAndLadderTile> tiles)
   }
 
   private void assertSnakeTile(int index, SnakeTile tile) {
-    if (index + tile.tilesToSlideBack() < 0) {
+    if (index - tile.tilesToSlideBack() < 0) {
       throw new InvalidBoardLayoutException(
-          "Snake tile at index %d cannot slide back more than the number of tiles it can slid."
+          "Snake tile at index %d slide back more than the the index of the tile."
               .formatted(index));
     }
   }
@@ -56,7 +56,7 @@ public record SnakeAndLadderBoard(List<SnakeAndLadderTile> tiles)
   private void assertLadderTile(int index, int totalTile, LadderTile tile) {
     if (index + tile.tilesToSkip() >= totalTile) {
       throw new InvalidBoardLayoutException(
-          "Ladder tile at index %d cannot skip more than the number of tiles it can skip."
+          "Ladder tile at index %d skips more tiles than the number of rest of the tiles."
               .formatted(index));
     }
   }
