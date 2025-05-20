@@ -4,6 +4,7 @@ import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
 import edu.ntnu.idi.bidata.boardgame.common.event.EventListener;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.Event;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.PlayerMovedEvent;
+import edu.ntnu.idi.bidata.boardgame.common.ui.EndDialog;
 import edu.ntnu.idi.bidata.boardgame.core.GameEngine;
 import edu.ntnu.idi.bidata.boardgame.core.ui.Controller;
 import edu.ntnu.idi.bidata.boardgame.core.ui.SceneSwitcher;
@@ -55,7 +56,14 @@ public class SnakeGameController extends Controller {
         });
 
     /* User action: roll dice -> advance game */
-    view.getRollDiceButton().setOnAction(__ -> engine.nextTurn());
+    view.getRollDiceButton()
+        .setOnAction(
+            __ -> {
+              engine.nextTurn();
+              if (engine.isEnded()) {
+                new EndDialog(sceneSwitcher).showAndWait();
+              }
+            });
 
     /* Initial render (before the first move) */
     playerRender.renderPlayers(players);

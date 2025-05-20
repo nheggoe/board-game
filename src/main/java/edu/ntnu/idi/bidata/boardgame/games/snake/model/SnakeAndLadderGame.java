@@ -5,7 +5,6 @@ import edu.ntnu.idi.bidata.boardgame.core.TileAction;
 import edu.ntnu.idi.bidata.boardgame.core.model.Board;
 import edu.ntnu.idi.bidata.boardgame.core.model.Game;
 import edu.ntnu.idi.bidata.boardgame.core.model.dice.Dice;
-import edu.ntnu.idi.bidata.boardgame.core.ui.GameOverScreen;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.tile.LadderTile;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.tile.NormalTile;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.tile.SnakeAndLadderTile;
@@ -133,7 +132,6 @@ public class SnakeAndLadderGame extends Game<SnakeAndLadderTile, SnakeAndLadderP
   @Override
   protected void completeRoundAction(SnakeAndLadderPlayer player) {
     endGame();
-    GameOverScreen.show(player.getName());
   }
 
   /**
