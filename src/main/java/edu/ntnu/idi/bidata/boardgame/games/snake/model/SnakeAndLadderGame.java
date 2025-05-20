@@ -54,7 +54,15 @@ public class SnakeAndLadderGame extends Game<SnakeAndLadderTile, SnakeAndLadderP
 
     if (player.getPosition() == getBoard().size()) return;
 
-    tileActionOf(getTile(player.getPosition() - 1)).execute(player);
+    while (true) {
+      SnakeAndLadderTile tile = getTile(player.getPosition() - 1);
+      TileAction<SnakeAndLadderPlayer> action = tileActionOf(tile);
+
+      int before = player.getPosition();
+      action.execute(player);
+
+      if (player.getPosition() == before || tile instanceof NormalTile) break;
+    }
   }
 
   /**
