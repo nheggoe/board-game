@@ -5,7 +5,7 @@ import static org.mockito.Mockito.*;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.Event;
-import edu.ntnu.idi.bidata.boardgame.common.event.type.OutputEvent;
+import edu.ntnu.idi.bidata.boardgame.common.event.type.UserInterfaceEvent;
 import edu.ntnu.idi.bidata.boardgame.common.io.csv.CSVHandler;
 import edu.ntnu.idi.bidata.boardgame.core.model.Player;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.MonopolyPlayer;
@@ -66,7 +66,8 @@ class PlayerManagerTest {
     assertThatCode(() -> playerManager.loadCsvAsMonopolyPlayers()).doesNotThrowAnyException();
 
     verify(eventBus).publishEvent(eventCaptor.capture());
-    assertThat(eventCaptor.getValue()).isInstanceOf(OutputEvent.class);
-    assertThat(((OutputEvent) eventCaptor.getValue()).output()).contains("Invalid player data: ");
+    assertThat(eventCaptor.getValue()).isInstanceOf(UserInterfaceEvent.Output.class);
+    assertThat(((UserInterfaceEvent.Output) eventCaptor.getValue()).message())
+        .contains("Invalid player data: ");
   }
 }

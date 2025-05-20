@@ -9,13 +9,13 @@ class PlayerRemovedEventTest {
 
   @Test
   void testInvalidData() {
-    assertThrows(NullPointerException.class, () -> new PlayerRemovedEvent(null));
+    assertThrows(NullPointerException.class, () -> new CoreEvent.PlayerRemoved(null));
   }
 
   @Test
   void testBasic() {
     var player = new Player("John", Player.Figure.CAR) {};
-    var playerRemovedEvent = new PlayerRemovedEvent(player);
+    var playerRemovedEvent = new CoreEvent.PlayerRemoved(player);
     assertEquals(player, playerRemovedEvent.player());
   }
 }

@@ -2,8 +2,8 @@ package edu.ntnu.idi.bidata.boardgame.games.snake.controller;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
 import edu.ntnu.idi.bidata.boardgame.common.event.EventListener;
+import edu.ntnu.idi.bidata.boardgame.common.event.type.CoreEvent;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.Event;
-import edu.ntnu.idi.bidata.boardgame.common.event.type.PlayerMovedEvent;
 import edu.ntnu.idi.bidata.boardgame.common.ui.component.EndDialog;
 import edu.ntnu.idi.bidata.boardgame.core.GameEngine;
 import edu.ntnu.idi.bidata.boardgame.core.ui.Controller;
@@ -42,7 +42,7 @@ public class SnakeGameController extends Controller {
 
     /* Keep GUI in sync with the model */
     eventBus.addListener(
-        PlayerMovedEvent.class,
+        CoreEvent.PlayerMoved.class,
         new EventListener() {
           @Override
           public void onEvent(Event event) {

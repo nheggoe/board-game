@@ -3,10 +3,9 @@ package edu.ntnu.idi.bidata.boardgame.games.monopoly.component;
 import static java.util.Objects.requireNonNull;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
+import edu.ntnu.idi.bidata.boardgame.common.event.type.CoreEvent;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.Event;
-import edu.ntnu.idi.bidata.boardgame.common.event.type.PlayerMovedEvent;
-import edu.ntnu.idi.bidata.boardgame.common.event.type.PlayerRemovedEvent;
-import edu.ntnu.idi.bidata.boardgame.common.event.type.PurchaseEvent;
+import edu.ntnu.idi.bidata.boardgame.common.event.type.MonopolyEvent;
 import edu.ntnu.idi.bidata.boardgame.core.model.Player;
 import edu.ntnu.idi.bidata.boardgame.core.ui.EventListeningComponent;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.MonopolyPlayer;
@@ -61,9 +60,9 @@ public class PlayerDashboard extends EventListeningComponent {
    */
   public PlayerDashboard(EventBus eventBus, List<? extends Player> players) {
     super(eventBus);
-    getEventBus().addListener(PlayerMovedEvent.class, this);
-    getEventBus().addListener(PlayerRemovedEvent.class, this);
-    getEventBus().addListener(PurchaseEvent.class, this);
+    getEventBus().addListener(CoreEvent.PlayerMoved.class, this);
+    getEventBus().addListener(CoreEvent.PlayerRemoved.class, this);
+    getEventBus().addListener(MonopolyEvent.Purchased.class, this);
 
     setPrefWidth(320);
     setStyle(
@@ -122,15 +121,15 @@ public class PlayerDashboard extends EventListeningComponent {
   @Override
   public void onEvent(Event event) {
     switch (event) {
-      case PlayerMovedEvent(Player player) -> highlightPlayer(player);
-      case PlayerRemovedEvent(Player player) -> {
+      case CoreEvent.PlayerMoved(Player player) -> highlightPlayer(player);
+      case CoreEvent.PlayerRemoved(Player player) -> {
         PlayerInfoBox playerBox = playerRegistry.get(player);
         if (playerBox != null) {
           playerBox.setGrayedOut(true);
           playerBox.setGlow(false);
         }
       }
-      case PurchaseEvent(MonopolyPlayer monopolyPlayer, Ownable ownable) -> {
+      case MonopolyEvent.Purchased(MonopolyPlayer monopolyPlayer, Ownable ownable) -> {
         var infoBox = playerRegistry.remove(monopolyPlayer);
         playerRegistry.put(monopolyPlayer, infoBox);
       }
@@ -141,9 +140,9 @@ public class PlayerDashboard extends EventListeningComponent {
 
   @Override
   public void close() {
-    getEventBus().removeListener(PlayerMovedEvent.class, this);
-    getEventBus().removeListener(PlayerRemovedEvent.class, this);
-    getEventBus().removeListener(PurchaseEvent.class, this);
+    getEventBus().removeListener(CoreEvent.PlayerMoved.class, this);
+    getEventBus().removeListener(CoreEvent.PlayerRemoved.class, this);
+    getEventBus().removeListener(MonopolyEvent.Purchased.class, this);
   }
 
   // ------------------------  inner class  ------------------------

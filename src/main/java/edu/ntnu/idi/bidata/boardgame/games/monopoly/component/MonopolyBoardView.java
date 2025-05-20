@@ -2,9 +2,9 @@ package edu.ntnu.idi.bidata.boardgame.games.monopoly.component;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
 import edu.ntnu.idi.bidata.boardgame.common.event.EventListener;
+import edu.ntnu.idi.bidata.boardgame.common.event.type.CoreEvent;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.Event;
-import edu.ntnu.idi.bidata.boardgame.common.event.type.PlayerMovedEvent;
-import edu.ntnu.idi.bidata.boardgame.common.event.type.PurchaseEvent;
+import edu.ntnu.idi.bidata.boardgame.common.event.type.MonopolyEvent;
 import edu.ntnu.idi.bidata.boardgame.core.model.Player;
 import edu.ntnu.idi.bidata.boardgame.core.ui.EventListeningComponent;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.MonopolyPlayer;
@@ -60,8 +60,8 @@ public class MonopolyBoardView extends EventListeningComponent implements EventL
   public MonopolyBoardView(
       EventBus eventBus, List<MonopolyPlayer> players, List<MonopolyTile> tiles) {
     super(eventBus);
-    getEventBus().addListener(PlayerMovedEvent.class, this);
-    getEventBus().addListener(PurchaseEvent.class, this);
+    getEventBus().addListener(CoreEvent.PlayerMoved.class, this);
+    getEventBus().addListener(MonopolyEvent.Purchased.class, this);
 
     this.players = players;
     this.tiles = tiles;
@@ -502,9 +502,9 @@ public class MonopolyBoardView extends EventListeningComponent implements EventL
 
   @Override
   public void onEvent(Event event) {
-    if (event instanceof PlayerMovedEvent(Player player)) {
+    if (event instanceof CoreEvent.PlayerMoved(Player player)) {
       playerMoved(player, player.getPosition());
-    } else if (event instanceof PurchaseEvent) {
+    } else if (event instanceof MonopolyEvent.Purchased) {
       // Update all properties to reflect new ownership
       updateAllProperties();
     }
@@ -512,7 +512,7 @@ public class MonopolyBoardView extends EventListeningComponent implements EventL
 
   @Override
   public void close() {
-    getEventBus().removeListener(PlayerMovedEvent.class, this);
-    getEventBus().removeListener(PurchaseEvent.class, this);
+    getEventBus().removeListener(CoreEvent.PlayerMoved.class, this);
+    getEventBus().removeListener(MonopolyEvent.Purchased.class, this);
   }
 }

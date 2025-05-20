@@ -5,7 +5,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
-import edu.ntnu.idi.bidata.boardgame.common.event.type.PurchaseEvent;
+import edu.ntnu.idi.bidata.boardgame.common.event.type.MonopolyEvent;
 import edu.ntnu.idi.bidata.boardgame.common.util.AlertFactory;
 import edu.ntnu.idi.bidata.boardgame.core.model.dice.Dice;
 import edu.ntnu.idi.bidata.boardgame.core.model.dice.DiceRoll;
@@ -321,7 +321,7 @@ class MonopolyGameTest {
 
       // Verify player purchased property (check with isOwnerOf instead of getOwnables)
       if (player1.isOwnerOf(property)) {
-        verify(mockEventBus).publishEvent(any(PurchaseEvent.class));
+        verify(mockEventBus).publishEvent(any(MonopolyEvent.Purchased.class));
       }
     }
   }
@@ -355,7 +355,7 @@ class MonopolyGameTest {
       assertThat(player1.isOwnerOf(property)).isFalse();
 
       // Verify no purchase event (only if above assertion passes)
-      verify(mockEventBus, never()).publishEvent(any(PurchaseEvent.class));
+      verify(mockEventBus, never()).publishEvent(any(MonopolyEvent.Purchased.class));
     }
   }
 

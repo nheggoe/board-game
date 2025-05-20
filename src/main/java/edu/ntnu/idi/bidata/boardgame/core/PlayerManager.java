@@ -3,7 +3,7 @@ package edu.ntnu.idi.bidata.boardgame.core;
 import static java.util.Objects.requireNonNull;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
-import edu.ntnu.idi.bidata.boardgame.common.event.type.OutputEvent;
+import edu.ntnu.idi.bidata.boardgame.common.event.type.UserInterfaceEvent;
 import edu.ntnu.idi.bidata.boardgame.common.io.csv.CSVHandler;
 import edu.ntnu.idi.bidata.boardgame.common.util.StringFormatter;
 import edu.ntnu.idi.bidata.boardgame.core.model.Player;
@@ -36,7 +36,8 @@ public class PlayerManager {
         var tokens = csvPattern.split(line);
         players.add(new MonopolyPlayer(tokens[0], Player.Figure.valueOf(tokens[1].toUpperCase())));
       } catch (IllegalArgumentException e) {
-        eventBus.publishEvent(new OutputEvent("Invalid player data: " + e.getMessage()));
+        eventBus.publishEvent(
+            new UserInterfaceEvent.Output("Invalid player data: " + e.getMessage()));
       }
     }
     return players;
@@ -51,7 +52,8 @@ public class PlayerManager {
         players.add(
             new SnakeAndLadderPlayer(tokens[0], Player.Figure.valueOf(tokens[1].toUpperCase())));
       } catch (IllegalArgumentException e) {
-        eventBus.publishEvent(new OutputEvent("Invalid player data: " + e.getMessage()));
+        eventBus.publishEvent(
+            new UserInterfaceEvent.Output("Invalid player data: " + e.getMessage()));
       }
     }
     return players;

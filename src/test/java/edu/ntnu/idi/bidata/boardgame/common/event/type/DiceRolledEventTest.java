@@ -9,13 +9,13 @@ class DiceRolledEventTest {
 
   @Test
   void testInvalidData() {
-    assertThrows(NullPointerException.class, () -> new DiceRolledEvent(null));
+    assertThrows(NullPointerException.class, () -> new CoreEvent.DiceRolled(null));
   }
 
   @Test
   void testBasic() {
     var diceRoll = new DiceRoll(1, 2, 3);
-    var diceRolledEvent = new DiceRolledEvent(diceRoll);
+    var diceRolledEvent = new CoreEvent.DiceRolled(diceRoll);
     assertEquals(diceRoll, diceRolledEvent.diceRoll());
   }
 }

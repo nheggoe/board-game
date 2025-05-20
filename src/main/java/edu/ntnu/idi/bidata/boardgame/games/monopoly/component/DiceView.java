@@ -1,7 +1,7 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.component;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
-import edu.ntnu.idi.bidata.boardgame.common.event.type.DiceRolledEvent;
+import edu.ntnu.idi.bidata.boardgame.common.event.type.CoreEvent;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.Event;
 import edu.ntnu.idi.bidata.boardgame.core.model.dice.DiceRoll;
 import edu.ntnu.idi.bidata.boardgame.core.ui.EventListeningComponent;
@@ -45,7 +45,7 @@ public class DiceView extends EventListeningComponent {
 
   public DiceView(EventBus eventBus) {
     super(eventBus);
-    getEventBus().addListener(DiceRolledEvent.class, this);
+    getEventBus().addListener(CoreEvent.DiceRolled.class, this);
     setAlignment(Pos.CENTER);
     setSpacing(20);
   }
@@ -108,13 +108,13 @@ public class DiceView extends EventListeningComponent {
 
   @Override
   public void onEvent(Event event) {
-    if (event instanceof DiceRolledEvent(DiceRoll diceRoll)) {
+    if (event instanceof CoreEvent.DiceRolled(DiceRoll diceRoll)) {
       animateDiceRoll(diceRoll);
     }
   }
 
   @Override
   public void close() {
-    getEventBus().removeListener(DiceRolledEvent.class, this);
+    getEventBus().removeListener(CoreEvent.DiceRolled.class, this);
   }
 }

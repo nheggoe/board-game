@@ -1,7 +1,7 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.model;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
-import edu.ntnu.idi.bidata.boardgame.common.event.type.PurchaseEvent;
+import edu.ntnu.idi.bidata.boardgame.common.event.type.MonopolyEvent;
 import edu.ntnu.idi.bidata.boardgame.common.util.AlertFactory;
 import edu.ntnu.idi.bidata.boardgame.common.util.StringFormatter;
 import edu.ntnu.idi.bidata.boardgame.core.TileAction;
@@ -210,7 +210,7 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
     var output =
         switch (processTransaction(player, ownable)) {
           case TRANSACTION_COMPLETED -> {
-            getEventBus().publishEvent(new PurchaseEvent(player, ownable));
+            getEventBus().publishEvent(new MonopolyEvent.Purchased(player, ownable));
             yield player.getName() + " purchased " + ownable + "!";
           }
           case DENY -> player.getName() + " declined to purchase " + ownable + ".";
