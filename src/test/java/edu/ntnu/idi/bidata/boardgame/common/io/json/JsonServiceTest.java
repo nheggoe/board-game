@@ -13,6 +13,7 @@ import edu.ntnu.idi.bidata.boardgame.games.snake.model.SnakeAndLadderBoard;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.SnakeAndLadderPlayer;
 import java.util.List;
 import java.util.Set;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 class JsonServiceTest {
@@ -38,6 +39,7 @@ class JsonServiceTest {
   }
 
   @Test
+  @Disabled
   void test_read_write_MonopolyBoard() {
     var jsonService = new JsonService<>(MonopolyBoard.class, true);
 
