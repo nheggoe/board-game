@@ -5,61 +5,86 @@ import edu.ntnu.idi.bidata.boardgame.common.ui.component.SettingButton;
 import edu.ntnu.idi.bidata.boardgame.core.ui.SceneSwitcher;
 import edu.ntnu.idi.bidata.boardgame.core.ui.View;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.component.MessagePanel;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.component.PlayerDashboard;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.component.RollDiceButton;
 import edu.ntnu.idi.bidata.boardgame.games.snake.component.PlayerRender;
-import edu.ntnu.idi.bidata.boardgame.games.snake.component.RollDiceSnakeButton;
 import edu.ntnu.idi.bidata.boardgame.games.snake.component.SnakeAndLadderBoardRender;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.SnakeAndLadderBoard;
+import edu.ntnu.idi.bidata.boardgame.games.snake.model.SnakeAndLadderPlayer;
+import java.util.List;
+import java.util.function.Supplier;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
 /** JavaFX view for the Snake & Ladder game. */
 public class SnakeGameView extends View {
 
-  private final PlayerRender playerRender;
-  private final RollDiceSnakeButton rollDiceButton;
+  public SnakeGameView(
+      SceneSwitcher sceneSwitcher,
+      EventBus eventBus,
+      SnakeAndLadderBoard board,
+      Supplier<List<SnakeAndLadderPlayer>> playersSupplier,
+      EventHandler<ActionEvent> rollDiceAction) {
+    var root = new BorderPane();
+    setRoot(root);
 
-  /*
-  Constructor
-   */
-  public SnakeGameView(SceneSwitcher sceneSwitcher, EventBus eventBus, SnakeAndLadderBoard board) {
+    // board and player render
+    root.setCenter(createCenterPane(eventBus, board, playersSupplier));
 
-    var root = new VBox();
-    root.setAlignment(Pos.CENTER);
-    root.setSpacing(10);
-    getChildren().add(root);
-    root.getChildren().add(new SettingButton(sceneSwitcher));
+    // roll-dice button
+    root.setRight(createRightPane(sceneSwitcher, eventBus, playersSupplier, rollDiceAction));
 
-    /*  Fields exposed to the controller */
-    SnakeAndLadderBoardRender boardRender = new SnakeAndLadderBoardRender(eventBus, board);
+    // Message panel (console/log)
+    root.setBottom(createBottomPane(eventBus));
+  }
 
-    this.playerRender = new PlayerRender(boardRender.getTileGrid(), boardRender.getGridSize());
+  private Pane createRightPane(
+      SceneSwitcher sceneSwitcher,
+      EventBus eventBus,
+      Supplier<List<SnakeAndLadderPlayer>> playersSupplier,
+      EventHandler<ActionEvent> rollDiceAction) {
+    var right = new VBox();
+    right.setAlignment(Pos.TOP_CENTER);
+    right.prefWidthProperty().bind(this.widthProperty().multiply(0.3));
 
-    var centre = new HBox();
-    centre.setAlignment(Pos.CENTER);
-    centre.getChildren().add(boardRender);
-    root.getChildren().add(centre);
+    var settingButton = new SettingButton(sceneSwitcher);
+    var playerUi = new PlayerDashboard<>(eventBus, playersSupplier);
+    var rollDiceButton = new RollDiceButton(rollDiceAction);
 
-    /* Roll-dice button */
-    rollDiceButton = new RollDiceSnakeButton(e -> {});
-    rollDiceButton.setAlignment(Pos.CENTER);
-    root.getChildren().add(rollDiceButton);
+    addComponents(settingButton, playerUi, rollDiceButton);
+    right.getChildren().addAll(settingButton, playerUi, rollDiceButton);
 
-    /* Message panel (console/log) */
+    return right;
+  }
+
+  private MessagePanel createBottomPane(EventBus eventBus) {
     var messagePanel = new MessagePanel(eventBus);
+    addComponents(messagePanel);
     messagePanel.prefWidthProperty().bind(widthProperty());
     messagePanel.prefHeightProperty().bind(heightProperty().multiply(0.2));
-    root.getChildren().add(messagePanel);
-    addComponents(messagePanel);
+    return messagePanel;
   }
 
-  /** Exposes the board renderer. */
-  public PlayerRender getPlayerRender() {
-    return playerRender;
-  }
+  private HBox createCenterPane(
+      EventBus eventBus,
+      SnakeAndLadderBoard board,
+      Supplier<List<SnakeAndLadderPlayer>> playersSupplier) {
+    var centre = new HBox();
+    centre.setAlignment(Pos.CENTER);
 
-  /** Exposes the custom roll-dice component */
-  public RollDiceSnakeButton getRollDiceButton() {
-    return rollDiceButton;
+    var boardRender = new SnakeAndLadderBoardRender(eventBus, board);
+    var playerRender =
+        new PlayerRender(
+            eventBus, boardRender.getTileGrid(), boardRender.getGridSize(), playersSupplier);
+
+    addComponents(boardRender, playerRender);
+    centre.getChildren().addAll(boardRender, playerRender);
+
+    return centre;
   }
 }

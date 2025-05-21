@@ -1,20 +1,16 @@
 package edu.ntnu.idi.bidata.boardgame.games.snake.controller;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
-import edu.ntnu.idi.bidata.boardgame.common.event.EventListener;
-import edu.ntnu.idi.bidata.boardgame.common.event.type.CoreEvent;
-import edu.ntnu.idi.bidata.boardgame.common.event.type.Event;
 import edu.ntnu.idi.bidata.boardgame.common.ui.component.EndDialog;
 import edu.ntnu.idi.bidata.boardgame.core.GameEngine;
 import edu.ntnu.idi.bidata.boardgame.core.ui.Controller;
 import edu.ntnu.idi.bidata.boardgame.core.ui.SceneSwitcher;
-import edu.ntnu.idi.bidata.boardgame.games.snake.component.PlayerRender;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.SnakeAndLadderBoard;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.SnakeAndLadderPlayer;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.tile.SnakeAndLadderTile;
 import edu.ntnu.idi.bidata.boardgame.games.snake.view.SnakeGameView;
-import java.util.List;
-import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 
 /**
  * Wires the Snake & Ladder model to the JavaFX view.
@@ -24,48 +20,36 @@ import javafx.application.Platform;
  */
 public class SnakeGameController extends Controller {
 
-  private final List<SnakeAndLadderPlayer> players;
-  private final PlayerRender playerRender;
-
   public SnakeGameController(
       SceneSwitcher sceneSwitcher,
       EventBus eventBus,
       GameEngine<SnakeAndLadderTile, SnakeAndLadderPlayer> engine,
       SnakeAndLadderBoard board) {
 
-    /* Initialise superclass with the prepared view */
-    super(sceneSwitcher, new SnakeGameView(sceneSwitcher, eventBus, board));
-    this.players = engine.getPlayers();
+    super(sceneSwitcher, createView(sceneSwitcher, eventBus, engine, board));
+  }
 
-    var view = (SnakeGameView) getView();
-    this.playerRender = view.getPlayerRender();
+  private static SnakeGameView createView(
+      SceneSwitcher sceneSwitcher,
+      EventBus eventBus,
+      GameEngine<SnakeAndLadderTile, SnakeAndLadderPlayer> engine,
+      SnakeAndLadderBoard board) {
+    return new SnakeGameView(
+        sceneSwitcher,
+        eventBus,
+        board,
+        engine::getPlayers,
+        nextTurnEventHandler(sceneSwitcher, engine));
+  }
 
-    /* Keep GUI in sync with the model */
-    eventBus.addListener(
-        CoreEvent.PlayerMoved.class,
-        new EventListener() {
-          @Override
-          public void onEvent(Event event) {
-            Platform.runLater(() -> playerRender.renderPlayers(players));
-          }
-
-          @Override
-          public void close() {
-            eventBus.removeListener(CoreEvent.PlayerMoved.class, this);
-          }
-        });
-
-    /* User action: roll dice -> advance game */
-    view.getRollDiceButton()
-        .setOnAction(
-            __ -> {
-              engine.nextTurn();
-              if (engine.isEnded()) {
-                new EndDialog(sceneSwitcher).showAndWait();
-              }
-            });
-
-    /* Initial render (before the first move) */
-    playerRender.renderPlayers(players);
+  private static EventHandler<ActionEvent> nextTurnEventHandler(
+      SceneSwitcher sceneSwitcher,
+      GameEngine<SnakeAndLadderTile, SnakeAndLadderPlayer> gameEngine) {
+    return unused -> {
+      gameEngine.nextTurn();
+      if (gameEngine.isEnded()) {
+        new EndDialog(sceneSwitcher).showAndWait();
+      }
+    };
   }
 }

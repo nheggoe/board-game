@@ -1,7 +1,15 @@
 package edu.ntnu.idi.bidata.boardgame.games.snake.component;
 
+import static java.util.Objects.requireNonNull;
+
+import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
+import edu.ntnu.idi.bidata.boardgame.common.event.type.CoreEvent;
+import edu.ntnu.idi.bidata.boardgame.common.event.type.Event;
+import edu.ntnu.idi.bidata.boardgame.core.ui.EventListeningComponent;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.SnakeAndLadderPlayer;
 import java.util.List;
+import java.util.function.Supplier;
+import javafx.application.Platform;
 import javafx.geometry.Point2D;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelWriter;
@@ -19,17 +27,37 @@ import javafx.scene.paint.Color;
  * @author Mihailo Hranisavljevic
  * @version 2025.05.19
  */
-public class PlayerRender {
+public class PlayerRender extends EventListeningComponent {
 
+  private final Supplier<List<SnakeAndLadderPlayer>> players;
   private final GridPane tileGrid;
   private final int gridSize;
 
   /**
    * @param tileGrid the pane returned by SnakeAndLadderBoardRender#getTileGrid().
    */
-  public PlayerRender(GridPane tileGrid, int boardDimension) {
+  public PlayerRender(
+      EventBus eventBus,
+      GridPane tileGrid,
+      int boardDimension,
+      Supplier<List<SnakeAndLadderPlayer>> players) {
+    super(eventBus);
+    getEventBus().addListener(CoreEvent.PlayerMoved.class, this);
     this.tileGrid = tileGrid;
     this.gridSize = boardDimension;
+    this.players = requireNonNull(players, "players must not be null");
+  }
+
+  @Override
+  public void onEvent(Event event) {
+    if (event instanceof CoreEvent.PlayerMoved) {
+      Platform.runLater(() -> renderPlayers());
+    }
+  }
+
+  @Override
+  public void close() {
+    getEventBus().removeListener(CoreEvent.PlayerMoved.class, this);
   }
 
   /**
@@ -40,10 +68,10 @@ public class PlayerRender {
    *
    * @param players a list of players to render
    */
-  public void renderPlayers(List<SnakeAndLadderPlayer> players) {
+  public void renderPlayers() {
     clearPlayerIcons();
 
-    for (SnakeAndLadderPlayer player : players) {
+    for (SnakeAndLadderPlayer player : players.get()) {
       Point2D pos = toGrid(player.getPosition()); // column, row
       StackPane tile = tileAt((int) pos.getY(), (int) pos.getX());
 

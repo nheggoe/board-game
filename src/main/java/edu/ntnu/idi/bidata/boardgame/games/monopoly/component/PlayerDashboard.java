@@ -5,13 +5,12 @@ import static java.util.Objects.requireNonNull;
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.CoreEvent;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.Event;
-import edu.ntnu.idi.bidata.boardgame.common.event.type.MonopolyEvent;
 import edu.ntnu.idi.bidata.boardgame.core.model.Player;
 import edu.ntnu.idi.bidata.boardgame.core.ui.EventListeningComponent;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.MonopolyPlayer;
-import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Ownable;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Supplier;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -39,7 +38,7 @@ import javafx.scene.text.FontWeight;
  * @author Mihailo Hranisavljevic and Nick Heggø
  * @version 2025.05.19
  */
-public class PlayerDashboard extends EventListeningComponent {
+public class PlayerDashboard<P extends Player> extends EventListeningComponent {
 
   private final HashMap<Player, PlayerInfoBox> playerRegistry = new HashMap<>();
 
@@ -58,11 +57,8 @@ public class PlayerDashboard extends EventListeningComponent {
    * @param eventBus the event bus to listen to for player-related events, must not be null
    * @param players the list of players to display in the dashboard, must not be null
    */
-  public PlayerDashboard(EventBus eventBus, List<? extends Player> players) {
-    super(eventBus);
-    getEventBus().addListener(CoreEvent.PlayerMoved.class, this);
-    getEventBus().addListener(CoreEvent.PlayerRemoved.class, this);
-    getEventBus().addListener(MonopolyEvent.Purchased.class, this);
+  public PlayerDashboard(EventBus eventBus, Supplier<List<P>> playersSupplier) {
+    super(eventBus, CoreEvent.PlayerMoved.class, CoreEvent.PlayerRemoved.class);
 
     setPrefWidth(320);
     setStyle(
@@ -86,7 +82,7 @@ public class PlayerDashboard extends EventListeningComponent {
     content.setOnMouseReleased(javafx.event.Event::consume);
 
     int i = 0;
-    for (Player player : players) {
+    for (Player player : playersSupplier.get()) {
       PlayerInfoBox box = new PlayerInfoBox(player, CARD_COLORS[i % CARD_COLORS.length]);
       playerRegistry.put(player, box);
       content.getChildren().add(box);
@@ -104,6 +100,12 @@ public class PlayerDashboard extends EventListeningComponent {
     scrollPane.setOnMouseReleased(javafx.event.Event::consume);
     getChildren().add(scrollPane);
     VBox.setVgrow(scrollPane, Priority.ALWAYS);
+  }
+
+  @Override
+  public void close() {
+    getEventBus().removeListener(CoreEvent.PlayerMoved.class, this);
+    getEventBus().removeListener(CoreEvent.PlayerRemoved.class, this);
   }
 
   /** Refreshes all player displays in the sidebar. */
@@ -129,20 +131,9 @@ public class PlayerDashboard extends EventListeningComponent {
           playerBox.setGlow(false);
         }
       }
-      case MonopolyEvent.Purchased(MonopolyPlayer monopolyPlayer, Ownable ownable) -> {
-        var infoBox = playerRegistry.remove(monopolyPlayer);
-        playerRegistry.put(monopolyPlayer, infoBox);
-      }
       default -> throw new IllegalStateException("Unexpected value: " + event);
     }
     refresh();
-  }
-
-  @Override
-  public void close() {
-    getEventBus().removeListener(CoreEvent.PlayerMoved.class, this);
-    getEventBus().removeListener(CoreEvent.PlayerRemoved.class, this);
-    getEventBus().removeListener(MonopolyEvent.Purchased.class, this);
   }
 
   // ------------------------  inner class  ------------------------

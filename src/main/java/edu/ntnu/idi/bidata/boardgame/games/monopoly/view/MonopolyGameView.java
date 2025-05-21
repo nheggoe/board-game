@@ -12,6 +12,7 @@ import edu.ntnu.idi.bidata.boardgame.games.monopoly.component.RollDiceButton;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.MonopolyPlayer;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.MonopolyTile;
 import java.util.List;
+import java.util.function.Supplier;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.image.Image;
@@ -32,20 +33,20 @@ public class MonopolyGameView extends View {
   public MonopolyGameView(
       SceneSwitcher sceneSwitcher,
       EventBus eventBus,
-      List<MonopolyPlayer> players,
+      Supplier<List<MonopolyPlayer>> playersSupplier,
       List<MonopolyTile> tiles,
       EventHandler<ActionEvent> rollDiceHandler) {
 
     var root = new BorderPane();
     setRoot(root);
 
-    root.setCenter(createCenterPane(eventBus, players, tiles));
-    root.setRight(createRightPane(sceneSwitcher, eventBus, players, rollDiceHandler));
+    root.setCenter(createCenterPane(eventBus, playersSupplier, tiles));
+    root.setRight(createRightPane(sceneSwitcher, eventBus, playersSupplier, rollDiceHandler));
     root.setBottom(createBottomPane(eventBus));
   }
 
   private StackPane createCenterPane(
-      EventBus eventBus, List<MonopolyPlayer> players, List<MonopolyTile> tiles) {
+      EventBus eventBus, Supplier<List<MonopolyPlayer>> players, List<MonopolyTile> tiles) {
     var center = new StackPane();
     var image = new Image("/images/monopoly-background.png");
     var imageView = new ImageView(image);
@@ -69,14 +70,14 @@ public class MonopolyGameView extends View {
   private VBox createRightPane(
       SceneSwitcher sceneSwitcher,
       EventBus eventBus,
-      List<MonopolyPlayer> players,
+      Supplier<List<MonopolyPlayer>> players,
       EventHandler<ActionEvent> rollDiceHandler) {
     var right = new VBox();
     right.prefWidthProperty().bind(this.widthProperty().multiply(0.2));
     right.prefHeightProperty().bind(this.heightProperty().multiply(0.7));
 
     var settingButton = new SettingButton(sceneSwitcher);
-    var playerDashboard = new PlayerDashboard(eventBus, players);
+    var playerDashboard = new PlayerDashboard<>(eventBus, players);
     var rollDiceButton = new RollDiceButton(rollDiceHandler);
     addComponents(settingButton, playerDashboard, rollDiceButton);
     right.getChildren().addAll(settingButton, playerDashboard, rollDiceButton);
