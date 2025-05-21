@@ -8,12 +8,19 @@ import javafx.scene.control.Button;
 
 public class SettingButton extends Component {
 
+  private final Button settings;
+  private boolean inGame;
+
   public SettingButton(SceneSwitcher sceneSwitcher) {
     super();
     setAlignment(Pos.TOP_RIGHT);
     setPadding(new Insets(10));
-    var settings = new Button("Settings");
-    settings.setOnAction(ignored -> new SettingDialog(sceneSwitcher).showAndWait());
+    settings = new Button("Settings");
+    settings.setOnAction(ignored -> new SettingDialog(sceneSwitcher, inGame).showAndWait());
     getChildren().add(settings);
+  }
+
+  public void isInGame(boolean inGame) {
+    this.inGame = inGame;
   }
 }

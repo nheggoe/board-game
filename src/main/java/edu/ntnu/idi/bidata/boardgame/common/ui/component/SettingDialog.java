@@ -10,15 +10,15 @@ import javafx.scene.layout.VBox;
 
 public class SettingDialog extends Dialog<ButtonType> {
 
-  public SettingDialog(SceneSwitcher sceneSwitcher) {
+  public SettingDialog(SceneSwitcher sceneSwitcher, boolean inGame) {
     var root = getDialogPane();
     root.setPrefWidth(300);
     root.setPrefHeight(200);
     root.getButtonTypes().addAll(ButtonType.OK);
-    root.setContent(createContentPane(sceneSwitcher));
+    root.setContent(createContentPane(sceneSwitcher, inGame));
   }
 
-  private VBox createContentPane(SceneSwitcher sceneSwitcher) {
+  private VBox createContentPane(SceneSwitcher sceneSwitcher, boolean inGame) {
     var navigation = new VBox();
     navigation.setAlignment(Pos.CENTER);
     navigation.setSpacing(10);
@@ -29,6 +29,7 @@ public class SettingDialog extends Dialog<ButtonType> {
           sceneSwitcher.switchTo(SceneSwitcher.SceneName.PLAYER_SETUP_VIEW);
           this.close();
         });
+    editSavedPlayerButton.setDisable(inGame);
 
     var backToMainMenuButton = new Button("Back to Main Menu");
     backToMainMenuButton.setOnAction(
