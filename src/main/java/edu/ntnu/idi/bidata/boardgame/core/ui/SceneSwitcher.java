@@ -3,19 +3,20 @@ package edu.ntnu.idi.bidata.boardgame.core.ui;
 import static java.util.Objects.requireNonNull;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
+import edu.ntnu.idi.bidata.boardgame.common.io.csv.CSVHandler;
 import edu.ntnu.idi.bidata.boardgame.common.ui.component.PlayerSetupController;
 import edu.ntnu.idi.bidata.boardgame.common.ui.controller.MainController;
+import edu.ntnu.idi.bidata.boardgame.common.util.AlertFactory;
 import edu.ntnu.idi.bidata.boardgame.common.util.GameFactory;
 import edu.ntnu.idi.bidata.boardgame.core.GameEngine;
-import edu.ntnu.idi.bidata.boardgame.core.model.Player;
+import edu.ntnu.idi.bidata.boardgame.core.PlayerManager;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.controller.MonopolyGameController;
-import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.MonopolyPlayer;
 import edu.ntnu.idi.bidata.boardgame.games.snake.controller.SnakeGameController;
-import edu.ntnu.idi.bidata.boardgame.games.snake.model.SnakeAndLadderPlayer;
-import java.util.List;
+import java.io.IOException;
 import java.util.logging.Logger;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
@@ -55,8 +56,15 @@ public class SceneSwitcher {
         LOGGER.severe(() -> "Failed to close controller: " + controller.getClass().getName());
       }
     }
-    this.controller = createController(name);
-    setRoot(controller.getView());
+    try {
+      this.controller = createController(name);
+      setRoot(controller.getView());
+    } catch (IOException e) {
+      LOGGER.severe(e::getMessage);
+      LOGGER.severe(() -> "Failed to create controller: " + controller.getClass().getName());
+      AlertFactory.createAlert(Alert.AlertType.ERROR, "Failed to create controller: " + name)
+          .showAndWait();
+    }
   }
 
   public void reset() {
@@ -67,7 +75,7 @@ public class SceneSwitcher {
     }
   }
 
-  private Controller createController(SceneName name) {
+  private Controller createController(SceneName name) throws IOException {
     return switch (name) {
       case MAIN_VIEW -> createMainController();
       case SNAKE_GAME_VIEW -> createSnakeGameController();
@@ -84,21 +92,15 @@ public class SceneSwitcher {
     return new MainController(this);
   }
 
-  private SnakeGameController createSnakeGameController() {
-    var players =
-        List.of(
-            new SnakeAndLadderPlayer("Nick", Player.Figure.HAT),
-            new SnakeAndLadderPlayer("Misha", Player.Figure.BATTLE_SHIP));
-    var game = GameFactory.createSnakeGame(eventBus, players);
-    return new SnakeGameController(this, eventBus, new GameEngine<>(game), game.getBoard());
+  private SnakeGameController createSnakeGameController() throws IOException {
+    var playerManager = new PlayerManager(eventBus, new CSVHandler("players"));
+    var game = GameFactory.createSnakeGame(eventBus, playerManager);
+    return new SnakeGameController(this, eventBus, new GameEngine<>(game));
   }
 
-  private MonopolyGameController createMonopolyGameController() {
-    var players =
-        List.of(
-            new MonopolyPlayer("Nick", Player.Figure.HAT),
-            new MonopolyPlayer("Misha", Player.Figure.BATTLE_SHIP));
-    var game = GameFactory.createMonopolyGame(eventBus, players);
+  private MonopolyGameController createMonopolyGameController() throws IOException {
+    var playerManager = new PlayerManager(eventBus, new CSVHandler("players"));
+    var game = GameFactory.createMonopolyGame(eventBus, playerManager);
     return new MonopolyGameController(this, eventBus, new GameEngine<>(game));
   }
 

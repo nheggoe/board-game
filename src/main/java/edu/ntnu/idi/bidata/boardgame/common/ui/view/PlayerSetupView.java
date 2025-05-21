@@ -28,16 +28,12 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.stage.StageStyle;
 
 public class PlayerSetupView extends View {
@@ -71,9 +67,6 @@ public class PlayerSetupView extends View {
 
   private Pane createRightPane(SceneSwitcher sceneSwitcher) {
     VBox right = new VBox();
-    Background background =
-        new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY));
-    right.setBackground(background);
     right.getChildren().add(new SettingButton(sceneSwitcher));
     return right;
   }
@@ -84,10 +77,6 @@ public class PlayerSetupView extends View {
     center.setPadding(new Insets(10));
     center.prefWidthProperty().bind(this.widthProperty().multiply(0.9));
     center.prefHeightProperty().bind(this.heightProperty().multiply(0.8));
-
-    Background background =
-        new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY));
-    center.setBackground(background);
 
     // This is critical - make VBox let the TableView grow
     VBox.setVgrow(playerTableView, Priority.ALWAYS);

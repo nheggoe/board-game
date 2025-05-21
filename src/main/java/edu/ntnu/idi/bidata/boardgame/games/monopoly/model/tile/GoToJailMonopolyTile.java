@@ -13,14 +13,4 @@ public final class GoToJailMonopolyTile extends CornerMonopolyTile {
   public GoToJailMonopolyTile(Position position) {
     super(position);
   }
-  // todo Fix
-  // public TileAction getAction() {
-  //   return player -> {
-  //     println(player.getName() + " has been sent directly to Jail!");
-  //     GameEngine.getInstance()
-  //         .getGame()
-  //         .orElseThrow(() -> new IllegalStateException("No active game found!"))
-  //         .sendPlayerToJail(player);
-  //   };
-  // }
 }
