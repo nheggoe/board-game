@@ -22,11 +22,11 @@ public abstract class View extends Region implements AutoCloseable {
     this.components.addAll(Arrays.asList(components));
   }
 
-  protected void setRoot(Pane node) {
+  protected void setRoot(Pane root) {
     getChildren().clear();
-    getChildren().add(node);
-    node.prefWidthProperty().bind(this.widthProperty());
-    node.prefHeightProperty().bind(this.heightProperty());
+    getChildren().add(root);
+    root.prefWidthProperty().bind(this.widthProperty());
+    root.prefHeightProperty().bind(this.heightProperty());
   }
 
   @Override

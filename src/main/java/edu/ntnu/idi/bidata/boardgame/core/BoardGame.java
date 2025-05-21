@@ -25,7 +25,7 @@ public class BoardGame extends Application {
   private static void setup(Stage primaryStage) {
     primaryStage.setTitle("Board Game");
     primaryStage.setMinWidth(1200);
-    primaryStage.setMinHeight(900);
+    primaryStage.setMinHeight(940);
     primaryStage.setOnCloseRequest(
         closeEvent -> {
           var result =

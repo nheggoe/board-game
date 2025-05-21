@@ -9,6 +9,7 @@ import edu.ntnu.idi.bidata.boardgame.games.snake.model.tile.SnakeTile;
 import java.util.List;
 import java.util.function.Supplier;
 import javafx.geometry.Point2D;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
@@ -40,6 +41,7 @@ public class SnakeAndLadderBoardRender extends Component {
    */
   public SnakeAndLadderBoardRender(
       EventBus eventBus, Supplier<List<SnakeAndLadderTile>> tilesSupplier) {
+    setAlignment(Pos.CENTER);
     this.tilesSupplier = tilesSupplier;
     this.boardDimension = 10;
 

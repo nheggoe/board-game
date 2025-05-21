@@ -12,8 +12,8 @@ import java.util.function.Supplier;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 
 /** JavaFX view for the Snake & Ladder game. */
 public class SnakeGameView extends GameView<SnakeAndLadderTile, SnakeAndLadderPlayer> {
@@ -32,7 +32,7 @@ public class SnakeGameView extends GameView<SnakeAndLadderTile, SnakeAndLadderPl
       EventBus eventBus,
       Supplier<List<SnakeAndLadderTile>> tiles,
       Supplier<List<SnakeAndLadderPlayer>> playersSupplier) {
-    var centre = new HBox();
+    var centre = new VBox();
     centre.setAlignment(Pos.CENTER);
 
     var boardRender = new SnakeAndLadderBoardRender(eventBus, tiles);

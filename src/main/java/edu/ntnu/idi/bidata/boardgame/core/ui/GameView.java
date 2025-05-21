@@ -21,6 +21,18 @@ import javafx.scene.layout.VBox;
  */
 public abstract class GameView<T extends Tile, P extends Player> extends View {
 
+  /**
+   * Constructs a new {@code GameView} instance by initializing its layout, including the game
+   * board, the right pane for player interactions, and the bottom pane for displaying messages.
+   *
+   * @param sceneSwitcher an instance of {@code SceneSwitcher} used to switch between scenes in the
+   *     application
+   * @param eventBus the {@code EventBus} for communication between different components and events
+   * @param tilesSupplier a supplier providing the list of tiles to be displayed in the game board
+   * @param playersSupplier a supplier providing the list of players to be displayed in the game
+   *     view
+   * @param rollDiceAction an {@code EventHandler} for handling roll dice actions in the game
+   */
   protected GameView(
       SceneSwitcher sceneSwitcher,
       EventBus eventBus,
@@ -31,36 +43,43 @@ public abstract class GameView<T extends Tile, P extends Player> extends View {
     var root = new BorderPane();
     setRoot(root);
 
+    // the game board that will show the tiles and the players
     root.setCenter(createCenterPane(eventBus, tilesSupplier, playersSupplier));
+
+    // the right pane that contains the player dashboard, roll dice button, and the setting button
     root.setRight(createRightPane(sceneSwitcher, eventBus, playersSupplier, rollDiceAction));
+
+    // the bottom pane that contains the message panel
     root.setBottom(createBottomPane(eventBus));
   }
 
+  /**
+   * Creates and returns the center pane of the game view, which displays the game board consisting
+   * of tiles and players.
+   *
+   * <p>Classes extending this abstract class should implement this method to provide the center
+   * pane
+   *
+   * @param eventBus the event bus used for handling events and communication between components
+   * @param tiles a supplier providing the list of tiles to be displayed on the game board
+   * @param players a supplier providing the list of players to be displayed on the game board
+   * @return a {@link Pane} representing the center of the game view
+   */
   protected abstract Pane createCenterPane(
       EventBus eventBus, Supplier<List<T>> tiles, Supplier<List<P>> players);
 
-  // {
-  //   var center = new StackPane();
-  //   var image = new Image("/images/monopoly-background.png");
-  //   var imageView = new ImageView(image);
-  //   imageView.setPreserveRatio(true);
-  //   imageView.setFitHeight(600);
-  //   imageView.setFitWidth(800);
-  //   center.getChildren().add(imageView);
-  //   center.prefWidthProperty().bind(this.widthProperty().multiply(0.6));
-  //   center.prefHeightProperty().bind(this.heightProperty().multiply(0.6));
-  //
-  //   var backGround = new Background(new BackgroundFill(Color.BLACK, null, null));
-  //   center.setBackground(backGround);
-  //
-  //   var monopolyBoardView = new MonopolyBoardView(eventBus, tiles, players);
-  //   var diceView = new DiceView(eventBus);
-  //   addComponents(monopolyBoardView, diceView);
-  //   center.getChildren().addAll(monopolyBoardView, diceView);
-  //   return center;
-  // }
-
-  private VBox createRightPane(
+  /**
+   * Creates and returns the right pane of the game view, which contains the player dashboard, roll
+   *
+   * <p>Can override this method to customize the right pane.
+   *
+   * @param sceneSwitcher
+   * @param eventBus
+   * @param players
+   * @param rollDiceHandler
+   * @return
+   */
+  protected Pane createRightPane(
       SceneSwitcher sceneSwitcher,
       EventBus eventBus,
       Supplier<List<P>> players,
@@ -77,7 +96,17 @@ public abstract class GameView<T extends Tile, P extends Player> extends View {
     return right;
   }
 
-  private MessagePanel createBottomPane(EventBus eventBus) {
+  /**
+   * Creates and returns the bottom pane of the game view, which contains a {@code MessagePanel} for
+   * displaying messages or logs related to the game. The {@code MessagePanel} is set up to take
+   * approximately 28% of the height of the {@code GameView} and is added as a component to the game
+   * view.
+   *
+   * @param eventBus the {@code EventBus} used for communication and event handling between various
+   *     components of the application
+   * @return a {@code Pane} representing the bottom section of the game view
+   */
+  protected Pane createBottomPane(EventBus eventBus) {
     var messagePanel = new MessagePanel(eventBus);
     messagePanel.prefHeightProperty().bind(this.heightProperty().multiply(0.28));
     addComponents(messagePanel);
