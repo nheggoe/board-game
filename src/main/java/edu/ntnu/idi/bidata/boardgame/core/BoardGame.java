@@ -1,6 +1,8 @@
-package edu.ntnu.idi.bidata.boardgame.core.ui;
+package edu.ntnu.idi.bidata.boardgame.core;
 
 import edu.ntnu.idi.bidata.boardgame.common.util.AlertFactory;
+import edu.ntnu.idi.bidata.boardgame.core.ui.SceneSwitcher;
+import edu.ntnu.idi.bidata.boardgame.core.ui.View;
 import javafx.application.Application;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;

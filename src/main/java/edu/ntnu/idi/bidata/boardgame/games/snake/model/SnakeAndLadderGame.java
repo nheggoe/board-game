@@ -1,9 +1,9 @@
 package edu.ntnu.idi.bidata.boardgame.games.snake.model;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
-import edu.ntnu.idi.bidata.boardgame.core.TileAction;
 import edu.ntnu.idi.bidata.boardgame.core.model.Board;
 import edu.ntnu.idi.bidata.boardgame.core.model.Game;
+import edu.ntnu.idi.bidata.boardgame.core.model.TileAction;
 import edu.ntnu.idi.bidata.boardgame.core.model.dice.Dice;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.tile.LadderTile;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.tile.NormalTile;
