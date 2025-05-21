@@ -16,22 +16,30 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
 /**
+ * Represents an abstract base class for a game view in the board-game.
+ *
+ * <p>This class defines the components and layout for a game view, including the game board, player
+ * interaction controls, and a message panel. It is designed to be extended by specific
+ * implementations for different games.
+ *
+ * @param <T> the type of tiles used in the game
+ * @param <P> the type of players participating in the game
  * @author Nick Heggø
  * @version 2025.05.21
  */
 public abstract class GameView<T extends Tile, P extends Player> extends View {
 
   /**
-   * Constructs a new {@code GameView} instance by initializing its layout, including the game
+   * Constructs a new {@link GameView} instance by initializing its layout, including the game
    * board, the right pane for player interactions, and the bottom pane for displaying messages.
    *
-   * @param sceneSwitcher an instance of {@code SceneSwitcher} used to switch between scenes in the
+   * @param sceneSwitcher an instance of {@link SceneSwitcher} used to switch between scenes in the
    *     application
-   * @param eventBus the {@code EventBus} for communication between different components and events
+   * @param eventBus the {@link EventBus} for communication between different components and events
    * @param tilesSupplier a supplier providing the list of tiles to be displayed in the game board
    * @param playersSupplier a supplier providing the list of players to be displayed in the game
    *     view
-   * @param rollDiceAction an {@code EventHandler} for handling roll dice actions in the game
+   * @param rollDiceAction an {@link EventHandler} for handling roll dice actions in the game
    */
   protected GameView(
       SceneSwitcher sceneSwitcher,
@@ -69,15 +77,15 @@ public abstract class GameView<T extends Tile, P extends Player> extends View {
       EventBus eventBus, Supplier<List<T>> tiles, Supplier<List<P>> players);
 
   /**
-   * Creates and returns the right pane of the game view, which contains the player dashboard, roll
+   * Creates and returns the right pane of the game view, which is used to manage player
+   * interactions and provides settings and controls like rolling dice.
    *
-   * <p>Can override this method to customize the right pane.
-   *
-   * @param sceneSwitcher
-   * @param eventBus
-   * @param players
-   * @param rollDiceHandler
-   * @return
+   * @param sceneSwitcher an instance of {@link SceneSwitcher} used to handle scene transitions
+   * @param eventBus the {@link EventBus} for communication and event handling between components
+   * @param players a {@link Supplier} providing the list of players displayed in the player
+   *     dashboard
+   * @param rollDiceHandler an {@link EventHandler} for handling actions related to rolling dice
+   * @return a {@link Pane} representing the right section of the game view
    */
   protected Pane createRightPane(
       SceneSwitcher sceneSwitcher,
@@ -97,14 +105,14 @@ public abstract class GameView<T extends Tile, P extends Player> extends View {
   }
 
   /**
-   * Creates and returns the bottom pane of the game view, which contains a {@code MessagePanel} for
-   * displaying messages or logs related to the game. The {@code MessagePanel} is set up to take
-   * approximately 28% of the height of the {@code GameView} and is added as a component to the game
+   * Creates and returns the bottom pane of the game view, which contains a {@link MessagePanel} for
+   * displaying messages or logs related to the game. The {@link MessagePanel} is set up to take
+   * approximately 28% of the height of the {@link GameView} and is added as a component to the game
    * view.
    *
-   * @param eventBus the {@code EventBus} used for communication and event handling between various
+   * @param eventBus the {@link EventBus} used for communication and event handling between various
    *     components of the application
-   * @return a {@code Pane} representing the bottom section of the game view
+   * @return a {@link Pane} representing the bottom section of the game view
    */
   protected Pane createBottomPane(EventBus eventBus) {
     var messagePanel = new MessagePanel(eventBus);
