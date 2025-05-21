@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 /**
- * Factory class for creating Snake and Ladder boards from external files or data structures.
+ * Factory for creating Snake and Ladder boards from external files or data structures.
  *
  * @author Nick Heggø, Mihailo Hranisavljevic
  * @version 2025.05.19
@@ -20,36 +20,33 @@ public class SnakeAndLadderBoardFactory {
 
   private static final Pattern CSV_PATTERN = Pattern.compile("((\\s+)?,(\\s+)?)");
 
-  private SnakeAndLadderBoardFactory() {
-    // Private constructor to prevent instantiation
-  }
+  private SnakeAndLadderBoardFactory() {}
 
   /**
-   * Creates a standard Snake and Ladder board from a default CSV file.
+   * Returns a standard board from the default file.
    *
-   * @return a new Snake and Ladder board
-   * @throws IllegalStateException if the board file cannot be read or is invalid
+   * @return a new SnakeAndLadderBoard
+   * @throws IllegalStateException if the file fails to load or parse
    */
   public static SnakeAndLadderBoard createBoard() {
     return createBoardFromCsv(new File("src/main/resources/csv/snake_and_ladder_88_tiles.csv"));
   }
 
   /**
-   * Creates a Snake and Ladder board from a specified CSV file. The CSV file should have the
-   * following format: Index, Type, Offset 0, Normal, 0 ...
+   * Loads a board from a given CSV file.
    *
-   * @return a new Snake and Ladder board
-   * @throws IllegalStateException if the file cannot be read or is invalid
+   * <p>CSV format must be: Index, Type, Offset
+   *
+   * @param file the file to read from
+   * @return a new SnakeAndLadderBoard
+   * @throws IllegalStateException on load or parse failure
    */
   public static SnakeAndLadderBoard createBoardFromCsv(File file) {
     try {
       var lines = CSVReader.readLines(file);
       validateCsv(lines);
-
       var tiles = lines.stream().map(SnakeAndLadderBoardFactory::createTile).toList();
-
       return new SnakeAndLadderBoard(tiles);
-
     } catch (IOException e) {
       throw new IllegalStateException("Failed to read board file at " + file.getAbsolutePath(), e);
     } catch (NumberFormatException e) {
@@ -59,11 +56,10 @@ public class SnakeAndLadderBoardFactory {
   }
 
   /**
-   * Validates the structure of the CSV file before processing. It ensures that all rows have
-   * exactly 3 columns.
+   * Ensures each CSV row has 3 columns.
    *
-   * @param lines list of string arrays representing CSV data
-   * @throws IllegalStateException if the CSV structure is invalid
+   * @param lines raw CSV input
+   * @throws IllegalStateException if the column count is invalid
    */
   private static void validateCsv(List<String> lines) {
     for (var line : lines) {
@@ -76,10 +72,11 @@ public class SnakeAndLadderBoardFactory {
   }
 
   /**
-   * Creates a specific tile (SnakeTile, LadderTile, or NormalTile) based on the input row.
+   * Instantiates a tile based on its row data.
    *
-   * @param line the CSV row containing tile data
-   * @return the corresponding SnakeAndLadderTile
+   * @param line the CSV line
+   * @return a tile instance
+   * @throws IllegalStateException on malformed input
    */
   private static SnakeAndLadderTile createTile(String line) {
     try {

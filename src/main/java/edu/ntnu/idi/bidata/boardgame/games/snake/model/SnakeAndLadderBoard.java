@@ -11,17 +11,18 @@ import java.util.List;
 /**
  * Represents the board layout for a Snake and Ladder game.
  *
+ * @param tiles the list of tiles composing the board
  * @author Nick Heggø, Mihailo Hranisavljevic
- * @version 2025.05.20
+ * @version 2025.05.21
  */
 public record SnakeAndLadderBoard(List<SnakeAndLadderTile> tiles)
     implements Board<SnakeAndLadderTile> {
 
   /**
-   * Constructs a new SnakeAndLadderBoard with the provided tiles. Performs validation on all tiles
-   * to ensure game integrity.
+   * Constructs a new SnakeAndLadderBoard.
    *
-   * @throws InvalidBoardLayoutException if any tile is invalid
+   * @param tiles the tile list to initialise the board with
+   * @throws InvalidBoardLayoutException if any tile is null or logically invalid
    */
   public SnakeAndLadderBoard {
     validateTiles(tiles);
@@ -29,10 +30,10 @@ public record SnakeAndLadderBoard(List<SnakeAndLadderTile> tiles)
   }
 
   /**
-   * Returns the tile at the specified index.
+   * Returns the tile at the given index.
    *
-   * @param index the index of the tile (0-based)
-   * @return the tile at the specified index
+   * @param index index of the tile (0-based)
+   * @return the tile at that index
    */
   @Override
   public SnakeAndLadderTile getTileAtIndex(int index) {
@@ -40,9 +41,9 @@ public record SnakeAndLadderBoard(List<SnakeAndLadderTile> tiles)
   }
 
   /**
-   * Returns the total number of tiles on the board.
+   * Returns the total number of tiles.
    *
-   * @return the number of tiles
+   * @return board size
    */
   @Override
   public int size() {
@@ -50,11 +51,10 @@ public record SnakeAndLadderBoard(List<SnakeAndLadderTile> tiles)
   }
 
   /**
-   * Validates all tiles on the board. Ensures no null tiles exist and checks that all SnakeTile and
-   * LadderTile instances have valid offset positions.
+   * Validates all tiles for null entries and logical consistency.
    *
-   * @param tiles the list of tiles to validate
-   * @throws InvalidBoardLayoutException if any tile is invalid
+   * @param tiles the tile list to check
+   * @throws InvalidBoardLayoutException on validation failure
    */
   private void validateTiles(List<SnakeAndLadderTile> tiles) {
     for (int index = 0; index < tiles.size(); index++) {
@@ -65,19 +65,19 @@ public record SnakeAndLadderBoard(List<SnakeAndLadderTile> tiles)
                 "Board cannot contain null tiles. Index: %d".formatted(index));
         case SnakeTile snakeTile -> assertSnakeTile(index, snakeTile);
         case LadderTile ladderTile -> assertLadderTile(index, tiles.size(), ladderTile);
-        case NormalTile unused -> {
-          /*Empty case, no action needed*/
+        case NormalTile ignored -> {
+          // valid by default
         }
       }
     }
   }
 
   /**
-   * Validates a SnakeTile to ensure it does not move the player off the board.
+   * Validates a SnakeTile.
    *
-   * @param index the index of the tile
-   * @param tile the SnakeTile instance
-   * @throws InvalidBoardLayoutException if the snake effect is invalid
+   * @param index current index
+   * @param tile tile to check
+   * @throws InvalidBoardLayoutException if snake causes underflow
    */
   private void assertSnakeTile(int index, SnakeTile tile) {
     if (index - tile.tilesToSlideBack() < 0) {
@@ -88,12 +88,12 @@ public record SnakeAndLadderBoard(List<SnakeAndLadderTile> tiles)
   }
 
   /**
-   * Validates a LadderTile to ensure it does not move the player beyond the final tile.
+   * Validates a LadderTile.
    *
-   * @param index the index of the tile
-   * @param totalTile the total number of tiles on the board
-   * @param tile the LadderTile instance
-   * @throws InvalidBoardLayoutException if the ladder effect is invalid
+   * @param index tile index
+   * @param totalTile total tiles on board
+   * @param tile tile to check
+   * @throws InvalidBoardLayoutException if the ladder skips past the final tile
    */
   private void assertLadderTile(int index, int totalTile, LadderTile tile) {
     if (index + tile.tilesToSkip() >= totalTile) {

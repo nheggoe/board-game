@@ -19,7 +19,7 @@ import java.util.TreeMap;
  * effects, and game completion.
  *
  * @author Nick Heggø, Mihailo Hranisavljevic
- * @version 2025.05.20
+ * @version 2025.05.21
  */
 public class SnakeAndLadderGame extends Game<SnakeAndLadderTile, SnakeAndLadderPlayer> {
 
@@ -47,20 +47,32 @@ public class SnakeAndLadderGame extends Game<SnakeAndLadderTile, SnakeAndLadderP
    * @param player the player taking the turn
    */
   private void rollAndMovePlayer(SnakeAndLadderPlayer player) {
-    var diceRoll = Dice.roll(1);
-    movePlayer(player, diceRoll.getTotal());
-    println("Player %s moved to tile %d".formatted(player.getName(), player.getPosition()));
+    int roll = Dice.roll(1).getTotal();
+    movePlayer(player, roll);
 
-    if (player.getPosition() == getBoard().size()) return;
+    if (player.getPosition() == getBoard().size()) {
+      println("Player %s has won the game!".formatted(player.getName()));
+      return;
+    }
+
+    if (roll == 6) {
+      println(
+          "Player %s rolled a 6, moved to tile %d and gets another turn"
+              .formatted(player.getName(), player.getPosition()));
+    } else {
+      println("Player %s moved to tile %d".formatted(player.getName(), player.getPosition()));
+    }
 
     while (true) {
       SnakeAndLadderTile tile = getTile(player.getPosition() - 1);
       TileAction<SnakeAndLadderPlayer> action = tileActionOf(tile);
-
       int before = player.getPosition();
       action.execute(player);
-
       if (player.getPosition() == before || tile instanceof NormalTile) break;
+    }
+
+    if (roll == 6) {
+      rollAndMovePlayer(player);
     }
   }
 

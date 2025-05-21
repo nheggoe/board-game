@@ -15,29 +15,32 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 
 /**
- * JavaFX component responsible for rendering a static Snake & Ladder board. The class paints the
- * tiles (normal, snake, ladder) and tile numbers.
+ * JavaFX component responsible for rendering a static Snake & Ladder board.
+ *
+ * <p>This class paints the tiles (normal, snake, ladder) and tile numbers based on the model.
  *
  * @author Nick Heggø, Mihailo Hranisavljevic
- * @version 2025.05.19
+ * @version 2025.05.21
  */
 public class SnakeAndLadderBoardRender extends Component {
 
   /** Width/height of a single tile in pixels. */
   private static final int TILE_SIZE = 60;
 
-  /** Side length (in tiles). Read from the model instead of hard-coding “10”. */
+  /** Side length of the board in tiles. Assumes a square board. */
   private final int boardDimension;
 
+  /** Supplies the full list of tiles to render. */
   private final Supplier<List<SnakeAndLadderTile>> tilesSupplier;
+
+  /** Grid container holding the tile visuals. */
   private final GridPane tileGrid = new GridPane();
 
   /**
-   * Creates the board renderer and immediately draws the static tiles.
+   * Constructs a new board renderer and draws the static tiles.
    *
-   * @param eventBus global event bus (not used here but required by {@link
-   *     EventListeningComponent})
-   * @param board the game board model
+   * @param eventBus the global event bus (unused but required by {@link EventListeningComponent})
+   * @param tilesSupplier a supplier returning the tile list from the game model
    */
   public SnakeAndLadderBoardRender(
       EventBus eventBus, Supplier<List<SnakeAndLadderTile>> tilesSupplier) {
@@ -49,22 +52,29 @@ public class SnakeAndLadderBoardRender extends Component {
     getChildren().add(new StackPane(tileGrid));
   }
 
-  /** Returns the {@link GridPane} that contains all tile panes. */
+  /**
+   * Returns the grid structure that holds all tile visuals.
+   *
+   * @return tile grid as a {@link GridPane}
+   */
   public GridPane getTileGrid() {
     return tileGrid;
   }
 
-  /** Returns the length of one board side in tiles (board is assumed square). */
+  /**
+   * Returns the number of tiles per board side (assumes square).
+   *
+   * @return dimension length
+   */
   public int getGridSize() {
     return boardDimension;
   }
 
-  /** Returns the pixel size of a single tile. */
-  public int getTileSize() {
-    return TILE_SIZE;
-  }
-
-  /** Draws every tile pane and adds it to {@link #tileGrid}. */
+  /**
+   * Builds and lays out all tile panes in the grid.
+   *
+   * <p>Each tile is mapped to a position based on {@link SnakeBoardLayout}.
+   */
   private void buildStaticBoard() {
     for (int tile = 1; tile <= 100; tile++) {
       Point2D p = SnakeBoardLayout.toGrid(tile, boardDimension);
@@ -73,10 +83,14 @@ public class SnakeAndLadderBoardRender extends Component {
     }
   }
 
-  /** Builds a single tile pane with number and colouring. */
+  /**
+   * Creates a styled tile pane with a label and colour.
+   *
+   * @param tileNumber the tile's number on the board
+   * @return the configured tile visual
+   */
   private StackPane createTileVisual(int tileNumber) {
     var tiles = tilesSupplier.get();
-
     SnakeAndLadderTile modelTile = (tileNumber <= tiles.size()) ? tiles.get(tileNumber - 1) : null;
 
     StackPane pane = new StackPane();
@@ -84,15 +98,19 @@ public class SnakeAndLadderBoardRender extends Component {
 
     var label = new Label(String.valueOf(tileNumber));
     label.setStyle("-fx-font-size: 11;");
-    StackPane.setAlignment(label, javafx.geometry.Pos.TOP_LEFT);
+    StackPane.setAlignment(label, Pos.TOP_LEFT);
     pane.getChildren().add(label);
 
     pane.setStyle(tileStyle(modelTile));
-
     return pane;
   }
 
-  /** Returns a CSS style string that reflects the visual type of the tile. */
+  /**
+   * Returns the background style based on the tile type.
+   *
+   * @param tile the tile to determine visual style for
+   * @return CSS style string
+   */
   private String tileStyle(SnakeAndLadderTile tile) {
     if (tile instanceof SnakeTile) {
       return "-fx-border-color: black; -fx-background-color: lightcoral;";

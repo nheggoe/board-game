@@ -5,14 +5,16 @@ import static java.util.Objects.requireNonNull;
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.CoreEvent;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.Event;
+import edu.ntnu.idi.bidata.boardgame.core.model.Player;
 import edu.ntnu.idi.bidata.boardgame.core.ui.EventListeningComponent;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.SnakeAndLadderPlayer;
+import java.io.InputStream;
 import java.util.List;
 import java.util.function.Supplier;
 import javafx.application.Platform;
 import javafx.geometry.Point2D;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
@@ -25,16 +27,26 @@ import javafx.scene.paint.Color;
  * player's position to grid coordinates and updates the UI accordingly.
  *
  * @author Mihailo Hranisavljevic
- * @version 2025.05.19
+ * @version 2025.05.21
  */
 public class PlayerRender extends EventListeningComponent {
 
+  /** Supplier of the list of players. */
   private final Supplier<List<SnakeAndLadderPlayer>> players;
+
+  /** The GridPane containing the board tiles. */
   private final GridPane tileGrid;
+
+  /** Number of tiles along one side of the board. */
   private final int gridSize;
 
   /**
-   * @param tileGrid the pane returned by SnakeAndLadderBoardRender#getTileGrid().
+   * Creates a new {@code PlayerRender}.
+   *
+   * @param eventBus the global event bus for listening to player movement events
+   * @param tileGrid the pane returned by {@code SnakeAndLadderBoardRender#getTileGrid()}
+   * @param boardDimension the length of one board side in tiles
+   * @param players supplier of the current list of {@code SnakeAndLadderPlayer}
    */
   public PlayerRender(
       EventBus eventBus,
@@ -49,6 +61,11 @@ public class PlayerRender extends EventListeningComponent {
     renderPlayers();
   }
 
+  /**
+   * Receives events from the {@code EventBus} and triggers re-rendering when a player moves.
+   *
+   * @param event the event published on the bus
+   */
   @Override
   public void onEvent(Event event) {
     if (event instanceof CoreEvent.PlayerMoved) {
@@ -56,19 +73,13 @@ public class PlayerRender extends EventListeningComponent {
     }
   }
 
+  /** Cleans up any listeners when this component is closed. */
   @Override
   public void close() {
     getEventBus().removeListener(CoreEvent.PlayerMoved.class, this);
   }
 
-  /**
-   * Renders the players on the board.
-   *
-   * <p>This method clears any existing player icons and then draws the new ones based on the
-   * provided list of players.
-   *
-   * @param players a list of players to render
-   */
+  /** Clears existing icons and draws each player's figure on the correct tile. */
   public void renderPlayers() {
     clearPlayerIcons();
 
@@ -85,30 +96,33 @@ public class PlayerRender extends EventListeningComponent {
   /**
    * Converts a tile number to grid coordinates.
    *
-   * <p>This method ensures that the tile number is within the valid range (1 to 100) and then
-   * converts it to grid coordinates using the SnakeBoardLayout class.
-   *
    * @param tileNumber the tile number to convert
-   * @return the grid coordinates as a Point2D object
+   * @return the grid coordinates as a {@code Point2D} object
    */
   private Point2D toGrid(int tileNumber) {
-    int safeNumber = tileNumber < 1 ? 1 : Math.min(tileNumber, 100);
+    int safeNumber = tileNumber < 1 ? 1 : Math.min(tileNumber, gridSize * gridSize);
     return SnakeBoardLayout.toGrid(safeNumber, gridSize);
   }
 
+  /** Removes all existing player icons from each tile. */
   private void clearPlayerIcons() {
     tileGrid
         .getChildren()
         .forEach(
-            n -> {
-              if (n instanceof StackPane pane)
+            node -> {
+              if (node instanceof StackPane pane) {
                 pane.getChildren().removeIf(ImageView.class::isInstance);
+              }
             });
   }
 
   /**
-   * Returns the {@code StackPane} that sits at the requested grid position. Because panes are added
-   * in tile-number order, we search by the stored column/row indices.
+   * Finds the {@code StackPane} at the specified row and column.
+   *
+   * @param row the row index
+   * @param col the column index
+   * @return the matching {@code StackPane}
+   * @throws IllegalArgumentException if no pane exists at the given coordinates
    */
   private StackPane tileAt(int row, int col) {
     for (var node : tileGrid.getChildren()) {
@@ -121,18 +135,30 @@ public class PlayerRender extends EventListeningComponent {
     throw new IllegalArgumentException("Tile not found at (" + row + ',' + col + ')');
   }
 
-  /** Returns a simple coloured square that serves as a temporary figure icon. */
-  private ImageView createFigureVisual(Object __ /* ignored for now */) {
+  /**
+   * Loads the player's figure image or falls back to a coloured square.
+   *
+   * @param figure the player's figure enum
+   * @return an {@code ImageView} containing the figure icon
+   */
+  private ImageView createFigureVisual(Player.Figure figure) {
+    String fileName = figure.name().toLowerCase().replace("_", "");
+    String resourcePath = "images/" + fileName + ".png";
+    InputStream is = getClass().getClassLoader().getResourceAsStream(resourcePath);
+    if (is != null) {
+      Image img = new Image(is, 30, 30, true, true);
+      ImageView view = new ImageView(img);
+      view.setUserData(figure);
+      return view;
+    }
 
     WritableImage tiny = new WritableImage(1, 1);
-    PixelWriter pw = tiny.getPixelWriter();
-    pw.setColor(0, 0, Color.DODGERBLUE);
-
-    ImageView img = new ImageView(tiny);
-    img.setFitWidth(18);
-    img.setFitHeight(18);
-    img.setPreserveRatio(false);
-
-    return img;
+    tiny.getPixelWriter().setColor(0, 0, Color.DODGERBLUE);
+    ImageView fallback = new ImageView(tiny);
+    fallback.setFitWidth(18);
+    fallback.setFitHeight(18);
+    fallback.setPreserveRatio(false);
+    fallback.setUserData(figure);
+    return fallback;
   }
 }
