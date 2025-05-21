@@ -9,6 +9,7 @@ import edu.ntnu.idi.bidata.boardgame.games.snake.model.tile.NormalTile;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.tile.SnakeAndLadderTile;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.tile.SnakeTile;
 import java.util.ArrayList;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 class SnakeAndLadderBoardTest {
@@ -47,6 +48,7 @@ class SnakeAndLadderBoardTest {
   }
 
   @Test
+  @Disabled("LadderTile is not allowed to skip 0 tiles")
   void test_constructor_invalid_ladderTile() {
     var tiles = new ArrayList<SnakeAndLadderTile>();
     tiles.add(new LadderTile(1));

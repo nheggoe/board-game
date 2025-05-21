@@ -3,9 +3,12 @@ package edu.ntnu.idi.bidata.boardgame.games.snake.model;
 import edu.ntnu.idi.bidata.boardgame.core.model.Player;
 
 /**
+ * Represents a player in the Snake and Ladder game. Extends the base {@link Player} class to
+ * provide specific context within the Snake and Ladder implementation.
+ *
  * @see Player
  * @author Nick Heggø
- * @version 2025.05.08
+ * @version 2025.05.21
  */
 public class SnakeAndLadderPlayer extends Player {
   /**

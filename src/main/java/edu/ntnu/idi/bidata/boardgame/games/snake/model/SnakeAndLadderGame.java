@@ -19,7 +19,7 @@ import java.util.TreeMap;
  * effects, and game completion.
  *
  * @author Nick Heggø, Mihailo Hranisavljevic
- * @version 2025.05.20
+ * @version 2025.05.21
  */
 public class SnakeAndLadderGame extends Game<SnakeAndLadderTile, SnakeAndLadderPlayer> {
 
@@ -53,6 +53,9 @@ public class SnakeAndLadderGame extends Game<SnakeAndLadderTile, SnakeAndLadderP
     tileActionOf(getTile(player.getPosition())).execute(player);
 
     if (isAtTheEnd(player)) {
+      println(
+          "Player %s rolled a 6, moved to tile %d and gets another turn"
+              .formatted(player.getName(), player.getPosition()));
       completeRoundAction(player);
     } else if (tileToMove == 6) {
       rollAndMovePlayer(player); // recursive call
