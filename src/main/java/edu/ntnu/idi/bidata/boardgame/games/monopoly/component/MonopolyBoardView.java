@@ -48,8 +48,8 @@ import javafx.scene.text.FontWeight;
 public class MonopolyBoardView extends EventListeningComponent implements EventListener {
 
   private final GridPane board;
+  private final Supplier<List<MonopolyTile>> tilesSupplier;
   private final Supplier<List<MonopolyPlayer>> playersSupplier;
-  private final List<MonopolyTile> tiles;
   private static final Color[] PLAYER_COLORS = {
     Color.web("#fff3cd"),
     Color.web("#d1e7dd"),
@@ -59,17 +59,19 @@ public class MonopolyBoardView extends EventListeningComponent implements EventL
   };
 
   public MonopolyBoardView(
-      EventBus eventBus, Supplier<List<MonopolyPlayer>> playersSupplier, List<MonopolyTile> tiles) {
+      EventBus eventBus,
+      Supplier<List<MonopolyPlayer>> playersSupplier,
+      Supplier<List<MonopolyTile>> tilesSupplier) {
     super(eventBus);
     getEventBus().addListener(CoreEvent.PlayerMoved.class, this);
     getEventBus().addListener(MonopolyEvent.Purchased.class, this);
 
     this.playersSupplier = playersSupplier;
-    this.tiles = tiles;
+    this.tilesSupplier = tilesSupplier;
     board = new GridPane();
     getChildren().add(board);
     setAlignment(Pos.CENTER);
-    initialize(playersSupplier, tiles);
+    initialize(tilesSupplier, playersSupplier);
   }
 
   /**
@@ -208,10 +210,12 @@ public class MonopolyBoardView extends EventListeningComponent implements EventL
     };
   }
 
-  private void initialize(Supplier<List<MonopolyPlayer>> players, List<MonopolyTile> tiles) {
+  private void initialize(
+      Supplier<List<MonopolyTile>> tilesSuppler, Supplier<List<MonopolyPlayer>> players) {
     board.setGridLinesVisible(false); // optional: show grid lines
     board.setAlignment(Pos.CENTER);
 
+    var tiles = tilesSuppler.get();
     int size = (tiles.size() + 4) / 4;
 
     // Position tiles in clockwise order, starting with 00 at bottom right
