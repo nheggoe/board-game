@@ -47,21 +47,20 @@ public class SnakeAndLadderGame extends Game<SnakeAndLadderTile, SnakeAndLadderP
    * @param player the player taking the turn
    */
   private void rollAndMovePlayer(SnakeAndLadderPlayer player) {
-    var diceRoll = Dice.roll(1);
-    movePlayer(player, diceRoll.getTotal());
+    var tileToMove = Dice.roll(1).getTotal();
+    movePlayer(player, tileToMove);
     println("Player %s moved to tile %d".formatted(player.getName(), player.getPosition()));
+    tileActionOf(getTile(player.getPosition())).execute(player);
 
-    if (player.getPosition() == getBoard().size()) return;
-
-    while (true) {
-      SnakeAndLadderTile tile = getTile(player.getPosition() - 1);
-      TileAction<SnakeAndLadderPlayer> action = tileActionOf(tile);
-
-      int before = player.getPosition();
-      action.execute(player);
-
-      if (player.getPosition() == before || tile instanceof NormalTile) break;
+    if (isAtTheEnd(player)) {
+      completeRoundAction(player);
+    } else if (tileToMove == 6) {
+      rollAndMovePlayer(player); // recursive call
     }
+  }
+
+  private boolean isAtTheEnd(SnakeAndLadderPlayer player) {
+    return player.getPosition() == getBoard().size() - 1;
   }
 
   /**
@@ -152,25 +151,16 @@ public class SnakeAndLadderGame extends Game<SnakeAndLadderTile, SnakeAndLadderP
    * Moves a player by a given number of tiles, respecting board boundaries.
    *
    * @param player the player to move
-   * @param delta the number of tiles to move forward
+   * @param tilesToMove the number of tiles to move forward
    */
   @Override
-  public void movePlayer(SnakeAndLadderPlayer player, int delta) {
-    int oldPosition = player.getPosition();
-    int target = oldPosition + delta;
+  public void movePlayer(SnakeAndLadderPlayer player, int tilesToMove) {
+    int oldIndex = player.getPosition();
+    int targetIndex = oldIndex + tilesToMove;
 
-    int max = getBoard().size();
+    int maxIndex = getBoard().size() - 1;
 
-    if (target >= max) {
-      player.setPosition(max);
-      notifyPlayerMoved(player);
-      completeRoundAction(player);
-      return;
-    }
-
-    if (target < 1) target = 1;
-
-    player.setPosition(target);
+    player.setPosition(Math.min(targetIndex, maxIndex));
     notifyPlayerMoved(player);
   }
 }
