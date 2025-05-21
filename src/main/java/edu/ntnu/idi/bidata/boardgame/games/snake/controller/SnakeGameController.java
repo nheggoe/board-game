@@ -51,7 +51,7 @@ public class SnakeGameController extends Controller {
 
           @Override
           public void close() {
-            /* nothing to release */
+            eventBus.removeListener(CoreEvent.PlayerMoved.class, this);
           }
         });
 

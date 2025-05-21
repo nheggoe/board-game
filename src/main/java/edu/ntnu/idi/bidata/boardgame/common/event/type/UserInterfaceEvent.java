@@ -12,7 +12,7 @@ public sealed interface UserInterfaceEvent extends Event {
     }
   }
 
-  record UserInputRequest<T>(String message, Consumer<T> callback) {
+  record UserInputRequest<T>(String message, Consumer<T> callback) implements UserInterfaceEvent {
     public UserInputRequest {
       requireNonNull(message, "Message cannot be null!");
       requireNonNull(callback, "Callback cannot be null!");
