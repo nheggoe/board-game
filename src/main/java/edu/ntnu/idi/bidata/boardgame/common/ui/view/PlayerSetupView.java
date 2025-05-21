@@ -1,7 +1,8 @@
 package edu.ntnu.idi.bidata.boardgame.common.ui.view;
 
-import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
+import edu.ntnu.idi.bidata.boardgame.common.ui.component.SettingButton;
 import edu.ntnu.idi.bidata.boardgame.core.model.Player;
+import edu.ntnu.idi.bidata.boardgame.core.ui.SceneSwitcher;
 import edu.ntnu.idi.bidata.boardgame.core.ui.View;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.SnakeAndLadderPlayer;
 import java.util.List;
@@ -19,20 +20,22 @@ import javafx.scene.layout.VBox;
 
 public class PlayerSetupView extends View {
 
-  public PlayerSetupView(EventBus eventBus) {
+  public PlayerSetupView(SceneSwitcher sceneSwitcher) {
     super();
     var root = new BorderPane();
     setRoot(root);
 
-    root.setCenter(createCenterPane(eventBus));
+    root.setCenter(createCenterPane(sceneSwitcher));
+    root.setRight(new SettingButton(sceneSwitcher));
   }
 
-  private VBox createCenterPane(EventBus eventBus) {
+  private VBox createCenterPane(SceneSwitcher sceneSwitcher) {
     var center = new VBox();
     center.setAlignment(Pos.CENTER);
     center.setSpacing(10);
+    center.getChildren().add(new SettingButton(sceneSwitcher));
 
-    var tableView = createPlayerTableView(eventBus);
+    var tableView = createPlayerTableView();
     center.getChildren().add(tableView);
     var players =
         List.of(
@@ -43,7 +46,7 @@ public class PlayerSetupView extends View {
     return center;
   }
 
-  private TableView<Player> createPlayerTableView(EventBus eventBus) {
+  private TableView<Player> createPlayerTableView() {
     var tableView = new TableView<Player>();
     tableView.setPadding(new Insets(10));
     tableView.setPrefWidth(300);

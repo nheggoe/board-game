@@ -8,10 +8,10 @@ import edu.ntnu.idi.bidata.boardgame.core.ui.View;
 
 public class PlayerSetupController extends Controller {
   public PlayerSetupController(SceneSwitcher sceneSwitcher, EventBus eventBus) {
-    super(sceneSwitcher, createPlayerSetupView(eventBus));
+    super(sceneSwitcher, createPlayerSetupView(sceneSwitcher, eventBus));
   }
 
-  private static View createPlayerSetupView(EventBus eventBus) {
-    return new PlayerSetupView(eventBus);
+  private static View createPlayerSetupView(SceneSwitcher sceneSwitcher, EventBus eventBus) {
+    return new PlayerSetupView(sceneSwitcher);
   }
 }

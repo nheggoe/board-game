@@ -1,9 +1,8 @@
 package edu.ntnu.idi.bidata.boardgame.common.ui.view;
 
-import edu.ntnu.idi.bidata.boardgame.common.ui.component.SettingDialog;
+import edu.ntnu.idi.bidata.boardgame.common.ui.component.SettingButton;
 import edu.ntnu.idi.bidata.boardgame.core.ui.SceneSwitcher;
 import edu.ntnu.idi.bidata.boardgame.core.ui.View;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
@@ -16,7 +15,7 @@ public class MainView extends View {
     setRoot(root);
 
     root.setCenter(createCenterPane(sceneSwitcher));
-    root.setRight(createRightPane(sceneSwitcher));
+    root.setRight(new SettingButton(sceneSwitcher));
   }
 
   private VBox createCenterPane(SceneSwitcher sceneSwitcher) {
@@ -29,16 +28,5 @@ public class MainView extends View {
     snakeAndeLadderButton.setOnAction(ignored -> sceneSwitcher.switchTo(Name.SNAKE_GAME_VIEW));
     center.getChildren().addAll(monopolyButton, snakeAndeLadderButton);
     return center;
-  }
-
-  private VBox createRightPane(SceneSwitcher sceneSwitcher) {
-    var right = new VBox();
-    right.setSpacing(10);
-    right.setPadding(new Insets(10));
-    right.setAlignment(Pos.TOP_RIGHT);
-    var settingsButton = new Button("Settings");
-    settingsButton.setOnAction(ignored -> new SettingDialog(sceneSwitcher).showAndWait());
-    right.getChildren().add(settingsButton);
-    return right;
   }
 }

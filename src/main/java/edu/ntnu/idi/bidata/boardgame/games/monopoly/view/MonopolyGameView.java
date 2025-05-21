@@ -1,7 +1,7 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.view;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
-import edu.ntnu.idi.bidata.boardgame.common.ui.component.SettingDialog;
+import edu.ntnu.idi.bidata.boardgame.common.ui.component.SettingButton;
 import edu.ntnu.idi.bidata.boardgame.core.ui.SceneSwitcher;
 import edu.ntnu.idi.bidata.boardgame.core.ui.View;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.component.DiceView;
@@ -14,15 +14,11 @@ import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.MonopolyTile;
 import java.util.List;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -78,16 +74,12 @@ public class MonopolyGameView extends View {
     var right = new VBox();
     right.prefWidthProperty().bind(this.widthProperty().multiply(0.2));
     right.prefHeightProperty().bind(this.heightProperty().multiply(0.7));
-    var hBox = new HBox();
-    hBox.setAlignment(Pos.TOP_RIGHT);
-    hBox.setPadding(new Insets(10));
-    var settingButton = new Button("Settings");
-    settingButton.setOnAction(ignored -> new SettingDialog(sceneSwitcher).showAndWait());
-    hBox.getChildren().add(settingButton);
+
+    var settingButton = new SettingButton(sceneSwitcher);
     var playerDashboard = new PlayerDashboard(eventBus, players);
     var rollDiceButton = new RollDiceButton(rollDiceHandler);
-    addComponents(playerDashboard, rollDiceButton);
-    right.getChildren().addAll(hBox, playerDashboard, rollDiceButton);
+    addComponents(settingButton, playerDashboard, rollDiceButton);
+    right.getChildren().addAll(settingButton, playerDashboard, rollDiceButton);
     return right;
   }
 

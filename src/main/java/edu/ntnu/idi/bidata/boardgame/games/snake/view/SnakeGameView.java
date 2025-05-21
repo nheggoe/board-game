@@ -1,6 +1,8 @@
 package edu.ntnu.idi.bidata.boardgame.games.snake.view;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
+import edu.ntnu.idi.bidata.boardgame.common.ui.component.SettingButton;
+import edu.ntnu.idi.bidata.boardgame.core.ui.SceneSwitcher;
 import edu.ntnu.idi.bidata.boardgame.core.ui.View;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.component.MessagePanel;
 import edu.ntnu.idi.bidata.boardgame.games.snake.component.PlayerRender;
@@ -20,14 +22,15 @@ public class SnakeGameView extends View {
   /*
   Constructor
    */
-  public SnakeGameView(EventBus eventBus, SnakeAndLadderBoard board) {
+  public SnakeGameView(SceneSwitcher sceneSwitcher, EventBus eventBus, SnakeAndLadderBoard board) {
 
     var root = new VBox();
     root.setAlignment(Pos.CENTER);
     root.setSpacing(10);
     getChildren().add(root);
+    root.getChildren().add(new SettingButton(sceneSwitcher));
 
-    /*  Fields exposed to the controller                                  */
+    /*  Fields exposed to the controller */
     SnakeAndLadderBoardRender boardRender = new SnakeAndLadderBoardRender(eventBus, board);
 
     this.playerRender = new PlayerRender(boardRender.getTileGrid(), boardRender.getGridSize());

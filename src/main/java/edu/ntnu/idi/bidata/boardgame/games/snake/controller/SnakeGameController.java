@@ -34,7 +34,7 @@ public class SnakeGameController extends Controller {
       SnakeAndLadderBoard board) {
 
     /* Initialise superclass with the prepared view */
-    super(sceneSwitcher, new SnakeGameView(eventBus, board));
+    super(sceneSwitcher, new SnakeGameView(sceneSwitcher, eventBus, board));
     this.players = engine.getPlayers();
 
     var view = (SnakeGameView) getView();
