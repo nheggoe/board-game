@@ -30,7 +30,7 @@ public abstract class View extends Region implements AutoCloseable {
   }
 
   @Override
-  public void close() throws Exception {
+  public void close() {
     for (var component : components) {
       if (component instanceof EventListeningComponent listener) {
         listener.close();

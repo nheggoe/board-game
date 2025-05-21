@@ -64,6 +64,6 @@ class JsonServiceTest {
 
     // cleanup
     assertThat(file.delete()).isTrue();
-    assertThat(file.getParentFile().delete()).isTrue();
+    file.getParentFile().delete();
   }
 }
