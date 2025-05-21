@@ -46,12 +46,13 @@ public class PlayerRender extends EventListeningComponent {
     this.tileGrid = tileGrid;
     this.gridSize = boardDimension;
     this.players = requireNonNull(players, "players must not be null");
+    renderPlayers();
   }
 
   @Override
   public void onEvent(Event event) {
     if (event instanceof CoreEvent.PlayerMoved) {
-      Platform.runLater(() -> renderPlayers());
+      Platform.runLater(this::renderPlayers);
     }
   }
 

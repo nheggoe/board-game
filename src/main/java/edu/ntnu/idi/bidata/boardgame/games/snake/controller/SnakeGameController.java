@@ -37,7 +37,7 @@ public class SnakeGameController extends Controller {
     return new SnakeGameView(
         sceneSwitcher,
         eventBus,
-        board,
+        engine::getTiles,
         engine::getPlayers,
         nextTurnEventHandler(sceneSwitcher, engine));
   }
