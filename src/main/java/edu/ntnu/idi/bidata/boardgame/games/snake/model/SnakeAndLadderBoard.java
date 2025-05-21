@@ -64,7 +64,7 @@ public record SnakeAndLadderBoard(List<SnakeAndLadderTile> tiles)
             throw new InvalidBoardLayoutException(
                 "Board cannot contain null tiles. Index: %d".formatted(index));
         case SnakeTile snakeTile -> assertSnakeTile(index, snakeTile);
-        case LadderTile ladderTile -> assertLadderTile(index, tiles.size(), ladderTile);
+        case LadderTile ladderTile -> assertLadderTile(index, ladderTile);
         case NormalTile ignored -> {
           // valid by default
         }
@@ -88,18 +88,17 @@ public record SnakeAndLadderBoard(List<SnakeAndLadderTile> tiles)
   }
 
   /**
-   * Validates a LadderTile.
+   * Validates a LadderTile to ensure it does not move the player before the first tile.
+   * Overshooting the end is allowed and will simply land the player on the last square.
    *
-   * @param index tile index
-   * @param totalTile total tiles on board
-   * @param tile tile to check
-   * @throws InvalidBoardLayoutException if the ladder skips past the final tile
+   * @param index the index of the tile
+   * @param tile the LadderTile instance
+   * @throws InvalidBoardLayoutException if skip is negative
    */
-  private void assertLadderTile(int index, int totalTile, LadderTile tile) {
-    if (index + tile.tilesToSkip() >= totalTile) {
+  private void assertLadderTile(int index, LadderTile tile) {
+    if (tile.tilesToSkip() < 0) {
       throw new InvalidBoardLayoutException(
-          "Ladder tile at index %d skips more tiles than the number of rest of the tiles."
-              .formatted(index));
+          "Ladder tile at index %d must have a non-negative skip.".formatted(index));
     }
   }
 }

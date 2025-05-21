@@ -17,7 +17,9 @@ import javafx.scene.layout.StackPane;
 /**
  * JavaFX component responsible for rendering a static Snake & Ladder board.
  *
- * <p>This class paints the tiles (normal, snake, ladder) and tile numbers based on the model.
+ * <p>This class paints the tiles (normal, snake, ladder) and tile numbers based on the model. The
+ * board is rendered as a square whose side length is determined by taking the ceiling of the
+ * square‐root of the number of tiles supplied.
  *
  * @author Nick Heggø, Mihailo Hranisavljevic
  * @version 2025.05.21
@@ -39,14 +41,18 @@ public class SnakeAndLadderBoardRender extends Component {
   /**
    * Constructs a new board renderer and draws the static tiles.
    *
-   * @param eventBus the global event bus (unused but required by {@link EventListeningComponent})
-   * @param tilesSupplier a supplier returning the tile list from the game model
+   * <p>Computes {@code boardDimension} as {@code ceil(sqrt(tilesSupplier.get().size()))} so that
+   * all tiles fit into a square.
+   *
+   * @param eventBus (unused here but required by {@link EventListeningComponent})
+   * @param tilesSupplier a supplier returning the current list of tiles from the game model
    */
   public SnakeAndLadderBoardRender(
       EventBus eventBus, Supplier<List<SnakeAndLadderTile>> tilesSupplier) {
     setAlignment(Pos.CENTER);
     this.tilesSupplier = tilesSupplier;
-    this.boardDimension = 10;
+    int tileCount = tilesSupplier.get().size();
+    this.boardDimension = (int) Math.ceil(Math.sqrt(tileCount));
 
     buildStaticBoard();
     getChildren().add(new StackPane(tileGrid));
@@ -73,14 +79,17 @@ public class SnakeAndLadderBoardRender extends Component {
   /**
    * Builds and lays out all tile panes in the grid.
    *
-   * <p>Each tile is mapped to a position based on {@link SnakeBoardLayout}.
+   * <p>Each tile is mapped to a position based on {@link SnakeBoardLayout}, looping from 1 to the
+   * supplied tile count.
    */
   private void buildStaticBoard() {
-    for (int tile = 1; tile <= 100; tile++) {
+    int totalTiles = tilesSupplier.get().size();
+    for (int tile = 1; tile <= totalTiles; tile++) {
       Point2D p = SnakeBoardLayout.toGrid(tile, boardDimension);
       StackPane tilePane = createTileVisual(tile);
       tileGrid.add(tilePane, (int) p.getX(), (int) p.getY());
     }
+
   }
 
   /**

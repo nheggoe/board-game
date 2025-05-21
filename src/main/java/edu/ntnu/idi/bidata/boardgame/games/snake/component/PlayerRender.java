@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.function.Supplier;
 import javafx.application.Platform;
 import javafx.geometry.Point2D;
+import javafx.geometry.Pos;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
@@ -84,14 +85,23 @@ public class PlayerRender extends EventListeningComponent {
     clearPlayerIcons();
 
     for (SnakeAndLadderPlayer player : players.get()) {
-      Point2D pos = toGrid(player.getPosition()); // column, row
+      Point2D pos = toGrid(player.getPosition());
       StackPane tile = tileAt((int) pos.getY(), (int) pos.getX());
 
       ImageView icon = createFigureVisual(player.getFigure());
       icon.setUserData(player.getId());
+
+      int playerCount =
+          (int)
+              tile.getChildren().stream()
+                  .filter(n -> n instanceof ImageView && n.getUserData() != null)
+                  .count();
+
+      StackPane.setAlignment(icon, iconAlignmentForIndex(playerCount));
       tile.getChildren().add(icon);
     }
   }
+
 
   /**
    * Converts a tile number to grid coordinates.
@@ -146,7 +156,7 @@ public class PlayerRender extends EventListeningComponent {
     String resourcePath = "images/" + fileName + ".png";
     InputStream is = getClass().getClassLoader().getResourceAsStream(resourcePath);
     if (is != null) {
-      Image img = new Image(is, 30, 30, true, true);
+      Image img = new Image(is, 24, 24, true, true);
       ImageView view = new ImageView(img);
       view.setUserData(figure);
       return view;
@@ -160,5 +170,22 @@ public class PlayerRender extends EventListeningComponent {
     fallback.setPreserveRatio(false);
     fallback.setUserData(figure);
     return fallback;
+  }
+
+  /**
+   * Returns a grid alignment position based on a player's index on a tile. Used to visually offset
+   * multiple player icons occupying the same tile to avoid overlap.
+   *
+   * @param index the number of player icons already placed on the tile
+   * @return the {@link Pos} value representing the placement of the new player icon
+   */
+  private Pos iconAlignmentForIndex(int index) {
+    return switch (index) {
+      case 0 -> Pos.TOP_LEFT;
+      case 1 -> Pos.TOP_RIGHT;
+      case 2 -> Pos.BOTTOM_LEFT;
+      case 3 -> Pos.BOTTOM_RIGHT;
+      default -> Pos.CENTER;
+    };
   }
 }

@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
  */
 public class SnakeAndLadderBoardFactory {
 
-  private static final Pattern CSV_PATTERN = Pattern.compile("((\\s+)?,(\\s+)?)");
+  private static final Pattern CSV_PATTERN = Pattern.compile("\\s*,\\s*");
 
   private SnakeAndLadderBoardFactory() {}
 
@@ -33,40 +33,64 @@ public class SnakeAndLadderBoardFactory {
   }
 
   /**
-   * Loads a board from a given CSV file.
+   * Reads a CSV file and constructs a {@link SnakeAndLadderBoard} from its rows.
    *
-   * <p>CSV format must be: Index, Type, Offset
+   * <p>Automatically detects and skips a header row if it begins with "Index,". Blank lines are
+   * ignored. Each data row must have exactly three comma-separated fields: index, tile type
+   * ("SNAKE", "LADDER" or "NORMAL"), and offset.
    *
-   * @param file the file to read from
-   * @return a new SnakeAndLadderBoard
-   * @throws IllegalStateException on load or parse failure
+   * @param file the CSV file to read; may include a header line and blank lines
+   * @return a newly created {@code SnakeAndLadderBoard} containing one tile per row
+   * @throws IllegalStateException if the file is empty, cannot be read, or any data row does not
+   *     have exactly three columns or contains invalid values
    */
   public static SnakeAndLadderBoard createBoardFromCsv(File file) {
     try {
-      var lines = CSVReader.readLines(file);
-      validateCsv(lines);
-      var tiles = lines.stream().map(SnakeAndLadderBoardFactory::createTile).toList();
+      List<String> lines = CSVReader.readLines(file);
+      if (lines.isEmpty()) {
+        throw new IllegalStateException("Board file is empty: " + file.getAbsolutePath());
+      }
+
+      String first =
+          lines.stream().map(String::trim).filter(l -> !l.isEmpty()).findFirst().orElseThrow();
+      boolean hasHeader = first.toLowerCase().startsWith("index,");
+
+      List<String> dataLines =
+          lines.stream()
+              .map(String::trim)
+              .filter(l -> !l.isEmpty())
+              .skip(hasHeader ? 1 : 0)
+              .toList();
+
+      validateCsv(dataLines);
+
+      List<SnakeAndLadderTile> tiles =
+          dataLines.stream().map(SnakeAndLadderBoardFactory::createTile).toList();
+
       return new SnakeAndLadderBoard(tiles);
     } catch (IOException e) {
       throw new IllegalStateException("Failed to read board file at " + file.getAbsolutePath(), e);
-    } catch (NumberFormatException e) {
-      throw new IllegalStateException(
-          "Invalid number format in the board file at " + file.getAbsolutePath(), e);
     }
   }
 
   /**
-   * Ensures each CSV row has 3 columns.
+   * Ensures each CSV data row has exactly 3 columns.
    *
-   * @param lines raw CSV input
+   * @param lines raw CSV input including header
    * @throws IllegalStateException if the column count is invalid
    */
   private static void validateCsv(List<String> lines) {
-    for (var line : lines) {
-      var tokens = CSV_PATTERN.split(line);
+    for (int i = 1; i < lines.size(); i++) {
+      String line = lines.get(i).trim();
+      if (line.isEmpty()) {
+        continue;
+      }
+      String[] tokens = CSV_PATTERN.split(line);
       if (tokens.length != 3) {
         throw new IllegalStateException(
-            "Invalid board file format. Each row must have 3 columns (Index, Type, Offset).");
+            "Invalid board file format at line "
+                + (i + 1)
+                + ": each row must have exactly 3 columns (Index,Type,Offset).");
       }
     }
   }
