@@ -3,7 +3,8 @@ package edu.ntnu.idi.bidata.boardgame.core.ui;
 import static java.util.Objects.requireNonNull;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
-import edu.ntnu.idi.bidata.boardgame.common.ui.MainController;
+import edu.ntnu.idi.bidata.boardgame.common.ui.component.PlayerSetupController;
+import edu.ntnu.idi.bidata.boardgame.common.ui.controller.MainController;
 import edu.ntnu.idi.bidata.boardgame.common.util.GameFactory;
 import edu.ntnu.idi.bidata.boardgame.core.GameEngine;
 import edu.ntnu.idi.bidata.boardgame.core.model.Player;
@@ -12,6 +13,7 @@ import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.MonopolyPlayer
 import edu.ntnu.idi.bidata.boardgame.games.snake.controller.SnakeGameController;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.SnakeAndLadderPlayer;
 import java.util.List;
+import java.util.logging.Logger;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
@@ -22,6 +24,8 @@ import javafx.stage.Stage;
  * @version 2025.05.08
  */
 public class SceneSwitcher {
+
+  private static final Logger LOGGER = Logger.getLogger(SceneSwitcher.class.getName());
 
   private final EventBus eventBus = new EventBus();
   private final Scene scene;
@@ -35,12 +39,20 @@ public class SceneSwitcher {
     primaryStage.centerOnScreen();
   }
 
-  public void switchTo(View.Name name) {
+  public enum SceneName {
+    MAIN_VIEW,
+    PLAYER_SETUP_VIEW,
+    MONOPOLY_GAME_VIEW,
+    SNAKE_GAME_VIEW,
+  }
+
+  public void switchTo(SceneName name) {
     if (controller != null) {
       try {
         controller.getView().close();
       } catch (Exception e) {
-        throw new RuntimeException(e);
+        LOGGER.severe(e::getMessage);
+        LOGGER.severe(() -> "Failed to close controller: " + controller.getClass().getName());
       }
     }
     this.controller = createController(name);
@@ -49,18 +61,23 @@ public class SceneSwitcher {
 
   public void reset() {
     switch (controller) {
-      case SnakeGameController s -> switchTo(View.Name.SNAKE_GAME_VIEW);
-      case MonopolyGameController m -> switchTo(View.Name.MONOPOLY_GAME_VIEW);
+      case SnakeGameController s -> switchTo(SceneName.SNAKE_GAME_VIEW);
+      case MonopolyGameController m -> switchTo(SceneName.MONOPOLY_GAME_VIEW);
       default -> throw new IllegalStateException("Unexpected value: " + controller);
     }
   }
 
-  private Controller createController(View.Name name) {
+  private Controller createController(SceneName name) {
     return switch (name) {
       case MAIN_VIEW -> createMainController();
       case SNAKE_GAME_VIEW -> createSnakeGameController();
+      case PLAYER_SETUP_VIEW -> createPlayerSetupController();
       case MONOPOLY_GAME_VIEW -> createMonopolyGameController();
     };
+  }
+
+  private PlayerSetupController createPlayerSetupController() {
+    return new PlayerSetupController(this, eventBus);
   }
 
   private MainController createMainController() {
@@ -85,7 +102,7 @@ public class SceneSwitcher {
     return new MonopolyGameController(this, eventBus, new GameEngine<>(game));
   }
 
-  public Scene getScene() {
+  public javafx.scene.Scene getScene() {
     return scene;
   }
 

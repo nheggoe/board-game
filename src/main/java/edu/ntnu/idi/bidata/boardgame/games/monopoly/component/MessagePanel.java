@@ -2,7 +2,7 @@ package edu.ntnu.idi.bidata.boardgame.games.monopoly.component;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.Event;
-import edu.ntnu.idi.bidata.boardgame.common.event.type.OutputEvent;
+import edu.ntnu.idi.bidata.boardgame.common.event.type.UserInterfaceEvent;
 import edu.ntnu.idi.bidata.boardgame.core.ui.EventListeningComponent;
 import java.util.concurrent.atomic.AtomicInteger;
 import javafx.animation.Animation;
@@ -46,7 +46,7 @@ public class MessagePanel extends EventListeningComponent {
   /** Constructs a new {@code MessageLog} with visuals and animation. */
   public MessagePanel(EventBus eventBus) {
     super(eventBus);
-    getEventBus().addListener(OutputEvent.class, this);
+    getEventBus().addListener(UserInterfaceEvent.Output.class, this);
 
     setBackground(
         new Background(new BackgroundFill(Color.BLACK, new CornerRadii(20), new Insets(10))));
@@ -115,14 +115,14 @@ public class MessagePanel extends EventListeningComponent {
 
   @Override
   public void onEvent(Event event) {
-    if (event instanceof OutputEvent(String output)) {
+    if (event instanceof UserInterfaceEvent.Output(String output)) {
       animateMessage(output);
     }
   }
 
   @Override
   public void close() {
-    getEventBus().removeListener(OutputEvent.class, this);
+    getEventBus().removeListener(UserInterfaceEvent.Output.class, this);
     if (typewriter != null) {
       typewriter.stop();
     }

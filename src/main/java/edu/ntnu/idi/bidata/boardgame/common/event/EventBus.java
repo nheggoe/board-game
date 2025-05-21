@@ -1,12 +1,13 @@
 package edu.ntnu.idi.bidata.boardgame.common.event;
 
+import static java.util.Objects.requireNonNull;
+
 import edu.ntnu.idi.bidata.boardgame.common.event.type.Event;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.logging.Logger;
 
 /**
@@ -20,21 +21,21 @@ public final class EventBus implements EventPublisher {
 
   @Override
   public void addListener(Class<? extends Event> eventType, EventListener listener) {
-    Objects.requireNonNull(eventType, "Event type cannot be null!");
-    Objects.requireNonNull(listener, "Listener cannot be null!");
+    requireNonNull(eventType, "Event type cannot be null!");
+    requireNonNull(listener, "Listener cannot be null!");
     listeners.computeIfAbsent(eventType, k -> new ArrayList<>()).add(listener);
   }
 
   @Override
   public void removeListener(Class<? extends Event> eventType, EventListener listener) {
-    Objects.requireNonNull(eventType, "Event type cannot be null!");
-    Objects.requireNonNull(listener, "Listener cannot be null!");
+    requireNonNull(eventType, "Event type cannot be null!");
+    requireNonNull(listener, "Listener cannot be null!");
     listeners.getOrDefault(eventType, List.of()).remove(listener);
   }
 
   @Override
   public void publishEvent(Event event) {
-    Objects.requireNonNull(event, "event cannot be null!");
+    requireNonNull(event, "event cannot be null!");
     LOGGER.info(() -> LocalDateTime.now() + " sent: " + event);
     listeners
         .getOrDefault(event.getClass(), List.of())

@@ -1,7 +1,8 @@
 package edu.ntnu.idi.bidata.boardgame.common.repository;
 
+import static java.util.Objects.requireNonNull;
+
 import edu.ntnu.idi.bidata.boardgame.common.io.json.JsonService;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -18,17 +19,17 @@ import java.util.stream.Stream;
  *
  * @param <T> The type of entities this repository will manage.
  * @author Nick Heggø
- * @version 2025.05.08
+ * @version 2025.05.20
  */
 public abstract class JsonRepository<T> implements DataRepository<T> {
 
+  private final ConcurrentMap<UUID, T> entities;
   private final JsonService<T> jsonService;
   private final Function<T, UUID> idExtractor;
-  private final ConcurrentMap<UUID, T> entities;
 
-  protected JsonRepository(Class<T> entityClass, Function<T, UUID> idExtractor) {
-    this.jsonService = new JsonService<>(entityClass);
-    this.idExtractor = Objects.requireNonNull(idExtractor, "idExtractor cannot be null!");
+  protected JsonRepository(JsonService<T> jsonService, Function<T, UUID> idExtractor) {
+    this.jsonService = requireNonNull(jsonService, "jsonService cannot be null!");
+    this.idExtractor = requireNonNull(idExtractor, "idExtractor cannot be null!");
     this.entities = new ConcurrentHashMap<>();
     initializeEntities();
   }

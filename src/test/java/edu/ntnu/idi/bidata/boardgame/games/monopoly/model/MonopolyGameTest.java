@@ -5,13 +5,23 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
-import edu.ntnu.idi.bidata.boardgame.common.event.type.PurchaseEvent;
+import edu.ntnu.idi.bidata.boardgame.common.event.type.MonopolyEvent;
 import edu.ntnu.idi.bidata.boardgame.common.util.AlertFactory;
 import edu.ntnu.idi.bidata.boardgame.core.model.dice.Dice;
 import edu.ntnu.idi.bidata.boardgame.core.model.dice.DiceRoll;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.board.MonopolyBoard;
-import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.*;
-import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.*;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.InsufficientFundsException;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.MonopolyPlayer;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Property;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Railroad;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Utility;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.CornerMonopolyTile;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.FreeParkingMonopolyTile;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.GoToJailMonopolyTile;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.JailMonopolyTile;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.OwnableMonopolyTile;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.StartMonopolyTile;
+import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.TaxMonopolyTile;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.upgrade.Upgrade;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.upgrade.UpgradeType;
 import java.util.ArrayList;
@@ -20,9 +30,13 @@ import java.util.Map;
 import java.util.Optional;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
@@ -104,7 +118,7 @@ class MonopolyGameTest {
   @Test
   @DisplayName("nextTurn rolls dice, moves player, and executes tile action")
   void nextTurn_basicFlow() {
-    try (MockedStatic<Dice> diceMock = Mockito.mockStatic(Dice.class)) {
+    try (MockedStatic<Dice> diceMock = mockStatic(Dice.class)) {
       // Set up dice to roll non-doubles (valid values)
       diceMock.when(() -> Dice.roll(2)).thenReturn(new DiceRoll(2, 3));
 
@@ -129,7 +143,7 @@ class MonopolyGameTest {
   @Disabled
   @DisplayName("nextTurn handles rolling doubles once")
   void nextTurn_withDoubles() {
-    try (MockedStatic<Dice> diceMock = Mockito.mockStatic(Dice.class)) {
+    try (MockedStatic<Dice> diceMock = mockStatic(Dice.class)) {
       // First roll is doubles, second is not (valid values)
       diceMock
           .when(() -> Dice.roll(2))
@@ -163,7 +177,7 @@ class MonopolyGameTest {
   @Disabled
   @DisplayName("nextTurn sends player to jail after three consecutive doubles")
   void nextTurn_threeDoublesGoesToJail() {
-    try (MockedStatic<Dice> diceMock = Mockito.mockStatic(Dice.class)) {
+    try (MockedStatic<Dice> diceMock = mockStatic(Dice.class)) {
       // Three consecutive double rolls (valid values)
       diceMock
           .when(() -> Dice.roll(2))
@@ -247,7 +261,7 @@ class MonopolyGameTest {
   @Test
   @DisplayName("Landing on owned property triggers rent payment")
   void landingOnOwnedProperty_paysRentToOwner() {
-    try (MockedStatic<Dice> diceMock = Mockito.mockStatic(Dice.class)) {
+    try (MockedStatic<Dice> diceMock = mockStatic(Dice.class)) {
       // Set up dice roll
       diceMock.when(() -> Dice.roll(2)).thenReturn(new DiceRoll(2, 3));
 
@@ -279,8 +293,8 @@ class MonopolyGameTest {
   @Test
   @DisplayName("Landing on unowned property with sufficient funds shows purchase dialog")
   void landingOnUnownedProperty_withSufficientFunds_showsPurchaseDialog() {
-    try (MockedStatic<Dice> diceMock = Mockito.mockStatic(Dice.class);
-        MockedStatic<AlertFactory> alertMock = Mockito.mockStatic(AlertFactory.class)) {
+    try (MockedStatic<Dice> diceMock = mockStatic(Dice.class);
+        MockedStatic<AlertFactory> alertMock = mockStatic(AlertFactory.class)) {
 
       // Set up dice roll
       diceMock.when(() -> Dice.roll(2)).thenReturn(new DiceRoll(2, 3));
@@ -307,7 +321,7 @@ class MonopolyGameTest {
 
       // Verify player purchased property (check with isOwnerOf instead of getOwnables)
       if (player1.isOwnerOf(property)) {
-        verify(mockEventBus).publishEvent(any(PurchaseEvent.class));
+        verify(mockEventBus).publishEvent(any(MonopolyEvent.Purchased.class));
       }
     }
   }
@@ -315,8 +329,8 @@ class MonopolyGameTest {
   @Test
   @DisplayName("Landing on unowned property but declining purchase")
   void landingOnUnownedProperty_decliningPurchase() {
-    try (MockedStatic<Dice> diceMock = Mockito.mockStatic(Dice.class);
-        MockedStatic<AlertFactory> alertMock = Mockito.mockStatic(AlertFactory.class)) {
+    try (MockedStatic<Dice> diceMock = mockStatic(Dice.class);
+        MockedStatic<AlertFactory> alertMock = mockStatic(AlertFactory.class)) {
 
       // Set up dice roll
       diceMock.when(() -> Dice.roll(2)).thenReturn(new DiceRoll(2, 3));
@@ -341,14 +355,14 @@ class MonopolyGameTest {
       assertThat(player1.isOwnerOf(property)).isFalse();
 
       // Verify no purchase event (only if above assertion passes)
-      verify(mockEventBus, never()).publishEvent(any(PurchaseEvent.class));
+      verify(mockEventBus, never()).publishEvent(any(MonopolyEvent.Purchased.class));
     }
   }
 
   @Test
   @DisplayName("Landing on unowned property with insufficient funds")
   void landingOnUnownedProperty_withInsufficientFunds() {
-    try (MockedStatic<Dice> diceMock = Mockito.mockStatic(Dice.class)) {
+    try (MockedStatic<Dice> diceMock = mockStatic(Dice.class)) {
       // Set up dice roll
       diceMock.when(() -> Dice.roll(2)).thenReturn(new DiceRoll(2, 3));
 
@@ -372,7 +386,7 @@ class MonopolyGameTest {
   @Test
   @DisplayName("Landing on tax tile deducts percentage of balance")
   void landingOnTaxTile_deductsPercentage() {
-    try (MockedStatic<Dice> diceMock = Mockito.mockStatic(Dice.class)) {
+    try (MockedStatic<Dice> diceMock = mockStatic(Dice.class)) {
       // Set up dice roll
       diceMock.when(() -> Dice.roll(2)).thenReturn(new DiceRoll(2, 3));
 
@@ -400,7 +414,7 @@ class MonopolyGameTest {
   @Test
   @DisplayName("Landing on GoToJail tile sends player to jail")
   void landingOnGoToJailTile_sendsPlayerToJail() {
-    try (MockedStatic<Dice> diceMock = Mockito.mockStatic(Dice.class)) {
+    try (MockedStatic<Dice> diceMock = mockStatic(Dice.class)) {
       // Set up dice roll
       diceMock.when(() -> Dice.roll(2)).thenReturn(new DiceRoll(2, 3));
 
@@ -422,7 +436,7 @@ class MonopolyGameTest {
   @Test
   @DisplayName("Landing on FreeParking tile has no effect")
   void landingOnFreeParkingTile_noEffect() {
-    try (MockedStatic<Dice> diceMock = Mockito.mockStatic(Dice.class)) {
+    try (MockedStatic<Dice> diceMock = mockStatic(Dice.class)) {
       // Set up dice roll
       diceMock.when(() -> Dice.roll(2)).thenReturn(new DiceRoll(2, 3));
 
@@ -446,7 +460,7 @@ class MonopolyGameTest {
   @Test
   @DisplayName("Landing on JailVisit tile has no effect")
   void landingOnJailVisitTile_noEffect() {
-    try (MockedStatic<Dice> diceMock = Mockito.mockStatic(Dice.class)) {
+    try (MockedStatic<Dice> diceMock = mockStatic(Dice.class)) {
       // Set up dice roll
       diceMock.when(() -> Dice.roll(2)).thenReturn(new DiceRoll(2, 3));
 
@@ -468,7 +482,7 @@ class MonopolyGameTest {
   @Test
   @DisplayName("Landing on Start tile adds no additional money")
   void landingOnStartTile_noAdditionalMoney() {
-    try (MockedStatic<Dice> diceMock = Mockito.mockStatic(Dice.class)) {
+    try (MockedStatic<Dice> diceMock = mockStatic(Dice.class)) {
       // Use valid dice values (1-6)
       diceMock.when(() -> Dice.roll(2)).thenReturn(new DiceRoll(2, 4));
 
@@ -493,8 +507,8 @@ class MonopolyGameTest {
   @Test
   @DisplayName("Landing on own property with funds offers house upgrade")
   void landingOnOwnProperty_offersHouseUpgrade() {
-    try (MockedStatic<Dice> diceMock = Mockito.mockStatic(Dice.class);
-        MockedStatic<AlertFactory> alertMock = Mockito.mockStatic(AlertFactory.class)) {
+    try (MockedStatic<Dice> diceMock = mockStatic(Dice.class);
+        MockedStatic<AlertFactory> alertMock = mockStatic(AlertFactory.class)) {
 
       // Set up dice roll
       diceMock.when(() -> Dice.roll(2)).thenReturn(new DiceRoll(2, 3));
@@ -531,8 +545,8 @@ class MonopolyGameTest {
   @Test
   @DisplayName("Landing on own property with 4 houses offers hotel upgrade")
   void landingOnOwnProperty_withFourHouses_offersHotelUpgrade() {
-    try (MockedStatic<Dice> diceMock = Mockito.mockStatic(Dice.class);
-        MockedStatic<AlertFactory> alertMock = Mockito.mockStatic(AlertFactory.class)) {
+    try (MockedStatic<Dice> diceMock = mockStatic(Dice.class);
+        MockedStatic<AlertFactory> alertMock = mockStatic(AlertFactory.class)) {
 
       // Add 4 houses to property
       for (int i = 0; i < 4; i++) {
@@ -574,7 +588,7 @@ class MonopolyGameTest {
   @Test
   @DisplayName("Landing on own property with hotel shows no upgrade options")
   void landingOnOwnProperty_withHotel_showsNoUpgradeOptions() {
-    try (MockedStatic<Dice> diceMock = Mockito.mockStatic(Dice.class)) {
+    try (MockedStatic<Dice> diceMock = mockStatic(Dice.class)) {
       // Add hotel to property
       playerOwnedProperty.addUpgrade(new Upgrade(UpgradeType.HOTEL, 100));
 
@@ -600,8 +614,8 @@ class MonopolyGameTest {
   @Test
   @DisplayName("Landing on property with insufficient upgrade funds")
   void landingOnOwnProperty_insufficientUpgradeFunds() {
-    try (MockedStatic<Dice> diceMock = Mockito.mockStatic(Dice.class);
-        MockedStatic<AlertFactory> alertMock = Mockito.mockStatic(AlertFactory.class)) {
+    try (MockedStatic<Dice> diceMock = mockStatic(Dice.class);
+        MockedStatic<AlertFactory> alertMock = mockStatic(AlertFactory.class)) {
 
       // Set player to have minimal funds
       player1.pay(player1.getBalance() - 10); // Leave just $10
@@ -636,8 +650,8 @@ class MonopolyGameTest {
   @Test
   @DisplayName("Landing on property and declining upgrade")
   void landingOnOwnProperty_decliningUpgrade() {
-    try (MockedStatic<Dice> diceMock = Mockito.mockStatic(Dice.class);
-        MockedStatic<AlertFactory> alertMock = Mockito.mockStatic(AlertFactory.class)) {
+    try (MockedStatic<Dice> diceMock = mockStatic(Dice.class);
+        MockedStatic<AlertFactory> alertMock = mockStatic(AlertFactory.class)) {
 
       // Set up dice roll
       diceMock.when(() -> Dice.roll(2)).thenReturn(new DiceRoll(2, 3));
@@ -669,8 +683,8 @@ class MonopolyGameTest {
   @Test
   @DisplayName("Landing on Railroad with purchase option")
   void landingOnRailroad_withPurchaseOption() {
-    try (MockedStatic<Dice> diceMock = Mockito.mockStatic(Dice.class);
-        MockedStatic<AlertFactory> alertMock = Mockito.mockStatic(AlertFactory.class)) {
+    try (MockedStatic<Dice> diceMock = mockStatic(Dice.class);
+        MockedStatic<AlertFactory> alertMock = mockStatic(AlertFactory.class)) {
 
       // Set up dice roll (valid values)
       diceMock.when(() -> Dice.roll(2)).thenReturn(new DiceRoll(2, 3));
@@ -710,8 +724,8 @@ class MonopolyGameTest {
   @Test
   @DisplayName("Landing on Utility with purchase option")
   void landingOnUtility_withPurchaseOption() {
-    try (MockedStatic<Dice> diceMock = Mockito.mockStatic(Dice.class);
-        MockedStatic<AlertFactory> alertMock = Mockito.mockStatic(AlertFactory.class)) {
+    try (MockedStatic<Dice> diceMock = mockStatic(Dice.class);
+        MockedStatic<AlertFactory> alertMock = mockStatic(AlertFactory.class)) {
 
       // Set up dice roll (valid values)
       diceMock.when(() -> Dice.roll(2)).thenReturn(new DiceRoll(2, 3));
@@ -753,7 +767,7 @@ class MonopolyGameTest {
   @Test
   @DisplayName("Player goes bankrupt when unable to pay rent")
   void playerGoesBankrupt_whenUnableToPayRent() {
-    try (MockedStatic<Dice> diceMock = Mockito.mockStatic(Dice.class)) {
+    try (MockedStatic<Dice> diceMock = mockStatic(Dice.class)) {
       // Set up dice roll (valid values)
       diceMock.when(() -> Dice.roll(2)).thenReturn(new DiceRoll(2, 3));
 
@@ -790,7 +804,7 @@ class MonopolyGameTest {
   @Test
   @DisplayName("Landing on owned Utility calculates rent based on dice roll")
   void landingOnOwnedUtility_calculatesRentBasedOnDiceRoll() {
-    try (MockedStatic<Dice> diceMock = Mockito.mockStatic(Dice.class)) {
+    try (MockedStatic<Dice> diceMock = mockStatic(Dice.class)) {
       // Create utility
       Utility electric = new Utility("Electric Company", 150);
 
@@ -829,7 +843,7 @@ class MonopolyGameTest {
   @Test
   @DisplayName("Landing on owned Railroad calculates rent based on ownership count")
   void landingOnOwnedRailroad_calculatesRentBasedOnOwnershipCount() {
-    try (MockedStatic<Dice> diceMock = Mockito.mockStatic(Dice.class)) {
+    try (MockedStatic<Dice> diceMock = mockStatic(Dice.class)) {
       // Create two railroads
       Railroad railroad1 = new Railroad(200);
       Railroad railroad2 = new Railroad(200);

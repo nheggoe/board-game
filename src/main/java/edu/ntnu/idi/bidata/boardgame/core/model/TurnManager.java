@@ -1,9 +1,10 @@
 package edu.ntnu.idi.bidata.boardgame.core.model;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author Nick Heggø
@@ -17,7 +18,7 @@ public class TurnManager<P extends Player> {
   private P currentPlayer;
 
   protected TurnManager(List<P> players) {
-    Objects.requireNonNull(players, "Players cannot be null!");
+    requireNonNull(players, "Players cannot be null!");
     this.players = new ArrayList<>(players);
     this.iterator = players.iterator();
     this.currentPlayer = players.getFirst();
@@ -37,7 +38,7 @@ public class TurnManager<P extends Player> {
   }
 
   protected void removePlayer(Player player) {
-    Objects.requireNonNull(player, "Player to remove cannot be null!");
+    requireNonNull(player, "Player to remove cannot be null!");
     if (player.equals(currentPlayer)) {
       iterator.remove();
     } else {

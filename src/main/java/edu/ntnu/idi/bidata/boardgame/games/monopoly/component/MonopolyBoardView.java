@@ -2,9 +2,9 @@ package edu.ntnu.idi.bidata.boardgame.games.monopoly.component;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
 import edu.ntnu.idi.bidata.boardgame.common.event.EventListener;
+import edu.ntnu.idi.bidata.boardgame.common.event.type.CoreEvent;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.Event;
-import edu.ntnu.idi.bidata.boardgame.common.event.type.PlayerMovedEvent;
-import edu.ntnu.idi.bidata.boardgame.common.event.type.PurchaseEvent;
+import edu.ntnu.idi.bidata.boardgame.common.event.type.MonopolyEvent;
 import edu.ntnu.idi.bidata.boardgame.core.model.Player;
 import edu.ntnu.idi.bidata.boardgame.core.ui.EventListeningComponent;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.MonopolyPlayer;
@@ -20,6 +20,7 @@ import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.OwnableMonopolyTi
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.StartMonopolyTile;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.TaxMonopolyTile;
 import java.util.List;
+import java.util.function.Supplier;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -47,8 +48,8 @@ import javafx.scene.text.FontWeight;
 public class MonopolyBoardView extends EventListeningComponent implements EventListener {
 
   private final GridPane board;
-  private final List<MonopolyPlayer> players;
-  private final List<MonopolyTile> tiles;
+  private final Supplier<List<MonopolyTile>> tilesSupplier;
+  private final Supplier<List<MonopolyPlayer>> playersSupplier;
   private static final Color[] PLAYER_COLORS = {
     Color.web("#fff3cd"),
     Color.web("#d1e7dd"),
@@ -58,17 +59,19 @@ public class MonopolyBoardView extends EventListeningComponent implements EventL
   };
 
   public MonopolyBoardView(
-      EventBus eventBus, List<MonopolyPlayer> players, List<MonopolyTile> tiles) {
+      EventBus eventBus,
+      Supplier<List<MonopolyPlayer>> playersSupplier,
+      Supplier<List<MonopolyTile>> tilesSupplier) {
     super(eventBus);
-    getEventBus().addListener(PlayerMovedEvent.class, this);
-    getEventBus().addListener(PurchaseEvent.class, this);
+    getEventBus().addListener(CoreEvent.PlayerMoved.class, this);
+    getEventBus().addListener(MonopolyEvent.Purchased.class, this);
 
-    this.players = players;
-    this.tiles = tiles;
+    this.playersSupplier = playersSupplier;
+    this.tilesSupplier = tilesSupplier;
     board = new GridPane();
     getChildren().add(board);
     setAlignment(Pos.CENTER);
-    initialize(players, tiles);
+    initialize(tilesSupplier, playersSupplier);
   }
 
   /**
@@ -207,10 +210,12 @@ public class MonopolyBoardView extends EventListeningComponent implements EventL
     };
   }
 
-  private void initialize(List<MonopolyPlayer> players, List<MonopolyTile> tiles) {
+  private void initialize(
+      Supplier<List<MonopolyTile>> tilesSuppler, Supplier<List<MonopolyPlayer>> players) {
     board.setGridLinesVisible(false); // optional: show grid lines
     board.setAlignment(Pos.CENTER);
 
+    var tiles = tilesSuppler.get();
     int size = (tiles.size() + 4) / 4;
 
     // Position tiles in clockwise order, starting with 00 at bottom right
@@ -239,7 +244,7 @@ public class MonopolyBoardView extends EventListeningComponent implements EventL
       board.add(createTile(tiles.get(pos++)), size - 1, col);
     }
 
-    players.forEach(player -> playerMoved(player, 0));
+    players.get().forEach(player -> playerMoved(player, 0));
   }
 
   public void bindSizeProperty() {
@@ -373,6 +378,7 @@ public class MonopolyBoardView extends EventListeningComponent implements EventL
                 node instanceof Label && node.getId() != null && node.getId().equals("ownerLabel"));
 
     // Check each player to see if they own this property
+    var players = playersSupplier.get();
     for (int i = 0; i < players.size(); i++) {
       MonopolyPlayer player = players.get(i);
       if (player.isOwnerOf(ownable)) {
@@ -502,9 +508,9 @@ public class MonopolyBoardView extends EventListeningComponent implements EventL
 
   @Override
   public void onEvent(Event event) {
-    if (event instanceof PlayerMovedEvent(Player player)) {
+    if (event instanceof CoreEvent.PlayerMoved(Player player)) {
       playerMoved(player, player.getPosition());
-    } else if (event instanceof PurchaseEvent) {
+    } else if (event instanceof MonopolyEvent.Purchased) {
       // Update all properties to reflect new ownership
       updateAllProperties();
     }
@@ -512,7 +518,7 @@ public class MonopolyBoardView extends EventListeningComponent implements EventL
 
   @Override
   public void close() {
-    getEventBus().removeListener(PlayerMovedEvent.class, this);
-    getEventBus().removeListener(PurchaseEvent.class, this);
+    getEventBus().removeListener(CoreEvent.PlayerMoved.class, this);
+    getEventBus().removeListener(MonopolyEvent.Purchased.class, this);
   }
 }

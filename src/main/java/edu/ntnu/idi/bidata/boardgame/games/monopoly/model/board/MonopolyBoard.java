@@ -26,7 +26,7 @@ public record MonopolyBoard(List<MonopolyTile> tiles) implements Board<MonopolyT
 
   public MonopolyBoard {
     assertValidLayout(tiles);
-    tiles = List.copyOf(shuffleTiles(tiles));
+    tiles = List.copyOf(alignTilesAroundCorners(tiles));
   }
 
   /**
@@ -114,7 +114,8 @@ public record MonopolyBoard(List<MonopolyTile> tiles) implements Board<MonopolyT
 
   // ------------------------  validations  ------------------------
 
-  private List<MonopolyTile> shuffleTiles(List<MonopolyTile> tiles) {
+  private List<MonopolyTile> alignTilesAroundCorners(List<MonopolyTile> tiles) {
+    tiles = new ArrayList<>(tiles);
     List<CornerMonopolyTile> cornerTiles =
         tiles.stream()
             .filter(CornerMonopolyTile.class::isInstance)

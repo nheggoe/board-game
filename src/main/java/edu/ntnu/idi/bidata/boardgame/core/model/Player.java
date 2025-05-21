@@ -103,4 +103,8 @@ public abstract class Player {
   public int hashCode() {
     return id.hashCode();
   }
+
+  public static String toCsvLine(Player player) {
+    return "%s,%s".formatted(player.getName(), player.getFigure());
+  }
 }

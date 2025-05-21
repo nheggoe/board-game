@@ -3,16 +3,14 @@ package edu.ntnu.idi.bidata.boardgame.games.monopoly.component;
 import static java.util.Objects.requireNonNull;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
+import edu.ntnu.idi.bidata.boardgame.common.event.type.CoreEvent;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.Event;
-import edu.ntnu.idi.bidata.boardgame.common.event.type.PlayerMovedEvent;
-import edu.ntnu.idi.bidata.boardgame.common.event.type.PlayerRemovedEvent;
-import edu.ntnu.idi.bidata.boardgame.common.event.type.PurchaseEvent;
 import edu.ntnu.idi.bidata.boardgame.core.model.Player;
 import edu.ntnu.idi.bidata.boardgame.core.ui.EventListeningComponent;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.MonopolyPlayer;
-import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.Ownable;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Supplier;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -40,7 +38,7 @@ import javafx.scene.text.FontWeight;
  * @author Mihailo Hranisavljevic and Nick Heggø
  * @version 2025.05.19
  */
-public class PlayerDashboard extends EventListeningComponent {
+public class PlayerDashboard<P extends Player> extends EventListeningComponent {
 
   private final HashMap<Player, PlayerInfoBox> playerRegistry = new HashMap<>();
 
@@ -59,11 +57,8 @@ public class PlayerDashboard extends EventListeningComponent {
    * @param eventBus the event bus to listen to for player-related events, must not be null
    * @param players the list of players to display in the dashboard, must not be null
    */
-  public PlayerDashboard(EventBus eventBus, List<? extends Player> players) {
-    super(eventBus);
-    getEventBus().addListener(PlayerMovedEvent.class, this);
-    getEventBus().addListener(PlayerRemovedEvent.class, this);
-    getEventBus().addListener(PurchaseEvent.class, this);
+  public PlayerDashboard(EventBus eventBus, Supplier<List<P>> playersSupplier) {
+    super(eventBus, CoreEvent.PlayerMoved.class, CoreEvent.PlayerRemoved.class);
 
     setPrefWidth(320);
     setStyle(
@@ -87,7 +82,7 @@ public class PlayerDashboard extends EventListeningComponent {
     content.setOnMouseReleased(javafx.event.Event::consume);
 
     int i = 0;
-    for (Player player : players) {
+    for (Player player : playersSupplier.get()) {
       PlayerInfoBox box = new PlayerInfoBox(player, CARD_COLORS[i % CARD_COLORS.length]);
       playerRegistry.put(player, box);
       content.getChildren().add(box);
@@ -107,6 +102,12 @@ public class PlayerDashboard extends EventListeningComponent {
     VBox.setVgrow(scrollPane, Priority.ALWAYS);
   }
 
+  @Override
+  public void close() {
+    getEventBus().removeListener(CoreEvent.PlayerMoved.class, this);
+    getEventBus().removeListener(CoreEvent.PlayerRemoved.class, this);
+  }
+
   /** Refreshes all player displays in the sidebar. */
   public void refresh() {
     playerRegistry.values().forEach(PlayerInfoBox::refresh);
@@ -122,28 +123,17 @@ public class PlayerDashboard extends EventListeningComponent {
   @Override
   public void onEvent(Event event) {
     switch (event) {
-      case PlayerMovedEvent(Player player) -> highlightPlayer(player);
-      case PlayerRemovedEvent(Player player) -> {
+      case CoreEvent.PlayerMoved(Player player) -> highlightPlayer(player);
+      case CoreEvent.PlayerRemoved(Player player) -> {
         PlayerInfoBox playerBox = playerRegistry.get(player);
         if (playerBox != null) {
           playerBox.setGrayedOut(true);
           playerBox.setGlow(false);
         }
       }
-      case PurchaseEvent(MonopolyPlayer monopolyPlayer, Ownable ownable) -> {
-        var infoBox = playerRegistry.remove(monopolyPlayer);
-        playerRegistry.put(monopolyPlayer, infoBox);
-      }
       default -> throw new IllegalStateException("Unexpected value: " + event);
     }
     refresh();
-  }
-
-  @Override
-  public void close() {
-    getEventBus().removeListener(PlayerMovedEvent.class, this);
-    getEventBus().removeListener(PlayerRemovedEvent.class, this);
-    getEventBus().removeListener(PurchaseEvent.class, this);
   }
 
   // ------------------------  inner class  ------------------------
@@ -217,8 +207,7 @@ public class PlayerDashboard extends EventListeningComponent {
             case BATTLE_SHIP -> "/images/battleship.png";
             case DUCK -> "/images/duck.png";
           };
-      figureImage.setImage(
-          new Image(requireNonNull(getClass().getResourceAsStream(resourcePath))));
+      figureImage.setImage(new Image(requireNonNull(getClass().getResourceAsStream(resourcePath))));
     }
 
     public void refresh() {

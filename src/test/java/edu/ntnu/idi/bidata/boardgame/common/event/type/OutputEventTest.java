@@ -8,13 +8,13 @@ class OutputEventTest {
 
   @Test
   void testInvalidData() {
-    assertThrows(NullPointerException.class, () -> new OutputEvent(null));
+    assertThrows(NullPointerException.class, () -> new UserInterfaceEvent.Output(null));
   }
 
   @Test
   void testBasic() {
     var output = "test";
-    var outputEvent = new OutputEvent(output);
-    assertEquals(output, outputEvent.output());
+    var outputEvent = new UserInterfaceEvent.Output(output);
+    assertEquals(output, outputEvent.message());
   }
 }

@@ -3,6 +3,7 @@ package edu.ntnu.idi.bidata.boardgame.core.ui;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 
 /**
@@ -21,6 +22,13 @@ public abstract class View extends Region implements AutoCloseable {
     this.components.addAll(Arrays.asList(components));
   }
 
+  protected void setRoot(Pane root) {
+    getChildren().clear();
+    getChildren().add(root);
+    root.prefWidthProperty().bind(this.widthProperty());
+    root.prefHeightProperty().bind(this.heightProperty());
+  }
+
   @Override
   public void close() throws Exception {
     for (var component : components) {
@@ -28,11 +36,5 @@ public abstract class View extends Region implements AutoCloseable {
         listener.close();
       }
     }
-  }
-
-  public enum Name {
-    MAIN_VIEW,
-    MONOPOLY_GAME_VIEW,
-    SNAKE_GAME_VIEW,
   }
 }

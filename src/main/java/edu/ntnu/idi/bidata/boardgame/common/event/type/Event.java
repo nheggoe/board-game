@@ -21,4 +21,4 @@ import edu.ntnu.idi.bidata.boardgame.common.event.EventPublisher;
  * @version 2025.05.08
  */
 public sealed interface Event
-    permits DiceRolledEvent, OutputEvent, PlayerMovedEvent, PlayerRemovedEvent, PurchaseEvent {}
+    permits CoreEvent, MonopolyEvent, SnakeAndLadderEvent, UserInterfaceEvent {}

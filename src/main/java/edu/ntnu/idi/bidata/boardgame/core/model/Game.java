@@ -1,14 +1,13 @@
 package edu.ntnu.idi.bidata.boardgame.core.model;
 
+import static java.util.Objects.requireNonNull;
+
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
-import edu.ntnu.idi.bidata.boardgame.common.event.type.DiceRolledEvent;
-import edu.ntnu.idi.bidata.boardgame.common.event.type.OutputEvent;
-import edu.ntnu.idi.bidata.boardgame.common.event.type.PlayerMovedEvent;
-import edu.ntnu.idi.bidata.boardgame.common.event.type.PlayerRemovedEvent;
+import edu.ntnu.idi.bidata.boardgame.common.event.type.CoreEvent;
+import edu.ntnu.idi.bidata.boardgame.common.event.type.UserInterfaceEvent;
 import edu.ntnu.idi.bidata.boardgame.core.model.dice.DiceRoll;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -21,18 +20,23 @@ public abstract class Game<T extends Tile, P extends Player> {
   private final UUID id;
   private String gameSaveName;
   private boolean isEnded;
-  private final TurnManager<P> turnManager;
+
+  @SuppressWarnings("java:S2065")
+  private final transient TurnManager<P> turnManager;
 
   // injected dependencies
-  private final EventBus eventBus;
+
+  @SuppressWarnings("java:S2065")
+  private final transient EventBus eventBus;
+
   private final Board<T> board;
 
   protected Game(EventBus eventBus, Board<T> board, List<P> players) {
     this.id = UUID.randomUUID();
     this.isEnded = false;
     this.turnManager = new TurnManager<>(players);
-    this.eventBus = Objects.requireNonNull(eventBus, "EventBus cannot be null!");
-    this.board = Objects.requireNonNull(board, "Board cannot be null!");
+    this.eventBus = requireNonNull(eventBus, "EventBus cannot be null!");
+    this.board = requireNonNull(board, "Board cannot be null!");
   }
 
   // ------------------------  API  ------------------------
@@ -56,15 +60,15 @@ public abstract class Game<T extends Tile, P extends Player> {
   // ------------------------  internal  ------------------------
 
   protected void println(Object o) {
-    eventBus.publishEvent(new OutputEvent(o.toString()));
+    eventBus.publishEvent(new UserInterfaceEvent.Output(o.toString()));
   }
 
   protected void notifyPlayerMoved(Player player) {
-    eventBus.publishEvent(new PlayerMovedEvent(player));
+    eventBus.publishEvent(new CoreEvent.PlayerMoved(player));
   }
 
   protected void notifyDiceRolled(DiceRoll diceRoll) {
-    eventBus.publishEvent(new DiceRolledEvent(diceRoll));
+    eventBus.publishEvent(new CoreEvent.DiceRolled(diceRoll));
   }
 
   public void movePlayer(P player, int numberOfTiles) {
@@ -79,7 +83,7 @@ public abstract class Game<T extends Tile, P extends Player> {
 
   protected void removePlayer(P player) {
     turnManager.removePlayer(player);
-    eventBus.publishEvent(new PlayerRemovedEvent(player));
+    eventBus.publishEvent(new CoreEvent.PlayerRemoved(player));
   }
 
   protected abstract void completeRoundAction(P player);

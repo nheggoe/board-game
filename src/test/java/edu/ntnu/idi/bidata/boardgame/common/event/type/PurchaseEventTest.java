@@ -21,14 +21,14 @@ class PurchaseEventTest {
 
   @Test
   void testInvalidData() {
-    assertDoesNotThrow(() -> new PurchaseEvent(player, property));
-    assertThrows(NullPointerException.class, () -> new PurchaseEvent(null, property));
-    assertThrows(NullPointerException.class, () -> new PurchaseEvent(player, null));
+    assertDoesNotThrow(() -> new MonopolyEvent.Purchased(player, property));
+    assertThrows(NullPointerException.class, () -> new MonopolyEvent.Purchased(null, property));
+    assertThrows(NullPointerException.class, () -> new MonopolyEvent.Purchased(player, null));
   }
 
   @Test
   void testBasic() {
-    var purchaseEvent = new PurchaseEvent(player, property);
+    var purchaseEvent = new MonopolyEvent.Purchased(player, property);
     assertEquals(player, purchaseEvent.monopolyPlayer());
     assertEquals(property, purchaseEvent.ownable());
   }

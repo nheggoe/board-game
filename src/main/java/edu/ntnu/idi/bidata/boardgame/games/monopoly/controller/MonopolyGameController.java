@@ -1,7 +1,7 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.controller;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
-import edu.ntnu.idi.bidata.boardgame.common.ui.EndDialog;
+import edu.ntnu.idi.bidata.boardgame.common.ui.component.EndDialog;
 import edu.ntnu.idi.bidata.boardgame.core.GameEngine;
 import edu.ntnu.idi.bidata.boardgame.core.ui.Controller;
 import edu.ntnu.idi.bidata.boardgame.core.ui.SceneSwitcher;
@@ -29,9 +29,10 @@ public class MonopolyGameController extends Controller {
       EventBus eventBus,
       GameEngine<MonopolyTile, MonopolyPlayer> gameEngine) {
     return new MonopolyGameView(
+        sceneSwitcher,
         eventBus,
-        gameEngine.getPlayers(),
-        gameEngine.getTiles(),
+        gameEngine::getTiles,
+        gameEngine::getPlayers,
         nextTurnEventHandler(sceneSwitcher, gameEngine));
   }
 

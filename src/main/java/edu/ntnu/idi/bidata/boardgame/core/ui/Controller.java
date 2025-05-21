@@ -1,6 +1,6 @@
 package edu.ntnu.idi.bidata.boardgame.core.ui;
 
-import java.util.Objects;
+import static java.util.Objects.requireNonNull;
 
 /**
  * @author Nick Heggø
@@ -12,8 +12,8 @@ public abstract class Controller {
   private final View view;
 
   protected Controller(SceneSwitcher sceneSwitcher, View view) {
-    this.sceneSwitcher = Objects.requireNonNull(sceneSwitcher, "SceneSwitcher cannot be null!");
-    this.view = Objects.requireNonNull(view, "View cannot be null!");
+    this.sceneSwitcher = requireNonNull(sceneSwitcher, "SceneSwitcher cannot be null!");
+    this.view = requireNonNull(view, "View cannot be null!");
     bindSizeProperty();
   }
 
@@ -30,7 +30,7 @@ public abstract class Controller {
     return view;
   }
 
-  public void switchTo(View.Name name) {
+  public void switchTo(SceneSwitcher.SceneName name) {
     getSceneSwitcher().switchTo(name);
   }
 }
