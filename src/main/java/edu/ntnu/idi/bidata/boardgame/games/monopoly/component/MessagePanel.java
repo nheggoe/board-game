@@ -1,6 +1,7 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.component;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
+import edu.ntnu.idi.bidata.boardgame.common.event.UnhandledEventException;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.Event;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.UserInterfaceEvent;
 import edu.ntnu.idi.bidata.boardgame.core.ui.EventListeningComponent;
@@ -38,15 +39,14 @@ import javafx.util.Duration;
  * @version 2025.05.16
  */
 public class MessagePanel extends EventListeningComponent {
-
   private final Label textLabel;
+
   private final StringBuilder currentMessage;
   private Timeline typewriter;
 
   /** Constructs a new {@code MessageLog} with visuals and animation. */
   public MessagePanel(EventBus eventBus) {
-    super(eventBus);
-    getEventBus().addListener(UserInterfaceEvent.Output.class, this);
+    super(eventBus, UserInterfaceEvent.Output.class);
 
     setBackground(
         new Background(new BackgroundFill(Color.BLACK, new CornerRadii(20), new Insets(10))));
@@ -67,6 +67,14 @@ public class MessagePanel extends EventListeningComponent {
     root.getChildren().addAll(textLabel);
     StackPane.setAlignment(textLabel, Pos.TOP_LEFT);
     StackPane.setMargin(textLabel, new Insets(10));
+  }
+
+  @Override
+  public void onEvent(Event event) {
+    switch (event) {
+      case UserInterfaceEvent.Output(String output) -> animateMessage(output);
+      default -> throw new UnhandledEventException(event);
+    }
   }
 
   /**
@@ -110,21 +118,6 @@ public class MessagePanel extends EventListeningComponent {
     if (typewriter != null && typewriter.getStatus() == Animation.Status.RUNNING) {
       typewriter.stop();
       textLabel.setText(currentMessage.toString());
-    }
-  }
-
-  @Override
-  public void onEvent(Event event) {
-    if (event instanceof UserInterfaceEvent.Output(String output)) {
-      animateMessage(output);
-    }
-  }
-
-  @Override
-  public void close() {
-    getEventBus().removeListener(UserInterfaceEvent.Output.class, this);
-    if (typewriter != null) {
-      typewriter.stop();
     }
   }
 }

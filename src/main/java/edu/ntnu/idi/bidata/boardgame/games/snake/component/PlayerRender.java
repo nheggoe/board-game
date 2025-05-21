@@ -3,6 +3,7 @@ package edu.ntnu.idi.bidata.boardgame.games.snake.component;
 import static java.util.Objects.requireNonNull;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
+import edu.ntnu.idi.bidata.boardgame.common.event.UnhandledEventException;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.CoreEvent;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.Event;
 import edu.ntnu.idi.bidata.boardgame.core.ui.EventListeningComponent;
@@ -41,8 +42,7 @@ public class PlayerRender extends EventListeningComponent {
       GridPane tileGrid,
       int boardDimension,
       Supplier<List<SnakeAndLadderPlayer>> players) {
-    super(eventBus);
-    getEventBus().addListener(CoreEvent.PlayerMoved.class, this);
+    super(eventBus, CoreEvent.PlayerMoved.class);
     this.tileGrid = tileGrid;
     this.gridSize = boardDimension;
     this.players = requireNonNull(players, "players must not be null");
@@ -51,14 +51,10 @@ public class PlayerRender extends EventListeningComponent {
 
   @Override
   public void onEvent(Event event) {
-    if (event instanceof CoreEvent.PlayerMoved) {
-      Platform.runLater(this::renderPlayers);
+    switch (event) {
+      case CoreEvent.PlayerMoved ignored -> Platform.runLater(this::renderPlayers);
+      default -> throw new UnhandledEventException(event);
     }
-  }
-
-  @Override
-  public void close() {
-    getEventBus().removeListener(CoreEvent.PlayerMoved.class, this);
   }
 
   /**
@@ -66,8 +62,6 @@ public class PlayerRender extends EventListeningComponent {
    *
    * <p>This method clears any existing player icons and then draws the new ones based on the
    * provided list of players.
-   *
-   * @param players a list of players to render
    */
   public void renderPlayers() {
     clearPlayerIcons();

@@ -13,4 +13,11 @@ public sealed interface MonopolyEvent extends Event {
       requireNonNull(ownable, "Ownable cannot be null!");
     }
   }
+
+  record UpgradePurchased(MonopolyPlayer monopolyPlayer, Ownable ownable) implements MonopolyEvent {
+    public UpgradePurchased {
+      requireNonNull(monopolyPlayer, "Owner cannot be null!");
+      requireNonNull(ownable, "Ownable cannot be null!");
+    }
+  }
 }

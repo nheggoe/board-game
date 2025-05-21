@@ -3,8 +3,10 @@ package edu.ntnu.idi.bidata.boardgame.games.monopoly.component;
 import static java.util.Objects.requireNonNull;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
+import edu.ntnu.idi.bidata.boardgame.common.event.UnhandledEventException;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.CoreEvent;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.Event;
+import edu.ntnu.idi.bidata.boardgame.common.event.type.MonopolyEvent;
 import edu.ntnu.idi.bidata.boardgame.core.model.Player;
 import edu.ntnu.idi.bidata.boardgame.core.ui.EventListeningComponent;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.MonopolyPlayer;
@@ -58,7 +60,11 @@ public class PlayerDashboard<P extends Player> extends EventListeningComponent {
    * @param players the list of players to display in the dashboard, must not be null
    */
   public PlayerDashboard(EventBus eventBus, Supplier<List<P>> playersSupplier) {
-    super(eventBus, CoreEvent.PlayerMoved.class, CoreEvent.PlayerRemoved.class);
+    super(
+        eventBus,
+        CoreEvent.PlayerMoved.class,
+        CoreEvent.PlayerRemoved.class,
+        MonopolyEvent.Purchased.class);
 
     setPrefWidth(320);
     setStyle(
@@ -103,9 +109,21 @@ public class PlayerDashboard<P extends Player> extends EventListeningComponent {
   }
 
   @Override
-  public void close() {
-    getEventBus().removeListener(CoreEvent.PlayerMoved.class, this);
-    getEventBus().removeListener(CoreEvent.PlayerRemoved.class, this);
+  public void onEvent(Event event) {
+    switch (event) {
+      case CoreEvent.PlayerMoved(Player player) -> highlightPlayer(player);
+      case CoreEvent.PlayerRemoved(Player player) -> handlePlayerRemoval(player);
+      case MonopolyEvent.Purchased ignored -> refresh();
+      default -> throw new UnhandledEventException(event);
+    }
+  }
+
+  private void handlePlayerRemoval(Player player) {
+    PlayerInfoBox playerBox = playerRegistry.get(player);
+    if (playerBox != null) {
+      playerBox.setGrayedOut(true);
+      playerBox.setGlow(false);
+    }
   }
 
   /** Refreshes all player displays in the sidebar. */
@@ -118,22 +136,6 @@ public class PlayerDashboard<P extends Player> extends EventListeningComponent {
       PlayerInfoBox box = entry.getValue();
       box.setGlow(entry.getKey().equals(player));
     }
-  }
-
-  @Override
-  public void onEvent(Event event) {
-    switch (event) {
-      case CoreEvent.PlayerMoved(Player player) -> highlightPlayer(player);
-      case CoreEvent.PlayerRemoved(Player player) -> {
-        PlayerInfoBox playerBox = playerRegistry.get(player);
-        if (playerBox != null) {
-          playerBox.setGrayedOut(true);
-          playerBox.setGlow(false);
-        }
-      }
-      default -> throw new IllegalStateException("Unexpected value: " + event);
-    }
-    refresh();
   }
 
   // ------------------------  inner class  ------------------------

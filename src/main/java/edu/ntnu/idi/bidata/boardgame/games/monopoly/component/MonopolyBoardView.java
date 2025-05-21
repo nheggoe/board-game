@@ -1,7 +1,7 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.component;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
-import edu.ntnu.idi.bidata.boardgame.common.event.EventListener;
+import edu.ntnu.idi.bidata.boardgame.common.event.UnhandledEventException;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.CoreEvent;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.Event;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.MonopolyEvent;
@@ -45,9 +45,9 @@ import javafx.scene.text.FontWeight;
  * @author Nick Heggø
  * @version 2025.05.07
  */
-public class MonopolyBoardView extends EventListeningComponent implements EventListener {
-
+public class MonopolyBoardView extends EventListeningComponent {
   private final GridPane board;
+
   private final Supplier<List<MonopolyTile>> tilesSupplier;
   private final Supplier<List<MonopolyPlayer>> playersSupplier;
   private static final Color[] PLAYER_COLORS = {
@@ -62,9 +62,11 @@ public class MonopolyBoardView extends EventListeningComponent implements EventL
       EventBus eventBus,
       Supplier<List<MonopolyPlayer>> playersSupplier,
       Supplier<List<MonopolyTile>> tilesSupplier) {
-    super(eventBus);
-    getEventBus().addListener(CoreEvent.PlayerMoved.class, this);
-    getEventBus().addListener(MonopolyEvent.Purchased.class, this);
+    super(
+        eventBus,
+        CoreEvent.PlayerRemoved.class,
+        MonopolyEvent.Purchased.class,
+        MonopolyEvent.UpgradePurchased.class);
 
     this.playersSupplier = playersSupplier;
     this.tilesSupplier = tilesSupplier;
@@ -72,6 +74,16 @@ public class MonopolyBoardView extends EventListeningComponent implements EventL
     getChildren().add(board);
     setAlignment(Pos.CENTER);
     initialize(tilesSupplier, playersSupplier);
+  }
+
+  @Override
+  public void onEvent(Event event) {
+    switch (event) {
+      case CoreEvent.PlayerMoved(Player player) -> playerMoved(player, player.getPosition());
+      case MonopolyEvent.Purchased ignored -> updateAllProperties();
+      case MonopolyEvent.UpgradePurchased ignored -> updateAllProperties();
+      default -> throw new UnhandledEventException(event);
+    }
   }
 
   /**
@@ -504,21 +516,5 @@ public class MonopolyBoardView extends EventListeningComponent implements EventL
       case RED -> Color.RED;
       case YELLOW -> Color.YELLOW;
     };
-  }
-
-  @Override
-  public void onEvent(Event event) {
-    if (event instanceof CoreEvent.PlayerMoved(Player player)) {
-      playerMoved(player, player.getPosition());
-    } else if (event instanceof MonopolyEvent.Purchased) {
-      // Update all properties to reflect new ownership
-      updateAllProperties();
-    }
-  }
-
-  @Override
-  public void close() {
-    getEventBus().removeListener(CoreEvent.PlayerMoved.class, this);
-    getEventBus().removeListener(MonopolyEvent.Purchased.class, this);
   }
 }
