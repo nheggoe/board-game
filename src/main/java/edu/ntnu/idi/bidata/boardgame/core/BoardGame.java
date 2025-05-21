@@ -2,7 +2,6 @@ package edu.ntnu.idi.bidata.boardgame.core;
 
 import edu.ntnu.idi.bidata.boardgame.common.util.AlertFactory;
 import edu.ntnu.idi.bidata.boardgame.core.ui.SceneSwitcher;
-import edu.ntnu.idi.bidata.boardgame.core.ui.View;
 import javafx.application.Application;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
@@ -20,7 +19,7 @@ public class BoardGame extends Application {
   @Override
   public void start(Stage primaryStage) {
     setup(primaryStage);
-    new SceneSwitcher(primaryStage).switchTo(View.Name.MAIN_VIEW);
+    new SceneSwitcher(primaryStage).switchTo(SceneSwitcher.SceneName.MAIN_VIEW);
   }
 
   private static void setup(Stage primaryStage) {

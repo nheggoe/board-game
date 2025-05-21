@@ -37,11 +37,4 @@ public abstract class View extends Region implements AutoCloseable {
       }
     }
   }
-
-  public enum Name {
-    MAIN_VIEW,
-    PLAYER_SETUP_VIEW,
-    MONOPOLY_GAME_VIEW,
-    SNAKE_GAME_VIEW,
-  }
 }

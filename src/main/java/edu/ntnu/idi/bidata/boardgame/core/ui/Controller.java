@@ -30,7 +30,7 @@ public abstract class Controller {
     return view;
   }
 
-  public void switchTo(View.Name name) {
+  public void switchTo(SceneSwitcher.SceneName name) {
     getSceneSwitcher().switchTo(name);
   }
 }

@@ -39,7 +39,14 @@ public class SceneSwitcher {
     primaryStage.centerOnScreen();
   }
 
-  public void switchTo(View.Name name) {
+  public enum SceneName {
+    MAIN_VIEW,
+    PLAYER_SETUP_VIEW,
+    MONOPOLY_GAME_VIEW,
+    SNAKE_GAME_VIEW,
+  }
+
+  public void switchTo(SceneName name) {
     if (controller != null) {
       try {
         controller.getView().close();
@@ -54,13 +61,13 @@ public class SceneSwitcher {
 
   public void reset() {
     switch (controller) {
-      case SnakeGameController s -> switchTo(View.Name.SNAKE_GAME_VIEW);
-      case MonopolyGameController m -> switchTo(View.Name.MONOPOLY_GAME_VIEW);
+      case SnakeGameController s -> switchTo(SceneName.SNAKE_GAME_VIEW);
+      case MonopolyGameController m -> switchTo(SceneName.MONOPOLY_GAME_VIEW);
       default -> throw new IllegalStateException("Unexpected value: " + controller);
     }
   }
 
-  private Controller createController(View.Name name) {
+  private Controller createController(SceneName name) {
     return switch (name) {
       case MAIN_VIEW -> createMainController();
       case SNAKE_GAME_VIEW -> createSnakeGameController();
@@ -95,7 +102,7 @@ public class SceneSwitcher {
     return new MonopolyGameController(this, eventBus, new GameEngine<>(game));
   }
 
-  public Scene getScene() {
+  public javafx.scene.Scene getScene() {
     return scene;
   }
 

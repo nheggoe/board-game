@@ -24,8 +24,10 @@ public class MainView extends View {
     center.setSpacing(10);
     var monopolyButton = new Button("Monopoly");
     var snakeAndeLadderButton = new Button("Snake and Ladder");
-    monopolyButton.setOnAction(ignored -> sceneSwitcher.switchTo(Name.MONOPOLY_GAME_VIEW));
-    snakeAndeLadderButton.setOnAction(ignored -> sceneSwitcher.switchTo(Name.SNAKE_GAME_VIEW));
+    monopolyButton.setOnAction(
+        ignored -> sceneSwitcher.switchTo(SceneSwitcher.SceneName.MONOPOLY_GAME_VIEW));
+    snakeAndeLadderButton.setOnAction(
+        ignored -> sceneSwitcher.switchTo(SceneSwitcher.SceneName.SNAKE_GAME_VIEW));
     center.getChildren().addAll(monopolyButton, snakeAndeLadderButton);
     return center;
   }
