@@ -1,10 +1,11 @@
 package edu.ntnu.idi.bidata.boardgame.common.ui.view;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
-import edu.ntnu.idi.bidata.boardgame.common.io.csv.CSVHandler;
-import edu.ntnu.idi.bidata.boardgame.core.PlayerManager;
 import edu.ntnu.idi.bidata.boardgame.core.model.Player;
 import edu.ntnu.idi.bidata.boardgame.core.ui.View;
+import edu.ntnu.idi.bidata.boardgame.games.snake.model.SnakeAndLadderPlayer;
+import java.util.List;
+import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.ContextMenu;
@@ -12,15 +13,18 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 
 public class PlayerSetupView extends View {
 
-  public PlayerSetupView() {
+  public PlayerSetupView(EventBus eventBus) {
     super();
     var root = new BorderPane();
     setRoot(root);
+
+    root.setCenter(createCenterPane(eventBus));
   }
 
   private VBox createCenterPane(EventBus eventBus) {
@@ -28,22 +32,24 @@ public class PlayerSetupView extends View {
     center.setAlignment(Pos.CENTER);
     center.setSpacing(10);
 
-    var tableView = createPlayerTableView();
+    var tableView = createPlayerTableView(eventBus);
     center.getChildren().add(tableView);
-    var lines = new PlayerManager(eventBus, new CSVHandler("players"));
+    var players =
+        List.of(
+            new SnakeAndLadderPlayer("Player 1", Player.Figure.HAT),
+            new SnakeAndLadderPlayer("Player 2", Player.Figure.BATTLE_SHIP));
+    tableView.setItems(FXCollections.observableArrayList(players));
 
     return center;
   }
 
-  // FIXME
-  private static TableView<Player> createPlayerTableView() {
+  private TableView<Player> createPlayerTableView(EventBus eventBus) {
     var tableView = new TableView<Player>();
     tableView.setPadding(new Insets(10));
     tableView.setPrefWidth(300);
     tableView.setPrefHeight(200);
     tableView.setEditable(true);
-    tableView.getColumns().add(new TableColumn<>("Name"));
-    tableView.getColumns().add(new TableColumn<>("Color"));
+    tableView.getColumns().addAll(createTableColumn());
     tableView.setRowFactory(
         tv -> {
           var row = new TableRow<Player>();
@@ -62,5 +68,15 @@ public class PlayerSetupView extends View {
           return row;
         });
     return tableView;
+  }
+
+  private List<TableColumn<Player, String>> createTableColumn() {
+    var nameColumn = new TableColumn<Player, String>("Name");
+    nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+    nameColumn.setPrefWidth(100);
+    var figureColumn = new TableColumn<Player, String>("Figure");
+    figureColumn.setCellValueFactory(new PropertyValueFactory<>("figure"));
+    figureColumn.setPrefWidth(100);
+    return List.of(nameColumn, figureColumn);
   }
 }

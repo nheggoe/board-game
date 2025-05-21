@@ -29,6 +29,7 @@ public class MonopolyGameController extends Controller {
       EventBus eventBus,
       GameEngine<MonopolyTile, MonopolyPlayer> gameEngine) {
     return new MonopolyGameView(
+        sceneSwitcher,
         eventBus,
         gameEngine.getPlayers(),
         gameEngine.getTiles(),

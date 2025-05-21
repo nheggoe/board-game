@@ -1,6 +1,8 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.view;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
+import edu.ntnu.idi.bidata.boardgame.common.ui.component.SettingDialog;
+import edu.ntnu.idi.bidata.boardgame.core.ui.SceneSwitcher;
 import edu.ntnu.idi.bidata.boardgame.core.ui.View;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.component.DiceView;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.component.MessagePanel;
@@ -12,11 +14,15 @@ import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile.MonopolyTile;
 import java.util.List;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -28,24 +34,18 @@ import javafx.scene.paint.Color;
 public class MonopolyGameView extends View {
 
   public MonopolyGameView(
+      SceneSwitcher sceneSwitcher,
       EventBus eventBus,
       List<MonopolyPlayer> players,
       List<MonopolyTile> tiles,
       EventHandler<ActionEvent> rollDiceHandler) {
 
-    var root = createRootPane();
-    root.setCenter(createCenterPane(eventBus, players, tiles));
-    root.setRight(createRightPane(eventBus, players, rollDiceHandler));
-    root.setBottom(createBottomPane(eventBus));
-
-    getChildren().add(root);
-  }
-
-  private BorderPane createRootPane() {
     var root = new BorderPane();
-    root.prefWidthProperty().bind(this.widthProperty());
-    root.prefHeightProperty().bind(this.heightProperty());
-    return root;
+    setRoot(root);
+
+    root.setCenter(createCenterPane(eventBus, players, tiles));
+    root.setRight(createRightPane(sceneSwitcher, eventBus, players, rollDiceHandler));
+    root.setBottom(createBottomPane(eventBus));
   }
 
   private StackPane createCenterPane(
@@ -71,14 +71,23 @@ public class MonopolyGameView extends View {
   }
 
   private VBox createRightPane(
-      EventBus eventBus, List<MonopolyPlayer> players, EventHandler<ActionEvent> rollDiceHandler) {
+      SceneSwitcher sceneSwitcher,
+      EventBus eventBus,
+      List<MonopolyPlayer> players,
+      EventHandler<ActionEvent> rollDiceHandler) {
     var right = new VBox();
     right.prefWidthProperty().bind(this.widthProperty().multiply(0.2));
     right.prefHeightProperty().bind(this.heightProperty().multiply(0.7));
+    var hBox = new HBox();
+    hBox.setAlignment(Pos.TOP_RIGHT);
+    hBox.setPadding(new Insets(10));
+    var settingButton = new Button("Settings");
+    settingButton.setOnAction(ignored -> new SettingDialog(sceneSwitcher).showAndWait());
+    hBox.getChildren().add(settingButton);
     var playerDashboard = new PlayerDashboard(eventBus, players);
     var rollDiceButton = new RollDiceButton(rollDiceHandler);
     addComponents(playerDashboard, rollDiceButton);
-    right.getChildren().addAll(playerDashboard, rollDiceButton);
+    right.getChildren().addAll(hBox, playerDashboard, rollDiceButton);
     return right;
   }
 

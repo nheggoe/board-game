@@ -70,7 +70,7 @@ public class SceneSwitcher {
   }
 
   private PlayerSetupController createPlayerSetupController() {
-    return new PlayerSetupController(this);
+    return new PlayerSetupController(this, eventBus);
   }
 
   private MainController createMainController() {

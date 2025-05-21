@@ -13,6 +13,8 @@ public class SettingDialog extends Dialog<ButtonType> {
 
   public SettingDialog(SceneSwitcher sceneSwitcher) {
     var root = getDialogPane();
+    root.setPrefWidth(300);
+    root.setPrefHeight(200);
     root.getButtonTypes().addAll(ButtonType.OK);
     root.setContent(createContentPane(sceneSwitcher));
   }
@@ -23,12 +25,23 @@ public class SettingDialog extends Dialog<ButtonType> {
     navigation.setSpacing(10);
 
     var editSavedPlayerButton = new Button("Edit Saved Players");
-    editSavedPlayerButton.setOnAction(event -> sceneSwitcher.switchTo(View.Name.PLAYER_SETUP_VIEW));
+    editSavedPlayerButton.setOnAction(
+        event -> {
+          sceneSwitcher.switchTo(View.Name.PLAYER_SETUP_VIEW);
+          this.close();
+        });
+
+    var backToMainMenuButton = new Button("Back to Main Menu");
+    backToMainMenuButton.setOnAction(
+        event -> {
+          sceneSwitcher.switchTo(View.Name.MAIN_VIEW);
+          this.close();
+        });
 
     var exitButton = new Button("Exit");
     exitButton.setOnAction(event -> Platform.exit());
 
-    navigation.getChildren().add(editSavedPlayerButton);
+    navigation.getChildren().addAll(editSavedPlayerButton, backToMainMenuButton, exitButton);
     return navigation;
   }
 }
