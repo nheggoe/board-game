@@ -30,27 +30,11 @@ public class JsonService<T> implements DAO<T> {
    * @throws IllegalArgumentException if the targetClass parameter is null
    */
   public JsonService(Class<T> targetClass) {
-    this(targetClass, false);
-  }
-
-  /**
-   * Constructs a new instance of the JsonService class for reading from and writing to JSON files.
-   * This service is designed to handle collections of specified types. It utilizes {@link
-   * JsonReader} to deserialize JSON content into objects and {@link JsonWriter} to serialize
-   * objects into JSON files.
-   *
-   * @param isTest a boolean flag indicating whether the operations should be performed in the test
-   *     environment (true) or the production environment (false)
-   * @throws UnsupportedOperationException if the {@link JsonType} does not contain the necessary
-   *     type for serialization
-   * @throws IllegalArgumentException if the targetClass parameter is null
-   */
-  public JsonService(Class<T> targetClas, boolean isTest) {
-    if (JsonType.getType(targetClas) == null) {
-      throw new UnsupportedOperationException("Unsupported target class type: " + targetClas);
+    if (JsonType.getType(targetClass) == null) {
+      throw new UnsupportedOperationException("Unsupported target class type: " + targetClass);
     }
-    jsonReader = new JsonReader<>(targetClas, isTest);
-    jsonWriter = new JsonWriter<>(targetClas, isTest);
+    jsonReader = new JsonReader<>(targetClass);
+    jsonWriter = new JsonWriter<>(targetClass);
   }
 
   /**

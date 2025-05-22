@@ -3,8 +3,8 @@ package edu.ntnu.idi.bidata.boardgame.common.io.csv;
 import static java.util.Objects.requireNonNull;
 
 import edu.ntnu.idi.bidata.boardgame.common.io.FileUtil;
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 
 /**
@@ -16,22 +16,18 @@ import java.util.List;
  */
 public class CSVHandler {
 
-  private final File file;
+  private final Path csvFile;
 
-  public CSVHandler(File file) {
-    this.file = requireNonNull(file);
-    FileUtil.ensureFileAndDirectoryExists(this.file);
+  public CSVHandler(Path csvFile) {
+    this.csvFile = requireNonNull(csvFile);
+    FileUtil.ensureFileAndDirectoryExists(this.csvFile);
   }
 
-  public CSVHandler(String filename) {
-    this(FileUtil.generateFilePath(filename, "csv").toFile());
+  public List<String[]> readAll() throws IOException {
+    return CSVReader.readAll(csvFile);
   }
 
-  public List<String> readCSV() throws IOException {
-    return CSVReader.readLines(file);
-  }
-
-  public void writeCSV(List<String> lines, boolean append) throws IOException {
-    CSVWriter.writeLines(file, lines, append);
+  public void writeLines(List<String[]> rows) throws IOException {
+    CSVWriter.writeLines(csvFile, rows);
   }
 }

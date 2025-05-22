@@ -29,12 +29,11 @@ public class PlayerManager {
   }
 
   public List<MonopolyPlayer> loadCsvAsMonopolyPlayers() throws IOException {
-    var lines = csvHandler.readCSV();
+    var rows = csvHandler.readAll();
     var players = new ArrayList<MonopolyPlayer>();
-    for (var line : lines) {
+    for (var row : rows) {
       try {
-        var tokens = csvPattern.split(line);
-        players.add(new MonopolyPlayer(tokens[0], Player.Figure.valueOf(tokens[1].toUpperCase())));
+        players.add(new MonopolyPlayer(row[0], Player.Figure.valueOf(row[1].toUpperCase())));
       } catch (IllegalArgumentException e) {
         eventBus.publishEvent(
             new UserInterfaceEvent.Output("Invalid player data: " + e.getMessage()));
@@ -44,13 +43,11 @@ public class PlayerManager {
   }
 
   public List<SnakeAndLadderPlayer> loadCsvAsSnakeAndLadderPlayers() throws IOException {
-    var lines = csvHandler.readCSV();
+    var rows = csvHandler.readAll();
     var players = new ArrayList<SnakeAndLadderPlayer>();
-    for (var line : lines) {
+    for (var row : rows) {
       try {
-        var tokens = csvPattern.split(line);
-        players.add(
-            new SnakeAndLadderPlayer(tokens[0], Player.Figure.valueOf(tokens[1].toUpperCase())));
+        players.add(new SnakeAndLadderPlayer(row[0], Player.Figure.valueOf(row[1].toUpperCase())));
       } catch (IllegalArgumentException e) {
         eventBus.publishEvent(
             new UserInterfaceEvent.Output("Invalid player data: " + e.getMessage()));
@@ -60,8 +57,8 @@ public class PlayerManager {
   }
 
   public void savePlayers(List<Player> players) throws IOException {
-    var lines = players.stream().map(Player::toCsvLine).toList();
-    csvHandler.writeCSV(lines, false);
+    var rows = players.stream().map(Player::toCsvLine).toList();
+    csvHandler.writeLines(rows);
   }
 
   private static String getAvailableFigures() {

@@ -37,7 +37,7 @@ class SnakeAndLadderGameTest {
     tiles.add(new NormalTile()); // 5
     tiles.add(new NormalTile()); // 6
     tiles.add(new NormalTile()); // 7
-    tiles.add(new NormalTile()); // 8
+    tiles.add(new SnakeTile(1)); // 8
     tiles.add(new NormalTile()); // 9
     tiles.add(new NormalTile()); // 10
     tiles.add(new NormalTile()); // 11
@@ -83,7 +83,32 @@ class SnakeAndLadderGameTest {
           .isInstanceOf(NormalTile.class);
 
       game.nextTurn();
-      assertThat(player.getPosition()).isEqualTo(8);
+      assertThat(player.getPosition()).isEqualTo(7);
+      assertThat(game.getBoard().getTileAtIndex(player.getPosition()))
+          .isInstanceOf(NormalTile.class);
+    }
+  }
+
+  @Test
+  void test_simulateGamePlay_with_rollOnSix() {
+    try (MockedStatic<Dice> mockedDice = mockStatic(Dice.class)) {
+      mockedDice
+          .when(() -> Dice.roll(1))
+          .thenReturn(new DiceRoll(new int[] {6}))
+          .thenReturn(new DiceRoll(new int[] {2}));
+
+      assertThat(game.getBoard()).isNotNull();
+      assertThat(game.getBoard().tiles()).hasSize(14);
+
+      var player = game.getPlayers().getFirst();
+      assertThat(player.getPosition()).isZero();
+
+      game.nextTurn();
+      assertThat(player.getPosition()).isEqualTo(7);
+      assertThat(game.getBoard().getTileAtIndex(player.getPosition()))
+          .isInstanceOf(NormalTile.class);
+
+      game.nextTurn();
       assertThat(game.getBoard().getTileAtIndex(player.getPosition()))
           .isInstanceOf(NormalTile.class);
     }

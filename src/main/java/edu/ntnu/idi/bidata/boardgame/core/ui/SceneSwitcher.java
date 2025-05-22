@@ -3,6 +3,7 @@ package edu.ntnu.idi.bidata.boardgame.core.ui;
 import static java.util.Objects.requireNonNull;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
+import edu.ntnu.idi.bidata.boardgame.common.io.FileUtil;
 import edu.ntnu.idi.bidata.boardgame.common.io.csv.CSVHandler;
 import edu.ntnu.idi.bidata.boardgame.common.ui.component.PlayerSetupController;
 import edu.ntnu.idi.bidata.boardgame.common.ui.controller.MainController;
@@ -93,13 +94,15 @@ public class SceneSwitcher {
   }
 
   private SnakeGameController createSnakeGameController() throws IOException {
-    var playerManager = new PlayerManager(eventBus, new CSVHandler("players"));
+    var csvFile = FileUtil.generateFilePath("players", "csv");
+    var playerManager = new PlayerManager(eventBus, new CSVHandler(csvFile));
     var game = GameFactory.createSnakeGame(eventBus, playerManager);
     return new SnakeGameController(this, eventBus, new GameEngine<>(game));
   }
 
   private MonopolyGameController createMonopolyGameController() throws IOException {
-    var playerManager = new PlayerManager(eventBus, new CSVHandler("players"));
+    var csvFile = FileUtil.generateFilePath("players", "csv");
+    var playerManager = new PlayerManager(eventBus, new CSVHandler(csvFile));
     var game = GameFactory.createMonopolyGame(eventBus, playerManager);
     return new MonopolyGameController(this, eventBus, new GameEngine<>(game));
   }

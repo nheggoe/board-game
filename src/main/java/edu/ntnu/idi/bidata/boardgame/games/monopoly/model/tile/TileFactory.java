@@ -20,7 +20,7 @@ public class TileFactory {
   public static List<MonopolyTile> generateOwnableTiles() {
     try {
       return generateTilesFromCSV(
-          CSVReader.readLines(Path.of("src/main/resources/csv/monopoly_tiles.csv").toFile()), 4);
+          CSVReader.readAll(Path.of("src/main/resources/csv/monopoly_tiles.csv")), 4);
     } catch (IOException ignored) {
       return List.of();
     }
@@ -35,12 +35,12 @@ public class TileFactory {
   }
 
   public static List<MonopolyTile> generateTilesFromCSV(
-      List<String> lines, int expectedColumnCount) {
+      List<String[]> lines, int expectedColumnCount) {
     List<MonopolyTile> monopolyTiles = new ArrayList<>();
-    for (String line : lines) {
+    lines = lines.subList(1, lines.size());
+    for (var tokens : lines) {
       // Name, Type, Color, Cost
       //   0,    1,    2,     3
-      var tokens = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
       if (tokens.length != expectedColumnCount) {
         throw new IllegalStateException(
             "Row count doesn't match the expected result. Expected: %d, Actual :%d."

@@ -104,7 +104,7 @@ public abstract class Player {
     return id.hashCode();
   }
 
-  public static String toCsvLine(Player player) {
-    return "%s,%s".formatted(player.getName(), player.getFigure());
+  public static String[] toCsvLine(Player player) {
+    return "%s,%s".formatted(player.getName(), player.getFigure()).split(",", -1);
   }
 }

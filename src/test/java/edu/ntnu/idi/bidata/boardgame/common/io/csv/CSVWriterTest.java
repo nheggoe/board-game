@@ -1,72 +1,69 @@
 package edu.ntnu.idi.bidata.boardgame.common.io.csv;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import edu.ntnu.idi.bidata.boardgame.common.io.FileUtil;
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
-import org.junit.jupiter.api.AfterEach;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class CSVWriterTest {
 
-  private File file;
+  @TempDir private Path tempDir;
+
+  private Path csvFile;
 
   @BeforeEach
   void setUp() {
-    file = FileUtil.generateFilePath("csvWriterTest", "csv", true).toFile();
-    FileUtil.ensureFileAndDirectoryExists(file);
-  }
-
-  @AfterEach
-  void tearDown() {
-    file.delete();
-    file.getParentFile().delete();
+    csvFile = tempDir.resolve("test.csv");
   }
 
   @DisplayName("Test valid CSV format")
   @ParameterizedTest
-  @ValueSource(
-      strings = {
-        """
-      Player, Figure
-      Nick    ,        Hat
-      Misha ,      BattleShip"""
-      })
-  void test_writeLines_with_validData(String csvData) throws IOException {
-    List<String> lines = List.of(csvData.split("\n"));
-    CSVWriter.writeLines(file, lines, false);
+  @MethodSource("validCsvDate")
+  void test_writeLines_with_validData(List<String[]> rows) throws IOException {
+
+    CSVWriter.writeLines(csvFile, rows);
+    assertThat(csvFile).exists().isNotEmptyFile();
+
     String expectedOutput =
         """
         Player,Figure
         Nick,Hat
         Misha,BattleShip
         """;
-    assertThat(file).content().isEqualTo(expectedOutput);
+    assertThat(csvFile).content().isEqualTo(expectedOutput);
   }
 
   @DisplayName("Test invalid CSV format")
   @ParameterizedTest
-  @ValueSource(
-      strings = {
-        """
-      Player, Figure
-      Nick    ,        Hat
-      Misha ,      BattleShip""",
-        """
-      Player, Figure
-        """
-      })
-  void test_writeLines_with_invalidData(String csvData) throws IOException {
-    List<String> lines = List.of(csvData.split("\n"));
-    CSVWriter.writeLines(file, lines, false);
+  @MethodSource("invalidCsvDate")
+  void test_writeLines_with_invalidData(List<String[]> rows) throws IOException {
+    assertThatCode(() -> CSVWriter.writeLines(csvFile, rows)).doesNotThrowAnyException();
+  }
+
+  static Stream<List<String[]>> validCsvDate() {
+    return Stream.of(
+        List.of(
+            new String[] {"Player", "Figure"},
+            new String[] {"Nick", "Hat"},
+            new String[] {"Misha", "BattleShip"}));
+  }
+
+  static Stream<List<String[]>> invalidCsvDate() {
+    return Stream.of(
+        List.of(
+            new String[] {"Player", "Figure"},
+            new String[] {"Nick", ""},
+            new String[] {"Misha", "BattleShip"}));
   }
 }

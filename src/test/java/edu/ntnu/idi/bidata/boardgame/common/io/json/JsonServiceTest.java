@@ -1,9 +1,8 @@
 package edu.ntnu.idi.bidata.boardgame.common.io.json;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.contentOf;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
 import edu.ntnu.idi.bidata.boardgame.common.io.FileUtil;
@@ -15,16 +14,44 @@ import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.MonopolyPlayer
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.SnakeAndLadderBoard;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.SnakeAndLadderPlayer;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.TempDir;
+import org.mockito.MockedStatic;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 class JsonServiceTest {
+
+  @TempDir private Path tempDir;
+
+  private Path jsonFile;
+
+  private MockedStatic<FileUtil> mockedFileUtil;
+
+  @BeforeEach
+  void setUp() {
+    jsonFile = tempDir.resolve("test.json");
+    mockedFileUtil = mockStatic(FileUtil.class);
+    mockedFileUtil
+        .when(() -> FileUtil.generateFilePath(anyString(), anyString()))
+        .thenReturn(jsonFile);
+  }
+
+  @AfterEach
+  void tearDown() {
+    mockedFileUtil.close();
+  }
 
   @Test
   void test_read_write_SnakeAndLadderBoard() throws IOException {
 
-    var jsonService = new JsonService<>(SnakeAndLadderBoard.class, true);
+    var jsonService = new JsonService<>(SnakeAndLadderBoard.class);
 
     var mockPlayerManager = mock(PlayerManager.class);
     when(mockPlayerManager.loadCsvAsSnakeAndLadderPlayers())
@@ -36,11 +63,6 @@ class JsonServiceTest {
     var boards = jsonService.deserializeFromSource().toList();
 
     assertThat(boards).containsExactly(board);
-
-    // cleanup
-    var file = FileUtil.generateFilePath("SnakeAndLadderBoard", "json", true).toFile();
-    file.delete();
-    file.getParentFile().delete();
   }
 
   @Test
@@ -51,19 +73,14 @@ class JsonServiceTest {
         .thenReturn(List.of(new MonopolyPlayer("John", Player.Figure.HAT)));
     var board = GameFactory.createMonopolyGame(mockEventbus, mockPlayerManager).getBoard();
 
-    var jsonService = new JsonService<>(MonopolyBoard.class, true);
+    var jsonService = new JsonService<>(MonopolyBoard.class);
     jsonService.serializeToSource(Set.of(board));
 
-    var file = FileUtil.generateFilePath("MonopolyBoard", "json", true).toFile();
-
-    assertThat(contentOf(file))
-        .isNotEmpty()
+    assertThat(jsonFile)
+        .isNotEmptyFile()
+        .content()
         .contains("start")
         .contains("property")
         .contains("position");
-
-    // cleanup
-    assertThat(file.delete()).isTrue();
-    file.getParentFile().delete();
   }
 }

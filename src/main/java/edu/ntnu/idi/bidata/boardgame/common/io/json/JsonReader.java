@@ -1,10 +1,12 @@
 package edu.ntnu.idi.bidata.boardgame.common.io.json;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.gson.Gson;
 import edu.ntnu.idi.bidata.boardgame.common.io.FileUtil;
-import java.io.File;
-import java.io.FileReader;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -26,7 +28,6 @@ public class JsonReader<T> {
 
   private final Gson gson = CustomGson.getInstance();
   private final Class<T> targetClass;
-  private final boolean isTest;
 
   /**
    * Constructs a new instance of the JsonReader class for reading JSON files and deserializing
@@ -35,16 +36,10 @@ public class JsonReader<T> {
    * performed in a test or production environment.
    *
    * @param targetClass the class of object that will be used to serialize
-   * @param isTest a boolean flag indicating whether the JSON file should be located in the test
-   *     environment (true) or the production environment (false)
    * @throws IllegalArgumentException if the targetClass parameter is null
    */
-  public JsonReader(Class<T> targetClass, boolean isTest) {
-    if (targetClass == null) {
-      throw new IllegalArgumentException("Target class must not be null");
-    }
-    this.targetClass = targetClass;
-    this.isTest = isTest;
+  public JsonReader(Class<T> targetClass) {
+    this.targetClass = requireNonNull(targetClass, "Target class must not be null");
   }
 
   /**
@@ -58,18 +53,14 @@ public class JsonReader<T> {
    *     newly created
    */
   public Stream<T> parseJsonStream() {
-    File file = FileUtil.generateFilePath(targetClass.getSimpleName(), "json", isTest).toFile();
-    FileUtil.ensureFileAndDirectoryExists(file);
+    var jsonFile = FileUtil.generateFilePath(targetClass.getSimpleName(), "json");
+    FileUtil.ensureFileAndDirectoryExists(jsonFile);
 
-    if (file.length() == 0) {
-      return Stream.empty();
-    }
-
-    try (FileReader reader = new FileReader(file)) {
-      Set<T> set = gson.fromJson(reader, JsonType.getType(targetClass));
-      return set.stream();
+    try (BufferedReader reader = Files.newBufferedReader(jsonFile)) {
+      Set<T> entities = gson.fromJson(reader, JsonType.getType(targetClass));
+      return entities.stream();
     } catch (IOException e) {
-      throw new JsonException("Could not parse JSON file: " + file + "\n" + e.getMessage());
+      throw new JsonException("Could not parse from JSON file: " + jsonFile);
     }
   }
 }

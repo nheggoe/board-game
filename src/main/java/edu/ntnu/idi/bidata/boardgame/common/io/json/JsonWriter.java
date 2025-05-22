@@ -1,10 +1,12 @@
 package edu.ntnu.idi.bidata.boardgame.common.io.json;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.gson.Gson;
 import edu.ntnu.idi.bidata.boardgame.common.io.FileUtil;
-import java.io.File;
-import java.io.FileWriter;
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Set;
 
 /**
@@ -20,13 +22,12 @@ import java.util.Set;
  * individual objects directly.
  *
  * @author Nick Heggø
- * @version 2025.03.28
+ * @version 2025.05.22
  */
 public class JsonWriter<T> {
 
   private final Gson gson = CustomGson.getInstance();
   private final Class<T> targetClass;
-  private final boolean isTest;
 
   /**
    * Constructs a new instance of the JsonWriter class for serializing collections of objects to a
@@ -34,16 +35,10 @@ public class JsonWriter<T> {
    * and whether the operation is in a test or production environment.
    *
    * @param targetClass the class type of the objects to be serialized; must not be null
-   * @param isTest a boolean flag indicating whether the JSON file should be created in the test
-   *     environment (true) or the production environment (false)
    * @throws IllegalArgumentException if the targetClass parameter is null
    */
-  public JsonWriter(Class<T> targetClass, boolean isTest) {
-    if (targetClass == null) {
-      throw new IllegalArgumentException("Target class must not be null");
-    }
-    this.targetClass = targetClass;
-    this.isTest = isTest;
+  public JsonWriter(Class<T> targetClass) {
+    this.targetClass = requireNonNull(targetClass, "Target class must not be null");
   }
 
   /**
@@ -55,15 +50,15 @@ public class JsonWriter<T> {
    * @param set the set of objects to serialize and write into the JSON file
    */
   public void writeJsonFile(Set<T> set) {
-    File file = FileUtil.generateFilePath(targetClass.getSimpleName(), "json", isTest).toFile();
-    FileUtil.ensureFileAndDirectoryExists(file);
+    var jsonFile = FileUtil.generateFilePath(targetClass.getSimpleName(), "json");
+    FileUtil.ensureFileAndDirectoryExists(jsonFile);
 
     String json = gson.toJson(set, JsonType.getType(targetClass));
 
-    try (FileWriter writer = new FileWriter(file)) {
+    try (BufferedWriter writer = Files.newBufferedWriter(jsonFile)) {
       writer.write(json);
     } catch (IOException e) {
-      throw new JsonException("Could not write JSON file: " + file + "\n" + e.getMessage());
+      throw new JsonException("Could not write to JSON file: " + jsonFile + "\n" + e.getMessage());
     }
   }
 }

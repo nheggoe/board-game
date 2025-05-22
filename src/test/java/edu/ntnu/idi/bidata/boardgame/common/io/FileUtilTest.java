@@ -1,66 +1,38 @@
 package edu.ntnu.idi.bidata.boardgame.common.io;
 
-import static org.assertj.core.api.AssertionsForClassTypes.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.nio.file.Path;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 class FileUtilTest {
 
   @Test
+  void test_generatedFilPath() {
+    assertThat(FileUtil.generateFilePath("test", "json")).isEqualTo(Path.of("data/json/test.json"));
+    assertThat(FileUtil.generateFilePath("test", "csv")).isEqualTo(Path.of("data/csv/test.csv"));
+  }
+
+  @Test
   void testUnsupportedFileFormat() {
-    assertThatThrownBy(() -> FileUtil.generateFilePath("test", "html", true))
+    assertThatThrownBy(() -> FileUtil.generateFilePath("test", "html"))
         .isInstanceOf(UnsupportedOperationException.class);
-    assertThatCode(() -> FileUtil.generateFilePath("test", "json", true))
-        .doesNotThrowAnyException();
-    assertThatCode(() -> FileUtil.generateFilePath("test", "csv", true)).doesNotThrowAnyException();
+    assertThatCode(() -> FileUtil.generateFilePath("test", "json")).doesNotThrowAnyException();
+    assertThatCode(() -> FileUtil.generateFilePath("test", "csv")).doesNotThrowAnyException();
   }
 
   @Test
-  void testGeneratedFilPath() {
-    assertThat(FileUtil.generateFilePath("test", "json", true))
-        .isEqualTo(Path.of("src/test/resources/json/test.json"));
+  void test_nullInputs() {
 
-    assertThat(FileUtil.generateFilePath("test", "json", false))
-        .isEqualTo(Path.of("data/json/test.json"));
+    assertThatCode(() -> FileUtil.generateFilePath("test", "json")).doesNotThrowAnyException();
 
-    assertThat(FileUtil.generateFilePath("test", "csv", true))
-        .isEqualTo(Path.of("src/test/resources/csv/test.csv"));
+    assertThatThrownBy(() -> FileUtil.generateFilePath(null, "json"))
+        .isInstanceOf(NullPointerException.class);
 
-    assertThat(FileUtil.generateFilePath("test", "csv", false))
-        .isEqualTo(Path.of("data/csv/test.csv"));
-  }
+    assertThatThrownBy(() -> FileUtil.generateFilePath("test", null))
+        .isInstanceOf(NullPointerException.class);
 
-  @Test
-  void testNullInputs() {
-    assertThrows(
-        IllegalArgumentException.class, () -> FileUtil.generateFilePath(null, "json", true));
-    assertThrows(
-        IllegalArgumentException.class, () -> FileUtil.generateFilePath("test", null, true));
-    assertDoesNotThrow(() -> FileUtil.generateFilePath("test", "json", true));
-
-    assertThrows(IllegalArgumentException.class, () -> FileUtil.ensureFileAndDirectoryExists(null));
-  }
-
-  @Test
-  @Disabled("Skipping due to known issue")
-  void testEnsureFileAndDirectoryExists() {
-    var path = FileUtil.generateFilePath("test", "json", true);
-    FileUtil.ensureFileAndDirectoryExists(path.toFile());
-    assertTrue(path.toFile().exists());
-    assertTrue(path.getParent().toFile().exists());
-    assertTrue(path.getParent().getParent().toFile().exists());
-    assertTrue(path.getParent().getParent().getParent().toFile().exists());
-
-    // clean up
-    path.toFile().delete();
-    path.getParent().toFile().delete();
-    path.getParent().getParent().toFile().delete();
-    path.getParent().getParent().getParent().toFile().delete();
-    assertFalse(path.toFile().exists());
-    assertFalse(path.getParent().toFile().exists());
-    assertFalse(path.getParent().getParent().toFile().exists());
+    assertThatThrownBy(() -> FileUtil.ensureFileAndDirectoryExists(null))
+        .isInstanceOf(NullPointerException.class);
   }
 }

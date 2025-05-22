@@ -1,5 +1,6 @@
 package edu.ntnu.idi.bidata.boardgame.common.ui.view;
 
+import edu.ntnu.idi.bidata.boardgame.common.io.FileUtil;
 import edu.ntnu.idi.bidata.boardgame.common.io.csv.CSVHandler;
 import edu.ntnu.idi.bidata.boardgame.common.ui.component.SettingButton;
 import edu.ntnu.idi.bidata.boardgame.core.model.Player;
@@ -321,24 +322,20 @@ public class PlayerSetupView extends View {
 
     public PlayerSetupModel() {
       this.players = new ArrayList<>();
-      this.csvHandler = new CSVHandler("players");
+      var csvFile = FileUtil.generateFilePath("players", "csv");
+      this.csvHandler = new CSVHandler(csvFile);
     }
 
     public List<Player> getPlayers() throws IOException {
-      List<String> lines = csvHandler.readCSV();
-      players.clear();
+      var rows = csvHandler.readAll();
 
-      for (String line : lines) {
+      for (var row : rows) {
         try {
-          String[] parts = line.split(",");
-          if (parts.length >= 2) {
-            String name = parts[0].trim();
-            Player.Figure figure = Player.Figure.valueOf(parts[1].trim().toUpperCase());
-            players.add(new SnakeAndLadderPlayer(name, figure));
-          }
-        } catch (IllegalArgumentException e) {
-          // Skip invalid entries
-          System.err.println("Invalid player data: " + e.getMessage());
+          String name = row[0].trim();
+          Player.Figure figure = Player.Figure.valueOf(row[1].trim().toUpperCase());
+          players.add(new SnakeAndLadderPlayer(name, figure));
+        } catch (IllegalArgumentException ignored) {
+          // ignored
         }
       }
 
@@ -346,12 +343,13 @@ public class PlayerSetupView extends View {
     }
 
     public void savePlayers() throws IOException {
-      List<String> lines = new ArrayList<>();
+      var rows = new ArrayList<String[]>();
+      rows.add(new String[] {"Name", "Figure"});
       for (Player player : players) {
-        lines.add(Player.toCsvLine(player));
+        rows.add(Player.toCsvLine(player));
       }
 
-      csvHandler.writeCSV(lines, false); // Overwrite the file
+      csvHandler.writeLines(rows);
     }
 
     public void addPlayer(String name, Player.Figure figure) {
