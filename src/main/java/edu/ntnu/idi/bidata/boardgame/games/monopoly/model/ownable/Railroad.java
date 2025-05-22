@@ -1,27 +1,20 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable;
 
+/**
+ * Represents a Railroad in the Monopoly game that can be owned by a player and generates a fixed
+ * rent. A Railroad is one of the types of Ownables in the game.
+ *
+ * <p>Implements the Ownable interface, which defines the behavior for entities that have a price
+ * and generate rent.
+ *
+ * @param price the purchase cost of the Railroad.
+ * @author Mihailo
+ * @version 2025.04.26
+ */
 public record Railroad(int price) implements Ownable {
 
   @Override
   public int rent() {
-    // todo Fix
-    // var game = GameEngine.getInstance().getGame().orElseThrow();
-    // var owner =
-    //     game.stream().filter(p -> p.getOwnedAssets().contains(this)).findFirst().orElse(null);
-    //
-    // if (owner == null) {
-    //   return 25;
-    // }
-    //
-    // long railroadsOwned =
-    //     owner.getOwnedAssets().stream().filter(Railroad.class::isInstance).count();
-    //
-    // return switch ((int) railroadsOwned) {
-    //   case 2 -> 50;
-    //   case 3 -> 100;
-    //   case 4 -> 200;
-    //   default -> 25;
-    // };
     return 25;
   }
 }

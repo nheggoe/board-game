@@ -1,7 +1,6 @@
 package edu.ntnu.idi.bidata.boardgame.games.snake.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 
@@ -52,7 +51,7 @@ class SnakeAndLadderGameTest {
   @Test
   void test_simulateGamePlay() {
     try (MockedStatic<Dice> mockedDice = mockStatic(Dice.class)) {
-      mockedDice.when(() -> Dice.roll(1)).thenReturn(new DiceRoll(new int[] {2}));
+      mockedDice.when(() -> Dice.roll(1)).thenReturn(new DiceRoll(2));
       assertThat(game.getBoard()).isNotNull();
       assertThat(game.getBoard().tiles()).hasSize(14);
 
@@ -94,8 +93,8 @@ class SnakeAndLadderGameTest {
     try (MockedStatic<Dice> mockedDice = mockStatic(Dice.class)) {
       mockedDice
           .when(() -> Dice.roll(1))
-          .thenReturn(new DiceRoll(new int[] {6}))
-          .thenReturn(new DiceRoll(new int[] {2}));
+          .thenReturn(new DiceRoll(6))
+          .thenReturn(new DiceRoll(2));
 
       assertThat(game.getBoard()).isNotNull();
       assertThat(game.getBoard().tiles()).hasSize(14);

@@ -17,22 +17,6 @@ public record Utility(String name, int price) implements Ownable {
 
   @Override
   public int rent() {
-    // todo fix
-    // var diceRoll = Dice.getInstance().roll(2);
-    // int total = diceRoll.getTotal();
-    //
-    // var game = GameEngine.getInstance().getGame().orElseThrow();
-    // Player owner = game.stream().filter(p -> p.isOwnerOf(this)).findFirst().orElse(null);
-    //
-    // if (owner == null) {
-    //   return total * 4;
-    // }
-    //
-    // long utilityOwned =
-    // owner.getOwnedAssets().stream().filter(Utility.class::isInstance).count();
-    //
-    // int multiplier = (utilityOwned == 2) ? 10 : 4;
-    // return total * multiplier;
-    return 4;
+    return 10;
   }
 }

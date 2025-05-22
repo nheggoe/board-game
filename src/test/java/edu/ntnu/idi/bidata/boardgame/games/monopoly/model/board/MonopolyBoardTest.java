@@ -39,5 +39,7 @@ class MonopolyBoardTest {
   }
 
   @Test
-  void test_basic() {}
+  void test_basic() {
+    assertThat(board.tiles()).hasSize(8);
+  }
 }

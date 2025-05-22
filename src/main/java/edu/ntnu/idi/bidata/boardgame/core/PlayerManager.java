@@ -5,15 +5,12 @@ import static java.util.Objects.requireNonNull;
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.UserInterfaceEvent;
 import edu.ntnu.idi.bidata.boardgame.common.io.csv.CSVHandler;
-import edu.ntnu.idi.bidata.boardgame.common.util.StringFormatter;
 import edu.ntnu.idi.bidata.boardgame.core.model.Player;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.MonopolyPlayer;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.SnakeAndLadderPlayer;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class PlayerManager {
 
@@ -57,11 +54,5 @@ public class PlayerManager {
   public void savePlayers(List<Player> players) throws IOException {
     var rows = players.stream().map(Player::toCsvLine).toList();
     csvHandler.writeLines(rows);
-  }
-
-  private static String getAvailableFigures() {
-    return Arrays.stream(Player.Figure.values())
-        .map(StringFormatter::formatEnum)
-        .collect(Collectors.joining(", "));
   }
 }

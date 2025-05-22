@@ -39,7 +39,7 @@ public final class Property implements Ownable {
   @Override
   public int rent() {
     int baseRent = (int) (price * 0.7);
-    int bonusRent = upgrades.stream().mapToInt(Upgrade::getRentMultiplierPercentage).sum();
+    int bonusRent = upgrades.stream().mapToInt(Upgrade::rentMultiplierPercentage).sum();
     return baseRent + (baseRent * bonusRent / 100);
   }
 
@@ -48,7 +48,7 @@ public final class Property implements Ownable {
   }
 
   public boolean hasHotel() {
-    return upgrades.stream().anyMatch(u -> u.getType() == UpgradeType.HOTEL);
+    return upgrades.stream().anyMatch(u -> u.type() == UpgradeType.HOTEL);
   }
 
   public boolean canBuildHouse() {
@@ -56,7 +56,7 @@ public final class Property implements Ownable {
   }
 
   public int countHouses() {
-    return (int) upgrades.stream().filter(u -> u.getType() == UpgradeType.HOUSE).count();
+    return (int) upgrades.stream().filter(u -> u.type() == UpgradeType.HOUSE).count();
   }
 
   public List<Upgrade> getUpgrades() {

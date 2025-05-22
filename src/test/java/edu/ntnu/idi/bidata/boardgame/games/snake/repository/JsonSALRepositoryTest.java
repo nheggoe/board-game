@@ -15,6 +15,7 @@ import edu.ntnu.idi.bidata.boardgame.games.snake.model.SnakeAndLadderGame;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.SnakeAndLadderPlayer;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.tile.NormalTile;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.tile.SnakeTile;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
@@ -43,9 +44,9 @@ class JsonSALRepositoryTest {
   private SnakeAndLadderGame game;
 
   @BeforeEach
-  void setUp() {
+  void setUp() throws IOException {
     jsonFile = tempDir.resolve("test.json");
-    // FileUtil.ensureFileAndDirectoryExists(jsonFile);
+    FileUtil.ensureFileAndDirectoryExists(jsonFile);
     mockedFileUtil = mockStatic(FileUtil.class);
     mockedFileUtil.when(() -> FileUtil.generateFilePath(any(), any())).thenReturn(jsonFile);
 
@@ -135,5 +136,6 @@ class JsonSALRepositoryTest {
     // Save to source
     Set<SnakeAndLadderGame> games = Set.of(game);
     jsonSALRepository.saveToSource(games);
+    assertThat(jsonFile).isNotEmptyFile().content().contains("start");
   }
 }

@@ -51,7 +51,9 @@ public class TurnManager<P extends Player> {
       }
       // reset back to the current position
       iterator = players.iterator();
-      while (iterator.hasNext() && !iterator.next().equals(currentPlayer)) {}
+      while (iterator.hasNext() && !iterator.next().equals(currentPlayer)) {
+        // iterate until it found the previous user
+      }
     }
   }
 
