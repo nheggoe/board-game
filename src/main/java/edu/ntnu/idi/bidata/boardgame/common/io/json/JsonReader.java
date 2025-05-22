@@ -54,11 +54,14 @@ public class JsonReader<T> {
    */
   public Stream<T> parseJsonStream() {
     var jsonFile = FileUtil.generateFilePath(targetClass.getSimpleName(), "json");
-    FileUtil.ensureFileAndDirectoryExists(jsonFile);
 
-    try (BufferedReader reader = Files.newBufferedReader(jsonFile)) {
-      Set<T> entities = gson.fromJson(reader, JsonType.getType(targetClass));
-      return entities.stream();
+    try {
+      FileUtil.ensureFileAndDirectoryExists(jsonFile);
+
+      try (BufferedReader reader = Files.newBufferedReader(jsonFile)) {
+        Set<T> entities = gson.fromJson(reader, JsonType.getType(targetClass));
+        return entities.stream();
+      }
     } catch (IOException e) {
       throw new JsonException("Could not parse from JSON file: " + jsonFile);
     }

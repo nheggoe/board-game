@@ -1,6 +1,8 @@
 package edu.ntnu.idi.bidata.boardgame.common.ui.component;
 
 import edu.ntnu.idi.bidata.boardgame.core.ui.SceneSwitcher;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -33,14 +35,22 @@ public class EndDialog extends Dialog<ButtonType> {
     var backToMainMenuButton = new Button("Back to Main Menu");
     backToMainMenuButton.setOnAction(
         event -> {
-          sceneSwitcher.switchTo(SceneSwitcher.SceneName.MAIN_VIEW);
+          try {
+            sceneSwitcher.switchTo(SceneSwitcher.SceneName.MAIN_VIEW);
+          } catch (IOException e) {
+            throw new UncheckedIOException(e);
+          }
           this.close();
         });
 
     var newGameButton = new Button("Play Again");
     newGameButton.setOnAction(
         event -> {
-          sceneSwitcher.reset();
+          try {
+            sceneSwitcher.reset();
+          } catch (IOException e) {
+            throw new UncheckedIOException(e);
+          }
           this.close();
         });
 

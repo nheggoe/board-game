@@ -7,7 +7,6 @@ import edu.ntnu.idi.bidata.boardgame.common.io.FileUtil;
 import edu.ntnu.idi.bidata.boardgame.common.io.csv.CSVHandler;
 import edu.ntnu.idi.bidata.boardgame.common.ui.component.PlayerSetupController;
 import edu.ntnu.idi.bidata.boardgame.common.ui.controller.MainController;
-import edu.ntnu.idi.bidata.boardgame.common.util.AlertFactory;
 import edu.ntnu.idi.bidata.boardgame.common.util.GameFactory;
 import edu.ntnu.idi.bidata.boardgame.core.GameEngine;
 import edu.ntnu.idi.bidata.boardgame.core.PlayerManager;
@@ -17,7 +16,6 @@ import java.io.IOException;
 import java.util.logging.Logger;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
@@ -48,7 +46,7 @@ public class SceneSwitcher {
     SNAKE_GAME_VIEW,
   }
 
-  public void switchTo(SceneName name) {
+  public void switchTo(SceneName name) throws IOException {
     if (controller != null) {
       try {
         controller.getView().close();
@@ -57,18 +55,11 @@ public class SceneSwitcher {
         LOGGER.severe(() -> "Failed to close controller: " + controller.getClass().getName());
       }
     }
-    try {
-      this.controller = createController(name);
-      setRoot(controller.getView());
-    } catch (IOException e) {
-      LOGGER.severe(e::getMessage);
-      LOGGER.severe(() -> "Failed to create controller: " + controller.getClass().getName());
-      AlertFactory.createAlert(Alert.AlertType.ERROR, "Failed to create controller: " + name)
-          .showAndWait();
-    }
+    this.controller = createController(name);
+    setRoot(controller.getView());
   }
 
-  public void reset() {
+  public void reset() throws IOException {
     switch (controller) {
       case SnakeGameController s -> switchTo(SceneName.SNAKE_GAME_VIEW);
       case MonopolyGameController m -> switchTo(SceneName.MONOPOLY_GAME_VIEW);

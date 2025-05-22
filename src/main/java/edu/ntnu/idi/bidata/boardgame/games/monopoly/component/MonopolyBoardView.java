@@ -64,7 +64,7 @@ public class MonopolyBoardView extends EventListeningComponent {
       Supplier<List<MonopolyTile>> tilesSupplier) {
     super(
         eventBus,
-        CoreEvent.PlayerRemoved.class,
+        CoreEvent.PlayerMoved.class,
         MonopolyEvent.Purchased.class,
         MonopolyEvent.UpgradePurchased.class);
 
@@ -97,8 +97,9 @@ public class MonopolyBoardView extends EventListeningComponent {
     // Clear any existing player figure from the board
     clearPlayerFigures(player);
 
-    // Calculate the grid position for the new tile
-    int size = (board.getChildren().size() + 4) / 4;
+    // Calculate the grid position for the new tile based on number of tiles
+    var tiles = tilesSupplier.get();
+    int size = (tiles.size() + 4) / 4;
     int row = 0;
     int col = 0;
 

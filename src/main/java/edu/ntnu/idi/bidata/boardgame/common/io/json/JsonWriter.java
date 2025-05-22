@@ -51,12 +51,15 @@ public class JsonWriter<T> {
    */
   public void writeJsonFile(Set<T> set) {
     var jsonFile = FileUtil.generateFilePath(targetClass.getSimpleName(), "json");
-    FileUtil.ensureFileAndDirectoryExists(jsonFile);
 
-    String json = gson.toJson(set, JsonType.getType(targetClass));
+    try {
+      FileUtil.ensureFileAndDirectoryExists(jsonFile);
 
-    try (BufferedWriter writer = Files.newBufferedWriter(jsonFile)) {
-      writer.write(json);
+      String json = gson.toJson(set, JsonType.getType(targetClass));
+
+      try (BufferedWriter writer = Files.newBufferedWriter(jsonFile)) {
+        writer.write(json);
+      }
     } catch (IOException e) {
       throw new JsonException("Could not write to JSON file: " + jsonFile + "\n" + e.getMessage());
     }

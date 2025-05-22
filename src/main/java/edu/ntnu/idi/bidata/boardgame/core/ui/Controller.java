@@ -2,6 +2,8 @@ package edu.ntnu.idi.bidata.boardgame.core.ui;
 
 import static java.util.Objects.requireNonNull;
 
+import java.io.IOException;
+
 /**
  * @author Nick Heggø
  * @version 2025.05.08
@@ -30,7 +32,7 @@ public abstract class Controller {
     return view;
   }
 
-  public void switchTo(SceneSwitcher.SceneName name) {
+  public void switchTo(SceneSwitcher.SceneName name) throws IOException {
     getSceneSwitcher().switchTo(name);
   }
 }

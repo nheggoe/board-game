@@ -20,7 +20,11 @@ public class CSVHandler {
 
   public CSVHandler(Path csvFile) {
     this.csvFile = requireNonNull(csvFile);
-    FileUtil.ensureFileAndDirectoryExists(this.csvFile);
+    try {
+      FileUtil.ensureFileAndDirectoryExists(this.csvFile);
+    } catch (IOException e) {
+      throw new IllegalStateException("Failed to create CSV file: " + csvFile, e);
+    }
   }
 
   public List<String[]> readAll() throws IOException {

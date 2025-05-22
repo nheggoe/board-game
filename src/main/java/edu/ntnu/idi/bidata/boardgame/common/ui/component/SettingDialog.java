@@ -1,6 +1,8 @@
 package edu.ntnu.idi.bidata.boardgame.common.ui.component;
 
 import edu.ntnu.idi.bidata.boardgame.core.ui.SceneSwitcher;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -26,7 +28,11 @@ public class SettingDialog extends Dialog<ButtonType> {
     var editSavedPlayerButton = new Button("Edit Saved Players");
     editSavedPlayerButton.setOnAction(
         event -> {
-          sceneSwitcher.switchTo(SceneSwitcher.SceneName.PLAYER_SETUP_VIEW);
+          try {
+            sceneSwitcher.switchTo(SceneSwitcher.SceneName.PLAYER_SETUP_VIEW);
+          } catch (IOException e) {
+            throw new UncheckedIOException(e);
+          }
           this.close();
         });
     editSavedPlayerButton.setDisable(inGame);
@@ -34,7 +40,11 @@ public class SettingDialog extends Dialog<ButtonType> {
     var backToMainMenuButton = new Button("Back to Main Menu");
     backToMainMenuButton.setOnAction(
         event -> {
-          sceneSwitcher.switchTo(SceneSwitcher.SceneName.MAIN_VIEW);
+          try {
+            sceneSwitcher.switchTo(SceneSwitcher.SceneName.MAIN_VIEW);
+          } catch (IOException e) {
+            throw new UncheckedIOException(e);
+          }
           this.close();
         });
 
