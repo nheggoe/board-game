@@ -9,11 +9,23 @@ import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 
 /**
+ * The BoardGame class serves as the entry point for the application. It extends the JavaFX
+ * Application class, providing the necessary functionality to initialize and start the user
+ * interface for the board game. This class primarily sets up the main application window and
+ * handles scene switching.
+ *
  * @author Nick Heggø
  * @version 2025.05.08
  */
 public class BoardGame extends Application {
 
+  /**
+   * The main method serves as the entry point for the application. It initializes and launches the
+   * JavaFX application, invoking the {@link Application#launch(String...)} method.
+   *
+   * @param args command-line arguments passed during the application start. These arguments are
+   *     forwarded to the JavaFX application.
+   */
   public static void main(String[] args) {
     launch(args);
   }

@@ -8,6 +8,15 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.logging.Logger;
 
+/**
+ * The CSVWriter class provides utility methods for writing data to a CSV file. It writes rows of
+ * data provided as a list of string arrays, with values in each row joined by commas.
+ *
+ * <p>Each call ensures that the file and its parent directory exist before writing.
+ *
+ * @author Nick Heggø
+ * @version 2025.05.22
+ */
 public class CSVWriter {
 
   private static final Logger LOGGER = Logger.getLogger(CSVWriter.class.getName());

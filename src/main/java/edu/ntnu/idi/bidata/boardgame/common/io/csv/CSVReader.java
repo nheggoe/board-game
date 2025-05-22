@@ -19,6 +19,16 @@ public class CSVReader {
 
   private CSVReader() {}
 
+  /**
+   * Reads all data rows from the specified CSV file. Lines starting with a comment character (#)
+   * are ignored. Each line is split by a comma into an array of strings, with leading and trailing
+   * whitespace for each value trimmed.
+   *
+   * @param csvFile the path to the CSV file to read
+   * @return a list of string arrays, where each array represents a row of data from the CSV file,
+   *     excluding lines considered as comments
+   * @throws IOException if an I/O error occurs while reading the file
+   */
   public static List<String[]> readAll(Path csvFile) throws IOException {
     List<String[]> lines = new ArrayList<>();
     try (BufferedReader br = Files.newBufferedReader(csvFile)) {

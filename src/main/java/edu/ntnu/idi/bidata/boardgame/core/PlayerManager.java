@@ -13,23 +13,21 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class PlayerManager {
 
   private final EventBus eventBus;
   private final CSVHandler csvHandler;
-  private final Pattern csvPattern;
 
   public PlayerManager(EventBus eventBus, CSVHandler csvHandler) {
     this.eventBus = requireNonNull(eventBus);
     this.csvHandler = requireNonNull(csvHandler);
-    this.csvPattern = Pattern.compile("((\\s+)?,(\\s+)?)");
   }
 
   public List<MonopolyPlayer> loadCsvAsMonopolyPlayers() throws IOException {
-    var rows = csvHandler.readAll();
+    var rows = csvHandler.readAll().subList(1, csvHandler.readAll().size());
+
     var players = new ArrayList<MonopolyPlayer>();
     for (var row : rows) {
       try {
