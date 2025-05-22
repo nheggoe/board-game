@@ -81,7 +81,6 @@ public class FileUtil {
       }
     } catch (IOException e) {
       LOGGER.severe(() -> "Failed to ensure file exists: " + path + " — " + e.getMessage());
-      throw e;
     }
   }
 

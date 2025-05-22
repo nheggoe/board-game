@@ -62,4 +62,16 @@ public record DiceRoll(int... rolls) {
     sb.append(" (").append(getTotal()).append(")");
     return sb.toString();
   }
+
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof DiceRoll(int[] other))) return false;
+
+    return Arrays.equals(rolls, other);
+  }
+
+  @Override
+  public int hashCode() {
+    return Arrays.hashCode(rolls);
+  }
 }

@@ -1,7 +1,6 @@
 package edu.ntnu.idi.bidata.boardgame.common.io.csv;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -47,7 +46,7 @@ class CSVWriterTest {
   @DisplayName("Test invalid CSV format")
   @ParameterizedTest
   @MethodSource("invalidCsvDate")
-  void test_writeLines_with_invalidData(List<String[]> rows) throws IOException {
+  void test_writeLines_with_invalidData(List<String[]> rows) {
     assertThatCode(() -> CSVWriter.writeLines(csvFile, rows)).doesNotThrowAnyException();
   }
 
