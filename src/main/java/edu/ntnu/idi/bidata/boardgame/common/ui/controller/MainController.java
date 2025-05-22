@@ -13,8 +13,10 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 
 /**
- * @author Nick Heggø
- * @version 2025.05.08
+ * The MainController class is responsible for initializing and managing the main functionality of
+ * the application, including the preparation of default data files, handling the game scene
+ * transitions, and offering file repair functionality. It extends the base {@code Controller} class
+ * to integrate with the application’s scene management.
  */
 public class MainController extends Controller {
 
@@ -24,6 +26,14 @@ public class MainController extends Controller {
   private Path snakeAndLadderCsv;
   private Path monopolyCsv;
 
+  /**
+   * Constructs a MainController instance, a specific implementation of {@link Controller},
+   * responsible for managing the main view of the application and initializing necessary data
+   * files.
+   *
+   * @param sceneSwitcher the {@link SceneSwitcher} responsible for managing scene transitions; must
+   *     not be null
+   */
   public MainController(SceneSwitcher sceneSwitcher) {
     super(sceneSwitcher, createMainView(sceneSwitcher));
     initializeDataFiles();

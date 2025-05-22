@@ -23,6 +23,15 @@ public class CSVWriter {
 
   private CSVWriter() {}
 
+  /**
+   * Writes the rows of data to the specified CSV file. Each row is represented as a string array,
+   * with the values joined by commas. The method ensures that the file and its parent directories
+   * exist before writing.
+   *
+   * @param csvFile the path to the CSV file where the data should be written
+   * @param rows the list of string arrays representing rows of data to write to the file
+   * @throws IOException if an I/O error occurs during file creation or writing
+   */
   public static void writeLines(Path csvFile, List<String[]> rows) throws IOException {
     FileUtil.ensureFileAndDirectoryExists(csvFile);
     try (BufferedWriter writer = Files.newBufferedWriter(csvFile)) {

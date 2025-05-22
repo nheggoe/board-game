@@ -44,6 +44,15 @@ public class DiceView extends EventListeningComponent {
 
   private final Random random = new Random();
 
+  /**
+   * Constructs a {@code DiceView} component that listens for {@link CoreEvent.DiceRolled} events on
+   * the specified {@link EventBus}. This component visually represents dice rolls and aligns its
+   * children to the center with specified spacing.
+   *
+   * @param eventBus the {@link EventBus} to register the {@code DiceView} as a listener for dice
+   *     roll events, must not be null
+   * @throws NullPointerException if {@code eventBus} is null
+   */
   public DiceView(EventBus eventBus) {
     super(eventBus, CoreEvent.DiceRolled.class);
     setAlignment(Pos.CENTER);

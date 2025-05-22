@@ -65,8 +65,9 @@ public record DiceRoll(int... rolls) {
 
   @Override
   public boolean equals(Object o) {
-    if (!(o instanceof DiceRoll(int[] other))) return false;
-
+    if (!(o instanceof DiceRoll(int[] other))) {
+      return false;
+    }
     return Arrays.equals(rolls, other);
   }
 

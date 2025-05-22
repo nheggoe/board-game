@@ -58,6 +58,14 @@ public record MonopolyBoard(List<MonopolyTile> tiles) implements Board<MonopolyT
         .orElseThrow(InvalidBoardLayoutException::new);
   }
 
+  /**
+   * Retrieves the jail tile from the board. This method searches through all tiles to find a tile
+   * that is an instance of {@link JailMonopolyTile}. If no jail tile is present, an exception is
+   * thrown.
+   *
+   * @return the {@link JailMonopolyTile} object representing the jail tile on the board
+   * @throws InvalidBoardLayoutException if no jail tile is found on the board
+   */
   public JailMonopolyTile getJailTile() {
     return tiles.stream()
         .filter(JailMonopolyTile.class::isInstance)
@@ -66,10 +74,21 @@ public record MonopolyBoard(List<MonopolyTile> tiles) implements Board<MonopolyT
         .orElseThrow(InvalidBoardLayoutException::new);
   }
 
+  /**
+   * Returns the total number of tiles on the Monopoly board.
+   *
+   * @return the number of tiles on the board
+   */
   public int size() {
     return tiles.size();
   }
 
+  /**
+   * Retrieves the position of the specified tile on the board.
+   *
+   * @param tile the {@link MonopolyTile} whose position is to be determined
+   * @return the zero-based position of the tile on the board, or -1 if the tile is not found
+   */
   public int getTilePosition(MonopolyTile tile) {
     return tiles.indexOf(tile);
   }
@@ -94,6 +113,20 @@ public record MonopolyBoard(List<MonopolyTile> tiles) implements Board<MonopolyT
     return tiles.size();
   }
 
+  /**
+   * The {@code Layout} enumeration defines the possible configurations or structures for a Monopoly
+   * board. This enum is designed to categorize different types of board setups that can be utilized
+   * in a game of Monopoly.
+   *
+   * <p>Each enum constant represents a unique board layout: - {@code NORMAL}: Represents the
+   * standard or default board layout. - {@code UNFAIR}: Represents a layout with potentially
+   * imbalanced features or setups. - {@code EASY}: Represents a simplified or beginner-friendly
+   * board layout.
+   *
+   * <p>This enum is used in conjunction with the MonopolyBoardFactory class to specify the desired
+   * board layout when generating a Monopoly board. It allows for clear and concise representation
+   * of the board configuration without requiring additional parameters or metadata.
+   */
   public enum Layout {
     NORMAL,
     UNFAIR,
@@ -102,8 +135,9 @@ public record MonopolyBoard(List<MonopolyTile> tiles) implements Board<MonopolyT
 
   @Override
   public boolean equals(Object o) {
-    if (!(o instanceof MonopolyBoard(List<MonopolyTile> tiles1))) return false;
-
+    if (!(o instanceof MonopolyBoard(List<MonopolyTile> tiles1))) {
+      return false;
+    }
     return tiles.equals(tiles1);
   }
 
