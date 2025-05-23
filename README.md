@@ -1,5 +1,5 @@
 # Portfolio project IDATG2003
-### Author:
+### Authors:
 
 [@nheggoe](https://github.com/nheggoe)
 
