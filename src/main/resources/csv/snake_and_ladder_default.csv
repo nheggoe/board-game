@@ -1,5 +1,6 @@
 # Lines start with `#` will be ignored
-# TileType, Data
+# can simply delete the file in /data/csv/monopoly.csv to get a fresh new copy
+TileType, Data
 Normal,0
 Normal,0
 Ladder,19
