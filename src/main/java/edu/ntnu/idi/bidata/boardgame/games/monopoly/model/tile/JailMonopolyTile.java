@@ -61,15 +61,18 @@ public final class JailMonopolyTile extends CornerMonopolyTile {
    * @param player the player to advance their jail time
    * @throws IllegalStateException if the player is not currently jailed
    */
-  public void releaseIfPossible(Player player) {
+  public boolean releaseIfPossible(Player player) {
     if (!prisoners.containsKey(player)) {
       throw new IllegalStateException("Player is not in jail!");
     }
-    prisoners.merge(player, -1, Integer::sum);
-    if (prisoners.get(player) <= 0) {
+    int roundsLeft = prisoners.merge(player, -1, Integer::sum);
+    boolean shouldRelease = roundsLeft <= 0;
+    if (shouldRelease) {
       prisoners.remove(player);
     }
+    return shouldRelease;
   }
+
 
   /**
    * Retrieves the number of rounds remaining for the specified player who is currently in jail.

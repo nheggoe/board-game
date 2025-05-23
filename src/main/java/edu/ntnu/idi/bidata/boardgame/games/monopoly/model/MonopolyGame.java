@@ -67,15 +67,14 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
     int doubleCount = 0;
     var player = getNextPlayer();
     var jail = getJailTile();
+
     if (jail.isPlayerInJail(player)) {
-      jail.releaseIfPossible(player);
-      boolean isOutOfJail = jail.isPlayerInJail(player);
-      if (isOutOfJail) {
+      boolean wasReleased = jail.releaseIfPossible(player);
+      if (wasReleased) {
         println("%s is out of jail.".formatted(player.getName()));
       } else {
-        println(
-            "%s got %d rounds left in jail."
-                .formatted(player.getName(), jail.getNumberOfRoundsLeft(player)));
+        int roundsLeft = jail.getNumberOfRoundsLeft(player);
+        println("%s got %d rounds left in jail.".formatted(player.getName(), roundsLeft));
       }
       return;
     }
@@ -99,6 +98,7 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
       doubleCount++;
     }
   }
+
 
   /**
    * In Monopoly, a player gets to roll again immediately if:
