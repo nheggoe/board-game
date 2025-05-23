@@ -17,7 +17,7 @@ import java.util.Map;
  */
 public final class JailMonopolyTile extends CornerMonopolyTile {
 
-  private final Map<Player, Integer> players;
+  private final Map<Player, Integer> prisoners;
 
   /**
    * Constructs a {@code JailTile} at the given board position.
@@ -26,7 +26,7 @@ public final class JailMonopolyTile extends CornerMonopolyTile {
    */
   public JailMonopolyTile(Position position) {
     super(position);
-    players = new HashMap<>();
+    prisoners = new HashMap<>();
   }
 
   /**
@@ -37,10 +37,20 @@ public final class JailMonopolyTile extends CornerMonopolyTile {
    * @throws IllegalStateException if the player is already in jail
    */
   public void jailForNumberOfRounds(Player player, int numberOfRounds) {
-    if (players.containsKey(player)) {
+    if (prisoners.containsKey(player)) {
       throw new IllegalStateException("Player is already in jail!");
     }
-    players.put(player, numberOfRounds);
+    prisoners.put(player, numberOfRounds);
+  }
+
+  /**
+   * Checks whether the specified player is currently in jail.
+   *
+   * @param player the player to check
+   * @return {@code true} if the player is in jail, {@code false} otherwise
+   */
+  public boolean isPlayerInJail(Player player) {
+    return prisoners.containsKey(player);
   }
 
   /**
@@ -51,13 +61,27 @@ public final class JailMonopolyTile extends CornerMonopolyTile {
    * @param player the player to advance their jail time
    * @throws IllegalStateException if the player is not currently jailed
    */
-  public void pass(Player player) {
-    if (!players.containsKey(player)) {
+  public void releaseIfPossible(Player player) {
+    if (!prisoners.containsKey(player)) {
       throw new IllegalStateException("Player is not in jail!");
     }
-    players.merge(player, -1, Integer::sum);
-    if (players.get(player) == 0) {
-      players.remove(player);
+    prisoners.merge(player, -1, Integer::sum);
+    if (prisoners.get(player) <= 0) {
+      prisoners.remove(player);
     }
+  }
+
+  /**
+   * Retrieves the number of rounds remaining for the specified player who is currently in jail.
+   *
+   * @param player the player whose remaining jail rounds are to be retrieved
+   * @return the number of rounds left for the player in jail
+   * @throws IllegalStateException if the player is not currently in jail
+   */
+  public int getNumberOfRoundsLeft(Player player) {
+    if (!prisoners.containsKey(player)) {
+      throw new IllegalStateException("Player is not in jail!");
+    }
+    return prisoners.get(player);
   }
 }

@@ -59,13 +59,26 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
 
   @Override
   public void nextTurn() {
-
     if (isEnded()) {
       return;
     }
 
     int doubleCount = 0;
     var player = getNextPlayer();
+    var jail = getJailTile();
+    if (jail.isPlayerInJail(player)) {
+      jail.releaseIfPossible(player);
+      boolean isOutOfJail = jail.isPlayerInJail(player);
+      if (isOutOfJail) {
+        println("%s is out of jail.".formatted(player.getName()));
+      } else {
+        println(
+            "%s got %d rounds left in jail."
+                .formatted(player.getName(), jail.getNumberOfRoundsLeft(player)));
+      }
+      return;
+    }
+
     var diceRoll = playTurn(player);
 
     while (diceRoll.areDiceEqual()) {
