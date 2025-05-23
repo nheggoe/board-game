@@ -47,33 +47,23 @@ public class SnakeAndLadderGame extends Game<SnakeAndLadderTile, SnakeAndLadderP
    * @param player the player taking the turn
    */
   private void rollAndMovePlayer(SnakeAndLadderPlayer player) {
-    int roll = Dice.roll(1).getTotal();
-    movePlayer(player, roll);
+    var tileToMove = Dice.roll(1).getTotal();
+    movePlayer(player, tileToMove);
+    println("Player %s moved to tile %d".formatted(player.getName(), player.getPosition()));
+    tileActionOf(getTile(player.getPosition())).execute(player);
 
-    if (player.getPosition() == getBoard().size()) {
-      println("Player %s has won the game!".formatted(player.getName()));
-      return;
-    }
-
-    if (roll == 6) {
+    if (isAtTheEnd(player)) {
       println(
           "Player %s rolled a 6, moved to tile %d and gets another turn"
               .formatted(player.getName(), player.getPosition()));
-    } else {
-      println("Player %s moved to tile %d".formatted(player.getName(), player.getPosition()));
+      completeRoundAction(player);
+    } else if (tileToMove == 6) {
+      rollAndMovePlayer(player); // recursive call
     }
+  }
 
-    while (true) {
-      SnakeAndLadderTile tile = getTile(player.getPosition() - 1);
-      TileAction<SnakeAndLadderPlayer> action = tileActionOf(tile);
-      int before = player.getPosition();
-      action.execute(player);
-      if (player.getPosition() == before || tile instanceof NormalTile) break;
-    }
-
-    if (roll == 6) {
-      rollAndMovePlayer(player);
-    }
+  private boolean isAtTheEnd(SnakeAndLadderPlayer player) {
+    return player.getPosition() == getBoard().size() - 1;
   }
 
   /**
@@ -164,25 +154,16 @@ public class SnakeAndLadderGame extends Game<SnakeAndLadderTile, SnakeAndLadderP
    * Moves a player by a given number of tiles, respecting board boundaries.
    *
    * @param player the player to move
-   * @param delta the number of tiles to move forward
+   * @param tilesToMove the number of tiles to move forward
    */
   @Override
-  public void movePlayer(SnakeAndLadderPlayer player, int delta) {
-    int oldPosition = player.getPosition();
-    int target = oldPosition + delta;
+  public void movePlayer(SnakeAndLadderPlayer player, int tilesToMove) {
+    int oldIndex = player.getPosition();
+    int targetIndex = oldIndex + tilesToMove;
 
-    int max = getBoard().size();
+    int maxIndex = getBoard().size() - 1;
 
-    if (target >= max) {
-      player.setPosition(max);
-      notifyPlayerMoved(player);
-      completeRoundAction(player);
-      return;
-    }
-
-    if (target < 1) target = 1;
-
-    player.setPosition(target);
+    player.setPosition(Math.min(targetIndex, maxIndex));
     notifyPlayerMoved(player);
   }
 }

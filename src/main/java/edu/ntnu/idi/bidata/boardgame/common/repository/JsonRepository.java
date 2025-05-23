@@ -27,6 +27,17 @@ public abstract class JsonRepository<T> implements DataRepository<T> {
   private final JsonService<T> jsonService;
   private final Function<T, UUID> idExtractor;
 
+  /**
+   * Constructs an instance of the JsonRepository class. This protected constructor allows
+   * subclasses to provide the required {@link JsonService} for JSON operations and a function to
+   * extract unique identifiers from entities. It initializes an in-memory store of entities by
+   * deserializing them from the JSON source.
+   *
+   * @param jsonService the JSON service responsible for serialization and deserialization of
+   *     entities
+   * @param idExtractor a function for extracting the unique identifier (UUID) from an entity
+   * @throws NullPointerException if either jsonService or idExtractor is null
+   */
   protected JsonRepository(JsonService<T> jsonService, Function<T, UUID> idExtractor) {
     this.jsonService = requireNonNull(jsonService, "jsonService cannot be null!");
     this.idExtractor = requireNonNull(idExtractor, "idExtractor cannot be null!");

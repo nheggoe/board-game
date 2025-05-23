@@ -11,7 +11,21 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 /**
- * @version 2025.05.06
+ * A class that implements an event-driven system for managing and dispatching events.
+ *
+ * <p>The EventBus class acts as the central hub for registering event listeners and broadcasting
+ * events to them. It provides an implementation of the {@link EventPublisher} interface, enabling
+ * the system to add and remove listeners for specific event types, as well as dispatch events
+ * appropriately.
+ *
+ * <p>Key responsibilities of the EventBus include:
+ * <li>Tracking registered listeners for various event types.
+ * <li>Notifying all relevant listeners when an event is published.
+ * <li>Ensuring listeners are not notified if they are removed or unregistered.
+ *
+ * @see EventPublisher
+ * @see Event
+ * @see EventListener
  */
 public final class EventBus implements EventPublisher {
 

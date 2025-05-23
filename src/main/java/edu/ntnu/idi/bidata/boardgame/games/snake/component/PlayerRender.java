@@ -3,6 +3,7 @@ package edu.ntnu.idi.bidata.boardgame.games.snake.component;
 import static java.util.Objects.requireNonNull;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
+import edu.ntnu.idi.bidata.boardgame.common.event.UnhandledEventException;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.CoreEvent;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.Event;
 import edu.ntnu.idi.bidata.boardgame.core.model.Player;
@@ -54,8 +55,7 @@ public class PlayerRender extends EventListeningComponent {
       GridPane tileGrid,
       int boardDimension,
       Supplier<List<SnakeAndLadderPlayer>> players) {
-    super(eventBus);
-    getEventBus().addListener(CoreEvent.PlayerMoved.class, this);
+    super(eventBus, CoreEvent.PlayerMoved.class);
     this.tileGrid = tileGrid;
     this.gridSize = boardDimension;
     this.players = requireNonNull(players, "players must not be null");
@@ -69,15 +69,10 @@ public class PlayerRender extends EventListeningComponent {
    */
   @Override
   public void onEvent(Event event) {
-    if (event instanceof CoreEvent.PlayerMoved) {
-      Platform.runLater(this::renderPlayers);
+    switch (event) {
+      case CoreEvent.PlayerMoved ignored -> Platform.runLater(this::renderPlayers);
+      default -> throw new UnhandledEventException(event);
     }
-  }
-
-  /** Cleans up any listeners when this component is closed. */
-  @Override
-  public void close() {
-    getEventBus().removeListener(CoreEvent.PlayerMoved.class, this);
   }
 
   /** Clears existing icons and draws each player's figure on the correct tile. */
@@ -101,7 +96,6 @@ public class PlayerRender extends EventListeningComponent {
       tile.getChildren().add(icon);
     }
   }
-
 
   /**
    * Converts a tile number to grid coordinates.

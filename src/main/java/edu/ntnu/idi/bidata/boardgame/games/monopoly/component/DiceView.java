@@ -1,6 +1,7 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.component;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
+import edu.ntnu.idi.bidata.boardgame.common.event.UnhandledEventException;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.CoreEvent;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.Event;
 import edu.ntnu.idi.bidata.boardgame.core.model.dice.DiceRoll;
@@ -38,16 +39,32 @@ public class DiceView extends EventListeningComponent {
   private static final String BASE_PATH = "/images/dice";
   private static final int FACE_COUNT = 6;
   private static final int STEPS = 30; // More frames for smoother animation
-  private static final int TOTAL_DURATION_MS = 1000; // 1.5 seconds
+  private static final int TOTAL_DURATION_MS = 1000;
   private static final int FRAME_DURATION_MS = TOTAL_DURATION_MS / STEPS;
 
   private final Random random = new Random();
 
+  /**
+   * Constructs a {@code DiceView} component that listens for {@link CoreEvent.DiceRolled} events on
+   * the specified {@link EventBus}. This component visually represents dice rolls and aligns its
+   * children to the center with specified spacing.
+   *
+   * @param eventBus the {@link EventBus} to register the {@code DiceView} as a listener for dice
+   *     roll events, must not be null
+   * @throws NullPointerException if {@code eventBus} is null
+   */
   public DiceView(EventBus eventBus) {
-    super(eventBus);
-    getEventBus().addListener(CoreEvent.DiceRolled.class, this);
+    super(eventBus, CoreEvent.DiceRolled.class);
     setAlignment(Pos.CENTER);
     setSpacing(20);
+  }
+
+  @Override
+  public void onEvent(Event event) {
+    switch (event) {
+      case CoreEvent.DiceRolled(DiceRoll diceRoll) -> animateDiceRoll(diceRoll);
+      default -> throw new UnhandledEventException(event);
+    }
   }
 
   /**
@@ -104,17 +121,5 @@ public class DiceView extends EventListeningComponent {
    */
   private Image loadFace(int face) {
     return new Image(BASE_PATH + face + ".png");
-  }
-
-  @Override
-  public void onEvent(Event event) {
-    if (event instanceof CoreEvent.DiceRolled(DiceRoll diceRoll)) {
-      animateDiceRoll(diceRoll);
-    }
-  }
-
-  @Override
-  public void close() {
-    getEventBus().removeListener(CoreEvent.DiceRolled.class, this);
   }
 }

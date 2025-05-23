@@ -9,7 +9,7 @@ import edu.ntnu.idi.bidata.boardgame.core.model.Tile;
  * ensuring architectural constraints by limiting the permitted subtypes. Subtypes represent various
  * kinds of tiles found on the game board, such as: - Corner tiles, such as Free Parking or Jail -
  * Ownable tiles, representing properties or utilities - Tax tiles, where players must pay certain
- * amounts
+ * amounts h
  *
  * <p>Permitted subtypes are: - {@link CornerMonopolyTile}: Represents corner tiles like Start,
  * Jail, etc. - {@link OwnableMonopolyTile}: Represents tiles that can be owned, such as properties

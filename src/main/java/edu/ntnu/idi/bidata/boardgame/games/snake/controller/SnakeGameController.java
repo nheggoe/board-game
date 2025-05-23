@@ -5,7 +5,6 @@ import edu.ntnu.idi.bidata.boardgame.common.ui.component.EndDialog;
 import edu.ntnu.idi.bidata.boardgame.core.GameEngine;
 import edu.ntnu.idi.bidata.boardgame.core.ui.Controller;
 import edu.ntnu.idi.bidata.boardgame.core.ui.SceneSwitcher;
-import edu.ntnu.idi.bidata.boardgame.games.snake.model.SnakeAndLadderBoard;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.SnakeAndLadderPlayer;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.tile.SnakeAndLadderTile;
 import edu.ntnu.idi.bidata.boardgame.games.snake.view.SnakeGameView;
@@ -29,15 +28,13 @@ public class SnakeGameController extends Controller {
    * @param sceneSwitcher global scene switcher
    * @param eventBus event bus for event publishing
    * @param engine the core game engine
-   * @param board the game board model
    */
   public SnakeGameController(
       SceneSwitcher sceneSwitcher,
       EventBus eventBus,
-      GameEngine<SnakeAndLadderTile, SnakeAndLadderPlayer> engine,
-      SnakeAndLadderBoard board) {
+      GameEngine<SnakeAndLadderTile, SnakeAndLadderPlayer> engine) {
 
-    super(sceneSwitcher, createView(sceneSwitcher, eventBus, engine, board));
+    super(sceneSwitcher, createView(sceneSwitcher, eventBus, engine));
   }
 
   /**
@@ -52,8 +49,7 @@ public class SnakeGameController extends Controller {
   private static SnakeGameView createView(
       SceneSwitcher sceneSwitcher,
       EventBus eventBus,
-      GameEngine<SnakeAndLadderTile, SnakeAndLadderPlayer> engine,
-      SnakeAndLadderBoard board) {
+      GameEngine<SnakeAndLadderTile, SnakeAndLadderPlayer> engine) {
     return new SnakeGameView(
         sceneSwitcher,
         eventBus,

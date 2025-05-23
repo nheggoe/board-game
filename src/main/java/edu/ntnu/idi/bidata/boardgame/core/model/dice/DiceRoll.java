@@ -12,6 +12,16 @@ import java.util.Arrays;
  */
 public record DiceRoll(int... rolls) {
 
+  /**
+   * Constructs a {@link DiceRoll} instance that encapsulates the face values of one or more dice
+   * rolls. The constructor validates that each dice roll is within valid bounds (1 to 6 inclusive)
+   * and ensures that at least one dice roll is provided.
+   *
+   * @param rolls an array containing the face values of the dice rolls; each value must be between
+   *     1 and 6 inclusive
+   * @throws IllegalArgumentException if {@code rolls} is empty or contains values less than 1 or
+   *     greater than 6
+   */
   public DiceRoll {
     if (rolls.length < 1) {
       throw new IllegalArgumentException("Dice roll must contain at least one dice");
@@ -61,5 +71,18 @@ public record DiceRoll(int... rolls) {
     }
     sb.append(" (").append(getTotal()).append(")");
     return sb.toString();
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof DiceRoll(int[] other))) {
+      return false;
+    }
+    return Arrays.equals(rolls, other);
+  }
+
+  @Override
+  public int hashCode() {
+    return Arrays.hashCode(rolls);
   }
 }

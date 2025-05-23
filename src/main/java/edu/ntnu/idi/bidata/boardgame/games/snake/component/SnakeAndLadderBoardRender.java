@@ -89,7 +89,6 @@ public class SnakeAndLadderBoardRender extends Component {
       StackPane tilePane = createTileVisual(tile);
       tileGrid.add(tilePane, (int) p.getX(), (int) p.getY());
     }
-
   }
 
   /**
@@ -99,8 +98,6 @@ public class SnakeAndLadderBoardRender extends Component {
    * @return the configured tile visual
    */
   private StackPane createTileVisual(int tileNumber) {
-    var tiles = tilesSupplier.get();
-    SnakeAndLadderTile modelTile = (tileNumber <= tiles.size()) ? tiles.get(tileNumber - 1) : null;
 
     StackPane pane = new StackPane();
     pane.setPrefSize(TILE_SIZE, TILE_SIZE);
@@ -110,6 +107,8 @@ public class SnakeAndLadderBoardRender extends Component {
     StackPane.setAlignment(label, Pos.TOP_LEFT);
     pane.getChildren().add(label);
 
+    var tiles = tilesSupplier.get();
+    SnakeAndLadderTile modelTile = (tileNumber <= tiles.size()) ? tiles.get(tileNumber - 1) : null;
     pane.setStyle(tileStyle(modelTile));
     return pane;
   }

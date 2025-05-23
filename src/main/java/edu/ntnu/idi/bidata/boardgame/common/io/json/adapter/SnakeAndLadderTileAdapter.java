@@ -14,8 +14,9 @@ import edu.ntnu.idi.bidata.boardgame.games.snake.model.tile.SnakeTile;
 import java.lang.reflect.Type;
 
 /**
- * @author Nick Heggø
- * @version 2025.05.20
+ * A Gson adapter for the {@code SnakeAndLadderTile} sealed interface. This class handles the
+ * serialization and deserialization of the different implementations of {@code SnakeAndLadderTile},
+ * which include {@code LadderTile}, {@code NormalTile}, and {@code SnakeTile}.
  */
 public class SnakeAndLadderTileAdapter
     implements JsonSerializer<SnakeAndLadderTile>, JsonDeserializer<SnakeAndLadderTile> {

@@ -1,64 +1,86 @@
 package edu.ntnu.idi.bidata.boardgame.common.io.json;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.contentOf;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
 import edu.ntnu.idi.bidata.boardgame.common.io.FileUtil;
 import edu.ntnu.idi.bidata.boardgame.common.util.GameFactory;
+import edu.ntnu.idi.bidata.boardgame.core.PlayerManager;
 import edu.ntnu.idi.bidata.boardgame.core.model.Player;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.board.MonopolyBoard;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.MonopolyPlayer;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.SnakeAndLadderBoard;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.SnakeAndLadderPlayer;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.TempDir;
+import org.mockito.MockedStatic;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 class JsonServiceTest {
 
+  @TempDir private Path tempDir;
+
+  private Path jsonFile;
+
+  private MockedStatic<FileUtil> mockedFileUtil;
+
+  @BeforeEach
+  void setUp() {
+    jsonFile = tempDir.resolve("test.json");
+    mockedFileUtil = mockStatic(FileUtil.class);
+    mockedFileUtil
+        .when(() -> FileUtil.generateFilePath(anyString(), anyString()))
+        .thenReturn(jsonFile);
+  }
+
+  @AfterEach
+  void tearDown() {
+    mockedFileUtil.close();
+  }
+
   @Test
-  void test_read_write_SnakeAndLadderBoard() {
-    var jsonService = new JsonService<>(SnakeAndLadderBoard.class, true);
-    var board =
-        GameFactory.createSnakeGame(
-                new EventBus(), List.of(new SnakeAndLadderPlayer("John", Player.Figure.HAT)))
-            .getBoard();
+  void test_read_write_SnakeAndLadderBoard() throws IOException {
+
+    var jsonService = new JsonService<>(SnakeAndLadderBoard.class);
+
+    var mockPlayerManager = mock(PlayerManager.class);
+    when(mockPlayerManager.loadCsvAsSnakeAndLadderPlayers())
+        .thenReturn(List.of(new SnakeAndLadderPlayer("John", Player.Figure.BATTLE_SHIP)));
+    var board = GameFactory.createSnakeGame(new EventBus(), mockPlayerManager).getBoard();
 
     jsonService.serializeToSource(Set.of(board));
 
     var boards = jsonService.deserializeFromSource().toList();
 
     assertThat(boards).containsExactly(board);
-
-    // cleanup
-    var file = FileUtil.generateFilePath("SnakeAndLadderBoard", "json", true).toFile();
-    file.delete();
-    file.getParentFile().delete();
   }
 
   @Test
-  @Disabled
-  void test_read_write_MonopolyBoard() {
-    var jsonService = new JsonService<>(MonopolyBoard.class, true);
+  void test_read_write_MonopolyBoard() throws IOException {
+    var mockEventbus = mock(EventBus.class);
+    var mockPlayerManager = mock(PlayerManager.class);
+    when(mockPlayerManager.loadCsvAsMonopolyPlayers())
+        .thenReturn(List.of(new MonopolyPlayer("John", Player.Figure.HAT)));
+    var board = GameFactory.createMonopolyGame(mockEventbus, mockPlayerManager).getBoard();
 
-    var eventBus = new EventBus();
-    var players = List.of(new MonopolyPlayer("John", Player.Figure.HAT));
-
-    var board = GameFactory.createMonopolyGame(eventBus, players).getBoard();
-
+    var jsonService = new JsonService<>(MonopolyBoard.class);
     jsonService.serializeToSource(Set.of(board));
-    var file = FileUtil.generateFilePath("MonopolyBoard", "json", true).toFile();
 
-    assertThat(contentOf(file))
-        .isNotEmpty()
+    assertThat(jsonFile)
+        .isNotEmptyFile()
+        .content()
         .contains("start")
         .contains("property")
         .contains("position");
-
-    // cleanup
-    assertThat(file.delete()).isTrue();
-    assertThat(file.getParentFile().delete()).isTrue();
   }
 }

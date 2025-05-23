@@ -12,9 +12,25 @@ import java.util.List;
  */
 public interface Board<T extends Tile> {
 
+  /**
+   * Retrieves a list of tiles that make up the game board.
+   *
+   * @return a list of tiles of type {@code T} present on the board
+   */
   List<T> tiles();
 
+  /**
+   * Retrieves the tile at the specified index on the board.
+   *
+   * @param index the position of the tile to retrieve, must be within the valid range of the board
+   * @return the tile of type {@code T} located at the specified index
+   */
   T getTileAtIndex(int index);
 
+  /**
+   * Retrieves the total number of tiles on the board.
+   *
+   * @return the number of tiles present on the board
+   */
   int size();
 }

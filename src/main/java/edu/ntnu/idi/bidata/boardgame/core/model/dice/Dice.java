@@ -16,9 +16,11 @@ public class Dice {
   private Dice() {}
 
   /**
-   * Rolls two dice at the same time
+   * Simulates rolling the specified number of dice, each with a face value ranging from 1 to 6.
    *
-   * @return the result as an array of integers.
+   * @param numberOfDice the number of dice to roll; must be greater than or equal to 1
+   * @return a {@link DiceRoll} object representing the results of the dice rolls
+   * @throws IllegalArgumentException if {@code numberOfDice} is less than 1
    */
   public static DiceRoll roll(int numberOfDice) {
     int[] rolls = new int[numberOfDice];

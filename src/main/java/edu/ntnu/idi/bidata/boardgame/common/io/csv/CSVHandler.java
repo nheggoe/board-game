@@ -3,8 +3,8 @@ package edu.ntnu.idi.bidata.boardgame.common.io.csv;
 import static java.util.Objects.requireNonNull;
 
 import edu.ntnu.idi.bidata.boardgame.common.io.FileUtil;
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 
 /**
@@ -16,22 +16,47 @@ import java.util.List;
  */
 public class CSVHandler {
 
-  private final File file;
+  private final Path csvFile;
 
-  public CSVHandler(File file) {
-    this.file = requireNonNull(file);
-    FileUtil.ensureFileAndDirectoryExists(this.file);
+  /**
+   * Constructs a new {@code CSVHandler} for managing the specified CSV file. Ensures that the file
+   * and its parent directories exist, creating them if necessary.
+   *
+   * @param csvFile the path to the CSV file to be managed; must not be null
+   * @throws IllegalStateException if the file cannot be created
+   */
+  public CSVHandler(Path csvFile) {
+    this.csvFile = requireNonNull(csvFile);
+    try {
+      FileUtil.ensureFileAndDirectoryExists(this.csvFile);
+    } catch (IOException e) {
+      throw new IllegalStateException("Failed to create CSV file: " + csvFile, e);
+    }
   }
 
-  public CSVHandler(String filename) {
-    this(FileUtil.generateFilePath(filename, "csv").toFile());
+  /**
+   * Reads all data rows from the associated CSV file. The lines in the file starting with a comment
+   * character (#) are ignored. Each line is split by comma into an array of strings, with leading
+   * and trailing whitespace for each value trimmed.
+   *
+   * @return a list of string arrays, where each array represents a row of data from the CSV file,
+   *     excluding lines considered as comments
+   * @throws IOException if an I/O error occurs while reading the file
+   */
+  public List<String[]> readAll() throws IOException {
+    return CSVReader.readAll(csvFile);
   }
 
-  public List<String> readCSV() throws IOException {
-    return CSVReader.readLines(file);
-  }
-
-  public void writeCSV(List<String> lines, boolean append) throws IOException {
-    CSVWriter.writeLines(file, lines, append);
+  /**
+   * Writes a list of string arrays to the associated CSV file. Each array element in the list
+   * corresponds to a row in the CSV file, with its elements representing comma-separated values.
+   * The method ensures that the file and its parent directories exist before writing.
+   *
+   * @param rows the list of string arrays to write to the file, where each array represents a row
+   *     of data in the CSV file; must not be null
+   * @throws IOException if an I/O error occurs while writing to the file
+   */
+  public void writeLines(List<String[]> rows) throws IOException {
+    CSVWriter.writeLines(csvFile, rows);
   }
 }

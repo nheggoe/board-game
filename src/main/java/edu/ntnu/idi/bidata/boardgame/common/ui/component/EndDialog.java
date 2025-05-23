@@ -1,6 +1,8 @@
 package edu.ntnu.idi.bidata.boardgame.common.ui.component;
 
 import edu.ntnu.idi.bidata.boardgame.core.ui.SceneSwitcher;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -9,11 +11,32 @@ import javafx.scene.control.Dialog;
 import javafx.scene.layout.VBox;
 
 /**
+ * The {@code EndDialog} class represents a custom dialog displayed at the end of a game. It
+ * provides options for the user to either navigate back to the main menu, start a new game, or exit
+ * the application. The dialog integrates functionality to interact with the application's scene
+ * management, ensuring a seamless user experience.
+ *
+ * <ul>
+ *   <li>Navigation to the main menu triggers a scene switch to the main view.
+ *   <li>Starting a new game resets the application state and begins a new game session.
+ *   <li>Exiting the application closes the program.
+ * </ul>
+ *
+ * <p>This dialog is displayed in a centered layout with buttons providing the aforementioned
+ * actions.
+ *
  * @author Nick Heggø
  * @version 2025.05.20
  */
 public class EndDialog extends Dialog<ButtonType> {
 
+  /**
+   * Constructs a new EndDialog instance with the specified scene switcher. The dialog provides
+   * options for the user to navigate to the main menu, start a new game, or exit the application.
+   *
+   * @param sceneSwitcher the {@code SceneSwitcher} instance responsible for navigating between
+   *     scenes in the application
+   */
   public EndDialog(SceneSwitcher sceneSwitcher) {
     super();
     setTitle("Game Over");
@@ -33,14 +56,22 @@ public class EndDialog extends Dialog<ButtonType> {
     var backToMainMenuButton = new Button("Back to Main Menu");
     backToMainMenuButton.setOnAction(
         event -> {
-          sceneSwitcher.switchTo(SceneSwitcher.SceneName.MAIN_VIEW);
+          try {
+            sceneSwitcher.switchTo(SceneSwitcher.SceneName.MAIN_VIEW);
+          } catch (IOException e) {
+            throw new UncheckedIOException(e);
+          }
           this.close();
         });
 
     var newGameButton = new Button("Play Again");
     newGameButton.setOnAction(
         event -> {
-          sceneSwitcher.reset();
+          try {
+            sceneSwitcher.reset();
+          } catch (IOException e) {
+            throw new UncheckedIOException(e);
+          }
           this.close();
         });
 

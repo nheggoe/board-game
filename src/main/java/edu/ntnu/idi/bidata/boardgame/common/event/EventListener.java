@@ -14,5 +14,12 @@ import edu.ntnu.idi.bidata.boardgame.common.event.type.Event;
  * @version 2025.04.02
  */
 public interface EventListener extends AutoCloseable {
+
+  /**
+   * Invoked when an event occurs. Implementations of this method should define the actions to be
+   * performed when the listener is notified of the specified event.
+   *
+   * @param event the event that has occurred; must not be null
+   */
   void onEvent(Event event);
 }

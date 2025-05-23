@@ -10,17 +10,14 @@ package edu.ntnu.idi.bidata.boardgame.games.monopoly.model.tile;
  */
 public final class GoToJailMonopolyTile extends CornerMonopolyTile {
 
+  /**
+   * Constructs a {@code GoToJailMonopolyTile} at the specified position on the game board. This
+   * tile sends a player directly to jail when landed on.
+   *
+   * @param position the board position of the "Go to Jail" tile; must not be null
+   * @throws NullPointerException if the {@code position} is null
+   */
   public GoToJailMonopolyTile(Position position) {
     super(position);
   }
-  // todo Fix
-  // public TileAction getAction() {
-  //   return player -> {
-  //     println(player.getName() + " has been sent directly to Jail!");
-  //     GameEngine.getInstance()
-  //         .getGame()
-  //         .orElseThrow(() -> new IllegalStateException("No active game found!"))
-  //         .sendPlayerToJail(player);
-  //   };
-  // }
 }

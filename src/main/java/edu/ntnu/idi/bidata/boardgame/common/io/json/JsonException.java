@@ -9,6 +9,14 @@ package edu.ntnu.idi.bidata.boardgame.common.io.json;
  * @version 2025.03.25
  */
 public class JsonException extends RuntimeException {
+
+  /**
+   * Constructs a new instance of {@code JsonException} with the specified detail message. This
+   * exception is used to signal errors encountered during JSON handling operations, such as
+   * parsing, serialization, or deserialization issues.
+   *
+   * @param message the detail message that describes the error; must not be null or empty
+   */
   public JsonException(String message) {
     super(message);
   }

@@ -97,6 +97,7 @@ public abstract class GameView<T extends Tile, P extends Player> extends View {
     right.prefHeightProperty().bind(this.heightProperty().multiply(0.7));
 
     var settingButton = new SettingButton(sceneSwitcher);
+    settingButton.isInGame(true);
     var playerDashboard = new PlayerDashboard<>(eventBus, players);
     var rollDiceButton = new RollDiceButton(rollDiceHandler);
     addComponents(settingButton, playerDashboard, rollDiceButton);

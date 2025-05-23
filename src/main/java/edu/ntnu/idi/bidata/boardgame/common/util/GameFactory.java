@@ -1,27 +1,59 @@
 package edu.ntnu.idi.bidata.boardgame.common.util;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
+import edu.ntnu.idi.bidata.boardgame.core.PlayerManager;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.MonopolyGame;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.board.MonopolyBoard;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.board.MonopolyBoardFactory;
-import edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable.MonopolyPlayer;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.SnakeAndLadderBoardFactory;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.SnakeAndLadderGame;
-import edu.ntnu.idi.bidata.boardgame.games.snake.model.SnakeAndLadderPlayer;
-import java.util.List;
+import java.io.IOException;
 
+/**
+ * Factory class responsible for creating instances of game objects. This class provides static
+ * methods to initialize and return specific game objects like MonopolyGame and SnakeAndLadderGame
+ * with the necessary configurations. The class is designed to encapsulate the object creation logic
+ * for these games.
+ *
+ * @author Nick Heggø
+ * @version 2025.05.21
+ */
 public class GameFactory {
 
   private GameFactory() {}
 
-  public static MonopolyGame createMonopolyGame(EventBus eventBus, List<MonopolyPlayer> players) {
+  /**
+   * Creates and initializes a new instance of a Monopoly game with the necessary configurations.
+   * This includes generating a default Monopoly board layout, loading player data, and binding it
+   * to an event bus.
+   *
+   * @param eventBus the event bus used to handle game events and notifications
+   * @param playerManager the player manager responsible for loading player information and
+   *     configurations
+   * @return a new instance of MonopolyGame configured with the default board and player settings
+   * @throws IOException if an error occurs while loading player data
+   */
+  public static MonopolyGame createMonopolyGame(EventBus eventBus, PlayerManager playerManager)
+      throws IOException {
     var board = MonopolyBoardFactory.generateBoard(MonopolyBoard.Layout.NORMAL);
-    return new MonopolyGame(eventBus, board, players);
+    return new MonopolyGame(eventBus, board, playerManager.loadCsvAsMonopolyPlayers());
   }
 
-  public static SnakeAndLadderGame createSnakeGame(
-      EventBus eventBus, List<SnakeAndLadderPlayer> players) {
+  /**
+   * Creates and initializes a new instance of a Snake and Ladder game with the required
+   * configurations. This includes generating a default Snake and Ladder board layout and loading
+   * player data.
+   *
+   * @param eventBus the event bus used to handle game events and notifications
+   * @param playerManager the player manager responsible for loading player information and
+   *     configurations
+   * @return a new instance of SnakeAndLadderGame configured with the default board and player
+   *     settings
+   * @throws IOException if an error occurs while loading player data
+   */
+  public static SnakeAndLadderGame createSnakeGame(EventBus eventBus, PlayerManager playerManager)
+      throws IOException {
     var board = SnakeAndLadderBoardFactory.createBoard();
-    return new SnakeAndLadderGame(eventBus, board, players);
+    return new SnakeAndLadderGame(eventBus, board, playerManager.loadCsvAsSnakeAndLadderPlayers());
   }
 }

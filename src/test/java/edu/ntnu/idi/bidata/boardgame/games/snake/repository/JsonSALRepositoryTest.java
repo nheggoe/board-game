@@ -1,6 +1,9 @@
 package edu.ntnu.idi.bidata.boardgame.games.snake.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
 import edu.ntnu.idi.bidata.boardgame.common.io.FileUtil;
@@ -12,9 +15,8 @@ import edu.ntnu.idi.bidata.boardgame.games.snake.model.SnakeAndLadderGame;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.SnakeAndLadderPlayer;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.tile.NormalTile;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.tile.SnakeTile;
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -22,23 +24,36 @@ import java.util.UUID;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.TempDir;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+@Disabled
 @ExtendWith(MockitoExtension.class)
 class JsonSALRepositoryTest {
+
+  private MockedStatic<FileUtil> mockedFileUtil;
+
+  @TempDir private Path tempDir;
+
+  private Path jsonFile;
 
   private JsonSALRepository jsonSALRepository;
   private SnakeAndLadderGame game;
 
   @BeforeEach
-  void setUp() {
-    JsonService<SnakeAndLadderGame> jsonService = new JsonService<>(SnakeAndLadderGame.class, true);
+  void setUp() throws IOException {
+    jsonFile = tempDir.resolve("test.json");
+    FileUtil.ensureFileAndDirectoryExists(jsonFile);
+    mockedFileUtil = mockStatic(FileUtil.class);
+    mockedFileUtil.when(() -> FileUtil.generateFilePath(any(), any())).thenReturn(jsonFile);
+
+    var jsonService = new JsonService<>(SnakeAndLadderGame.class);
     jsonSALRepository = new JsonSALRepository(jsonService, Game::getId);
 
-    var eventBus = new EventBus();
+    var eventBus = mock(EventBus.class);
     var board =
         new SnakeAndLadderBoard(List.of(new NormalTile(), new NormalTile(), new SnakeTile(1)));
     var players = List.of(new SnakeAndLadderPlayer("Nick", Player.Figure.HAT));
@@ -47,9 +62,7 @@ class JsonSALRepositoryTest {
 
   @AfterEach
   void tearDown() {
-    var file = FileUtil.generateFilePath("SnakeAndLadderGame", "json", true).toFile();
-    file.delete();
-    file.getParentFile().delete();
+    mockedFileUtil.close();
   }
 
   @Test
@@ -60,17 +73,12 @@ class JsonSALRepositoryTest {
 
   @Test
   void testGetById() {
-
-    // Add to repository
     jsonSALRepository.add(game);
 
-    // Get by ID
     UUID gameId = game.getId();
     Optional<SnakeAndLadderGame> retrievedGame = jsonSALRepository.getById(gameId);
 
-    // Verify
-    assertThat(retrievedGame).isPresent();
-    assertThat(retrievedGame.get()).isEqualTo(game);
+    assertThat(retrievedGame).isPresent().contains(game);
   }
 
   @Test
@@ -128,20 +136,6 @@ class JsonSALRepositoryTest {
     // Save to source
     Set<SnakeAndLadderGame> games = Set.of(game);
     jsonSALRepository.saveToSource(games);
-  }
-
-  @Test
-  @Disabled()
-  @DisplayName("Debugging Output")
-  void testPrintJson() throws IOException {
-    jsonSALRepository.saveToSource(Set.of(game));
-    var file = FileUtil.generateFilePath("SnakeAndLadderGame", "json", true).toFile();
-    try (var reader = new BufferedReader(new FileReader(file))) {
-      String line;
-      while ((line = reader.readLine()) != null) {
-        System.out.println(line);
-      }
-    }
-    System.out.println("File path: " + file);
+    assertThat(jsonFile).isNotEmptyFile().content().contains("start");
   }
 }

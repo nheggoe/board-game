@@ -32,14 +32,18 @@ class PlayerManagerTest {
   @InjectMocks private PlayerManager playerManager;
 
   @BeforeEach
-  void setup() throws IOException {
+  void setUp() throws IOException {
     playerManager = new PlayerManager(eventBus, csvHandler);
-    when(csvHandler.readCSV()).thenReturn(List.of("Name,Figure", "John,CAR", "Jane,BATTLE_SHIP"));
+    when(csvHandler.readAll())
+        .thenReturn(
+            List.of(
+                new String[] {"Name", "Figure"},
+                new String[] {"John", "CAR"},
+                new String[] {"Jane", "BATTLE_SHIP"}));
   }
 
   @Test
   void test_loadPlayersFromCSV() throws Exception {
-    when(csvHandler.readCSV()).thenReturn(List.of("Name,Figure", "John,CAR", "Jane,BATTLE_SHIP"));
     var monopolyPlayers = playerManager.loadCsvAsMonopolyPlayers();
     assertThat(monopolyPlayers)
         .anyMatch(
@@ -61,7 +65,8 @@ class PlayerManagerTest {
 
   @Test
   void test_loadPlayersFromCSV_invalid() throws Exception {
-    when(csvHandler.readCSV()).thenReturn(List.of("John,CAR", "Jane,INVALID"));
+    when(csvHandler.readAll())
+        .thenReturn(List.of(new String[] {"John", "CAR"}, new String[] {"Jane", "INVALID"}));
 
     assertThatCode(() -> playerManager.loadCsvAsMonopolyPlayers()).doesNotThrowAnyException();
 

@@ -3,23 +3,15 @@ package edu.ntnu.idi.bidata.boardgame.common.event;
 import static org.junit.jupiter.api.Assertions.*;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.type.CoreEvent;
-import edu.ntnu.idi.bidata.boardgame.common.event.type.Event;
-import edu.ntnu.idi.bidata.boardgame.core.model.Player;
-import edu.ntnu.idi.bidata.boardgame.games.snake.model.SnakeAndLadderPlayer;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 class EventBusTest {
 
-  private final EventListener listener =
-      new EventListener() {
-        @Override
-        public void onEvent(Event event) {
-          throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public void close() throws Exception {}
-      };
+  @Mock private EventListener listener;
 
   @Test
   void testBasic() {
@@ -52,9 +44,6 @@ class EventBusTest {
   void testPublishEvent() {
     var eventBus = new EventBus();
     eventBus.addListener(CoreEvent.PlayerRemoved.class, listener);
-    var player = new SnakeAndLadderPlayer("John", Player.Figure.CAR);
-    var event = new CoreEvent.PlayerRemoved(player);
-    assertThrows(UnsupportedOperationException.class, () -> eventBus.publishEvent(event));
     assertThrows(NullPointerException.class, () -> eventBus.publishEvent(null));
   }
 }

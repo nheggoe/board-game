@@ -1,34 +1,19 @@
 package edu.ntnu.idi.bidata.boardgame.common.io.csv;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import edu.ntnu.idi.bidata.boardgame.common.io.FileUtil;
-import java.io.File;
-import java.io.FileNotFoundException;
-import org.junit.jupiter.api.BeforeEach;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 class CSVReaderTest {
 
-  private File testCSV;
-
-  @BeforeEach
-  void setUp() {
-    testCSV = FileUtil.generateFilePath("testCSV", "csv", true).toFile();
-  }
-
   @Test
-  void test_readCSV() {
-    assertThatThrownBy(() -> CSVReader.readLines(testCSV))
-        .isInstanceOf(FileNotFoundException.class);
-  }
-
-  @Test
-  void test_readCSV_with_empty_file() {
-    FileUtil.ensureFileAndDirectoryExists(testCSV);
-    assertThatCode(() -> CSVReader.readLines(testCSV)).doesNotThrowAnyException();
-    testCSV.delete();
-    testCSV.getParentFile().delete();
+  void test_skipComments(@TempDir Path tempDir) throws IOException {
+    var testCsv = tempDir.resolve("test.csv");
+    Files.writeString(testCsv, "   #  this, is a test ");
+    assertThat(CSVReader.readAll(testCsv)).isEmpty();
   }
 }
