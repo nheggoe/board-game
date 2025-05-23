@@ -109,6 +109,9 @@ public class MonopolyBoardView extends EventListeningComponent {
    * @param position the new position of the player on the board
    */
   public void playerMoved(Player player, int position) {
+    // Remove light ring from all tiles
+    removeAllLightRings();
+
     // Clear any existing player figure from the board
     clearPlayerFigures(player);
 
@@ -144,8 +147,104 @@ public class MonopolyBoardView extends EventListeningComponent {
     // Get the tile at the calculated position
     StackPane tilePane = getTileAtPosition(row, col);
     if (tilePane != null) {
+      // Add light ring around the current tile
+      addLightRingToTile(tilePane);
+
       // Create and add player figure to the tile
       addPlayerFigure(tilePane, player);
+
+      // Update the property background color if it's owned
+      updateTileBackgroundColor(tilePane);
+    }
+  }
+
+  /**
+   * Adds a light ring effect around the tile that the player is currently on.
+   *
+   * @param tilePane the tile pane to add the light ring to
+   */
+  private void addLightRingToTile(StackPane tilePane) {
+    // Create a glowing border effect for the current tile
+    BorderStroke glowStroke =
+        new BorderStroke(
+            Color.DEEPSKYBLUE, // Brighter blue color
+            BorderStrokeStyle.SOLID,
+            new CornerRadii(2),
+            new BorderWidths(4)); // Wider border
+
+    Border glowBorder = new Border(glowStroke);
+
+    // Set a unique ID to identify this border as our light ring
+    tilePane.setBorder(glowBorder);
+    tilePane.setId("current-tile");
+
+    // Override any inline styles that might be affecting the border
+    tilePane.setStyle(
+        "-fx-border-color: transparent; -fx-effect: dropshadow(three-pass-box, deepskyblue, 10, 0.5, 0, 0);");
+  }
+
+  /** Removes light ring effects from all tiles on the board. */
+  private void removeAllLightRings() {
+    // Iterate through all tiles and reset borders
+    for (javafx.scene.Node node : board.getChildren()) {
+      if (node instanceof StackPane tilePane) {
+        if ("current-tile".equals(tilePane.getId())) {
+          // Reset to default border and style
+          tilePane.setBorder(
+              new Border(
+                  new BorderStroke(
+                      Color.BLACK,
+                      BorderStrokeStyle.SOLID,
+                      CornerRadii.EMPTY,
+                      BorderWidths.DEFAULT)));
+          tilePane.setStyle("-fx-border-color: black;");
+          tilePane.setId(null);
+        }
+      }
+    }
+  }
+
+  /**
+   * Updates the background color of a property tile to match the owner's dashboard card color.
+   *
+   * @param tilePane the tile pane to update
+   */
+  private void updateTileBackgroundColor(StackPane tilePane) {
+    // Only apply to tiles that have Ownable userData
+    if (tilePane.getUserData() instanceof Ownable ownable) {
+      // Check each player to see if they own this property
+      var players = playersSupplier.get();
+      for (int i = 0; i < players.size(); i++) {
+        MonopolyPlayer player = players.get(i);
+        if (player.isOwnerOf(ownable)) {
+          // Get the player's dashboard color
+          Color playerColor = PLAYER_COLORS[i % PLAYER_COLORS.length];
+
+          // Apply a background fill but preserve any property color band if it's a property
+          if (ownable instanceof Property property) {
+            // For properties, we'll add a semi-transparent overlay of the player's color
+            // while preserving the property's color group
+            Color propertyColor = colorAdapter(property.getColor());
+            Color blendedColor =
+                Color.color(
+                    (propertyColor.getRed() * 0.6) + (playerColor.getRed() * 0.4),
+                    (propertyColor.getGreen() * 0.6) + (playerColor.getGreen() * 0.4),
+                    (propertyColor.getBlue() * 0.6) + (playerColor.getBlue() * 0.4),
+                    0.8); // 80% opacity to allow some transparency
+
+            tilePane.setBackground(
+                new Background(new BackgroundFill(blendedColor, CornerRadii.EMPTY, Insets.EMPTY)));
+          } else {
+            // For railroads and utilities, use a lighter version of the player's color with
+            // transparency
+            Color transparentColor = playerColor.deriveColor(0, 1, 1.2, 0.6); // 60% opacity
+            tilePane.setBackground(
+                new Background(
+                    new BackgroundFill(transparentColor, CornerRadii.EMPTY, Insets.EMPTY)));
+          }
+          break; // Found the owner, no need to check other players
+        }
+      }
     }
   }
 
@@ -303,8 +402,11 @@ public class MonopolyBoardView extends EventListeningComponent {
         imageView.setSmooth(true);
         tilePane.getChildren().add(imageView);
 
+        // Semi-transparent background
         tilePane.setBackground(
-            new Background(new BackgroundFill(Color.GREY, CornerRadii.EMPTY, Insets.EMPTY)));
+            new Background(
+                new BackgroundFill(
+                    Color.color(0.5, 0.5, 0.5, 0.6), CornerRadii.EMPTY, Insets.EMPTY)));
       }
       case GoToJailMonopolyTile goToJailMonopolyTile -> {
         var imageView = new ImageView("icons/go-to-jail-tile.png");
@@ -313,6 +415,11 @@ public class MonopolyBoardView extends EventListeningComponent {
         imageView.setPreserveRatio(true);
         imageView.setSmooth(true);
         tilePane.getChildren().add(imageView);
+
+        // Semi-transparent background
+        tilePane.setBackground(
+            new Background(
+                new BackgroundFill(Color.color(1, 1, 1, 0.7), CornerRadii.EMPTY, Insets.EMPTY)));
       }
       case JailMonopolyTile jailMonopolyTile -> {
         var imageView = new ImageView("icons/jail-tile.png");
@@ -320,6 +427,12 @@ public class MonopolyBoardView extends EventListeningComponent {
         imageView.setFitHeight(tileSize);
         imageView.setPreserveRatio(true);
         tilePane.getChildren().add(imageView);
+
+        // Semi-transparent background
+        tilePane.setBackground(
+            new Background(
+                new BackgroundFill(
+                    Color.color(0.9, 0.9, 0.9, 0.7), CornerRadii.EMPTY, Insets.EMPTY)));
       }
       case StartMonopolyTile startMonopolyTile -> {
         var imageView = new ImageView("icons/go-tile.png");
@@ -328,14 +441,27 @@ public class MonopolyBoardView extends EventListeningComponent {
         imageView.setPreserveRatio(true);
         imageView.setSmooth(true);
         tilePane.getChildren().add(imageView);
+
+        // Semi-transparent background
+        tilePane.setBackground(
+            new Background(
+                new BackgroundFill(Color.color(1, 1, 1, 0.7), CornerRadii.EMPTY, Insets.EMPTY)));
       }
       case OwnableMonopolyTile(Ownable ownable) -> {
         switch (ownable) {
           case Property property -> {
+            // Get the property color but make it semi-transparent
+            Color propertyColor = colorAdapter(property.getColor());
+            Color transparentColor =
+                Color.color(
+                    propertyColor.getRed(),
+                    propertyColor.getGreen(),
+                    propertyColor.getBlue(),
+                    0.7); // 70% opacity
+
             tilePane.setBackground(
                 new Background(
-                    new BackgroundFill(
-                        colorAdapter(property.getColor()), CornerRadii.EMPTY, Insets.EMPTY)));
+                    new BackgroundFill(transparentColor, CornerRadii.EMPTY, Insets.EMPTY)));
 
             var imageView = new ImageView("icons/propertyTileIcon.png");
             imageView.setFitWidth(tileSize);
@@ -362,7 +488,8 @@ public class MonopolyBoardView extends EventListeningComponent {
           case Railroad railroad -> {
             tilePane.setBackground(
                 new Background(
-                    new BackgroundFill(Color.DARKGREY, CornerRadii.EMPTY, Insets.EMPTY)));
+                    new BackgroundFill(
+                        Color.color(0.2, 0.2, 0.2, 0.7), CornerRadii.EMPTY, Insets.EMPTY)));
             var imageView = new ImageView("icons/railroad.png");
             imageView.setFitWidth(tileSize);
             imageView.setFitHeight(tileSize);
@@ -376,7 +503,9 @@ public class MonopolyBoardView extends EventListeningComponent {
           }
           case Utility utility -> {
             tilePane.setBackground(
-                new Background(new BackgroundFill(Color.BROWN, CornerRadii.EMPTY, Insets.EMPTY)));
+                new Background(
+                    new BackgroundFill(
+                        Color.color(0.6, 0.4, 0.2, 0.7), CornerRadii.EMPTY, Insets.EMPTY)));
             var imageView = new ImageView("icons/utility.png");
             imageView.setFitWidth(tileSize);
             imageView.setFitHeight(tileSize);
@@ -392,14 +521,20 @@ public class MonopolyBoardView extends EventListeningComponent {
       }
       case TaxMonopolyTile taxTile -> {
         tilePane.setBackground(
-            new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
+            new Background(
+                new BackgroundFill(
+                    Color.color(0.1, 0.1, 0.1, 0.7), CornerRadii.EMPTY, Insets.EMPTY)));
         var imageView = new ImageView("icons/taxTileIcon.png");
         imageView.setFitWidth(tileSize);
         imageView.setFitHeight(tileSize);
         tilePane.getChildren().add(imageView);
       }
     }
-    tilePane.setStyle("-fx-border-color: black;");
+    // Add a default border that won't interfere with our light ring
+    tilePane.setBorder(
+        new Border(
+            new BorderStroke(
+                Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 
     return tilePane;
   }
@@ -526,8 +661,10 @@ public class MonopolyBoardView extends EventListeningComponent {
         if (tilePane.getUserData() instanceof Property property) {
           updatePropertyOwnership(tilePane, property);
           updatePropertyUpgrades(tilePane, property);
+          updateTileBackgroundColor(tilePane);
         } else if (tilePane.getUserData() instanceof Ownable ownable) {
           updatePropertyOwnership(tilePane, ownable);
+          updateTileBackgroundColor(tilePane);
         }
       }
     }
