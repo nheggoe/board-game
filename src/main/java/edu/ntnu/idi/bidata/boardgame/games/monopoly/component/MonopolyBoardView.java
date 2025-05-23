@@ -79,7 +79,8 @@ public class MonopolyBoardView extends EventListeningComponent {
         eventBus,
         CoreEvent.PlayerMoved.class,
         MonopolyEvent.Purchased.class,
-        MonopolyEvent.UpgradePurchased.class);
+        MonopolyEvent.UpgradePurchased.class,
+        MonopolyEvent.PlayerSentToJail.class);
 
     this.playersSupplier = playersSupplier;
     this.tilesSupplier = tilesSupplier;
@@ -95,6 +96,7 @@ public class MonopolyBoardView extends EventListeningComponent {
       case CoreEvent.PlayerMoved(Player player) -> playerMoved(player, player.getPosition());
       case MonopolyEvent.Purchased ignored -> updateAllProperties();
       case MonopolyEvent.UpgradePurchased ignored -> updateAllProperties();
+      case MonopolyEvent.PlayerSentToJail ignored -> updateAllProperties();
       default -> throw new UnhandledEventException(event);
     }
   }

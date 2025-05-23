@@ -2,6 +2,7 @@ package edu.ntnu.idi.bidata.boardgame.games.monopoly.model;
 
 import edu.ntnu.idi.bidata.boardgame.common.event.EventBus;
 import edu.ntnu.idi.bidata.boardgame.common.event.type.MonopolyEvent;
+import edu.ntnu.idi.bidata.boardgame.common.event.type.UserInterfaceEvent;
 import edu.ntnu.idi.bidata.boardgame.common.util.AlertFactory;
 import edu.ntnu.idi.bidata.boardgame.common.util.StringFormatter;
 import edu.ntnu.idi.bidata.boardgame.core.model.Game;
@@ -284,6 +285,11 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
   private void sendPlayerToJail(MonopolyPlayer player) {
     player.setPosition(getBoard().getTilePosition(getJailTile()));
     getJailTile().jailForNumberOfRounds(player, 2);
+    getEventBus().publishEvent(new MonopolyEvent.PlayerSentToJail(player));
+    getEventBus()
+        .publishEvent(
+            new UserInterfaceEvent.Output(
+                "%s sent to jail for 2 rounds".formatted(player.getName())));
   }
 
   private PurchaseOption processTransaction(MonopolyPlayer player, Ownable ownable) {
