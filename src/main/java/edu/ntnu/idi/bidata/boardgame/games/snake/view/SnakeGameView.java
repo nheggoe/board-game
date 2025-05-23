@@ -13,10 +13,12 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 /**
- * JavaFX view for the Snake & Ladder game. Displays the board and player icons, and manages
+ * JavaFX view for the Snake & Ladder game. Displays the board and player icons and manages
  * interaction with the underlying game engine.
  *
  * @author Nick Heggø, Mihailo Hranisavljevic
@@ -43,7 +45,7 @@ public class SnakeGameView extends GameView<SnakeAndLadderTile, SnakeAndLadderPl
   }
 
   /**
-   * Creates and returns the center pane of the game view, containing the board and players.
+   * Creates and returns the centre pane of the game view, containing the board and players.
    *
    * @param eventBus the event bus
    * @param tiles supplier of game tiles
@@ -55,17 +57,31 @@ public class SnakeGameView extends GameView<SnakeAndLadderTile, SnakeAndLadderPl
       EventBus eventBus,
       Supplier<List<SnakeAndLadderTile>> tiles,
       Supplier<List<SnakeAndLadderPlayer>> playersSupplier) {
-    var centre = new VBox();
-    centre.setAlignment(Pos.CENTER);
 
     var boardRender = new SnakeAndLadderBoardRender(eventBus, tiles);
+    var tileGrid = boardRender.getTileGrid();
+    var gridSize = boardRender.getGridSize();
+
+    var animationLayer = new Pane();
+    animationLayer.setPickOnBounds(false);
+    animationLayer.setMouseTransparent(true);
+
+    tileGrid.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+    animationLayer.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+    animationLayer.prefWidthProperty().bind(tileGrid.widthProperty());
+    animationLayer.prefHeightProperty().bind(tileGrid.heightProperty());
+
+    var layeredBoard = new StackPane(tileGrid, animationLayer);
+    layeredBoard.setAlignment(Pos.CENTER);
     var playerRender =
-        new PlayerRender(
-            eventBus, boardRender.getTileGrid(), boardRender.getGridSize(), playersSupplier);
+        new PlayerRender(eventBus, tileGrid, gridSize, playersSupplier, animationLayer);
 
     addComponents(boardRender, playerRender);
-    centre.getChildren().addAll(boardRender, playerRender);
 
-    return centre;
+    var container = new VBox();
+    container.setAlignment(Pos.CENTER);
+    container.getChildren().addAll(layeredBoard);
+
+    return container;
   }
 }
