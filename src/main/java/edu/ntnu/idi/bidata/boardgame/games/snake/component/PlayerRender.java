@@ -10,147 +10,157 @@ import edu.ntnu.idi.bidata.boardgame.core.model.Player;
 import edu.ntnu.idi.bidata.boardgame.core.ui.EventListeningComponent;
 import edu.ntnu.idi.bidata.boardgame.games.snake.model.SnakeAndLadderPlayer;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 import javafx.application.Platform;
-import javafx.geometry.Point2D;
-import javafx.geometry.Pos;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
 /**
- * Renders the players on the Snake and Ladder board.
+ * Responsible for rendering and animating the players on the Snake and Ladder board.
  *
- * <p>This class is responsible for rendering player icons on the game board. It converts the
- * player's position to grid coordinates and updates the UI accordingly.
+ * <p>Listens to PlayerMoved events and updates player visuals using the FigureAnimator. Maintains
+ * the position and figure state of each player, ensuring consistent animation and synchronisation
+ * with the game model.
  *
  * @author Mihailo Hranisavljevic
- * @version 2025.05.21
+ * @version 2025.05.23
  */
 public class PlayerRender extends EventListeningComponent {
 
-  /** Supplier of the list of players. */
   private final Supplier<List<SnakeAndLadderPlayer>> players;
-
-  /** The GridPane containing the board tiles. */
   private final GridPane tileGrid;
-
-  /** Number of tiles along one side of the board. */
   private final int gridSize;
+  private final FigureAnimator animator;
+
+  private static class RenderState {
+    int visualIndex = -1;
+    ImageView icon;
+  }
+
+  private final Map<SnakeAndLadderPlayer, RenderState> renderStates = new HashMap<>();
 
   /**
-   * Creates a new {@code PlayerRender}.
+   * Constructs a PlayerRender responsible for updating player visuals on the board.
    *
-   * @param eventBus the global event bus for listening to player movement events
-   * @param tileGrid the pane returned by {@code SnakeAndLadderBoardRender#getTileGrid()}
-   * @param boardDimension the length of one board side in tiles
-   * @param players supplier of the current list of {@code SnakeAndLadderPlayer}
+   * @param eventBus global event dispatcher
+   * @param tileGrid grid containing board tiles
+   * @param boardDimension square root of tile count, used to calculate tile position
+   * @param players supplier providing the list of players
+   * @param animationLayer transparent layer used to draw animated icons
    */
   public PlayerRender(
       EventBus eventBus,
       GridPane tileGrid,
       int boardDimension,
-      Supplier<List<SnakeAndLadderPlayer>> players) {
+      Supplier<List<SnakeAndLadderPlayer>> players,
+      Pane animationLayer) {
     super(eventBus, CoreEvent.PlayerMoved.class);
     this.tileGrid = tileGrid;
     this.gridSize = boardDimension;
-    this.players = requireNonNull(players, "players must not be null");
-    renderPlayers();
+    this.players = requireNonNull(players);
+    this.animator = new FigureAnimator(animationLayer);
+    Platform.runLater(this::renderAll);
   }
 
   /**
-   * Receives events from the {@code EventBus} and triggers re-rendering when a player moves.
+   * Responds to PlayerMoved events by re-rendering all player icons.
    *
-   * @param event the event published on the bus
+   * @param event event indicating a player has moved
    */
   @Override
   public void onEvent(Event event) {
-    switch (event) {
-      case CoreEvent.PlayerMoved ignored -> Platform.runLater(this::renderPlayers);
-      default -> throw new UnhandledEventException(event);
+    if (requireNonNull(event) instanceof CoreEvent.PlayerMoved) {
+      Platform.runLater(this::renderAll);
+    } else {
+      throw new UnhandledEventException(event);
     }
   }
 
-  /** Clears existing icons and draws each player's figure on the correct tile. */
-  public void renderPlayers() {
-    clearPlayerIcons();
+  /**
+   * Renders all players according to their current positions. Calculates player offsets for correct
+   * stacking when multiple players occupy the same tile.
+   */
+  private void renderAll() {
+    Map<Integer, List<SnakeAndLadderPlayer>> tileOccupants = new HashMap<>();
+    for (SnakeAndLadderPlayer p : players.get()) {
+      tileOccupants.computeIfAbsent(p.getPosition(), k -> new java.util.ArrayList<>()).add(p);
+    }
 
     for (SnakeAndLadderPlayer player : players.get()) {
-      Point2D pos = toGrid(player.getPosition());
-      StackPane tile = tileAt((int) pos.getY(), (int) pos.getX());
+      int newIndex = player.getPosition();
+      StackPane targetTile = tileAtIndex(newIndex);
+      List<SnakeAndLadderPlayer> occupants = tileOccupants.get(newIndex);
+      int offsetIndex = occupants.indexOf(player);
 
-      ImageView icon = createFigureVisual(player.getFigure());
-      icon.setUserData(player.getId());
+      RenderState state =
+          renderStates.computeIfAbsent(
+              player,
+              p -> {
+                RenderState s = new RenderState();
+                s.icon = createFigureVisual(p.getFigure());
+                animator.place(s.icon, targetTile, offsetIndex);
+                s.visualIndex = player.getPosition();
+                return s;
+              });
 
-      int playerCount =
-          (int)
-              tile.getChildren().stream()
-                  .filter(n -> n instanceof ImageView && n.getUserData() != null)
-                  .count();
-
-      StackPane.setAlignment(icon, iconAlignmentForIndex(playerCount));
-      tile.getChildren().add(icon);
+      if (state.visualIndex != newIndex) {
+        StackPane oldTile = tileAtIndex(state.visualIndex);
+        animator.animate(state.icon, oldTile, targetTile, offsetIndex);
+        state.visualIndex = newIndex;
+      }
     }
   }
 
   /**
-   * Converts a tile number to grid coordinates.
+   * Converts a 1-based tile index to a StackPane in the grid.
    *
-   * @param tileNumber the tile number to convert
-   * @return the grid coordinates as a {@code Point2D} object
+   * @param index tile number (1-based)
+   * @return the StackPane at the tile's grid coordinates
    */
-  private Point2D toGrid(int tileNumber) {
-    int safeNumber = tileNumber < 1 ? 1 : Math.min(tileNumber, gridSize * gridSize);
-    return SnakeBoardLayout.toGrid(safeNumber, gridSize);
-  }
-
-  /** Removes all existing player icons from each tile. */
-  private void clearPlayerIcons() {
-    tileGrid
-        .getChildren()
-        .forEach(
-            node -> {
-              if (node instanceof StackPane pane) {
-                pane.getChildren().removeIf(ImageView.class::isInstance);
-              }
-            });
+  private StackPane tileAtIndex(int index) {
+    if (index < 1 || index > gridSize * gridSize) return tileAt(0, 0);
+    var pos = SnakeBoardLayout.toGrid(index, gridSize);
+    return tileAt((int) pos.getY(), (int) pos.getX());
   }
 
   /**
-   * Finds the {@code StackPane} at the specified row and column.
+   * Retrieves the tile StackPane at the given grid coordinates.
    *
-   * @param row the row index
-   * @param col the column index
-   * @return the matching {@code StackPane}
-   * @throws IllegalArgumentException if no pane exists at the given coordinates
+   * @param row row index
+   * @param col column index
+   * @return tile node at the specified coordinates
+   * @throws IllegalArgumentException if no node exists at the given location
    */
   private StackPane tileAt(int row, int col) {
     for (var node : tileGrid.getChildren()) {
       int c = GridPane.getColumnIndex(node) == null ? 0 : GridPane.getColumnIndex(node);
       int r = GridPane.getRowIndex(node) == null ? 0 : GridPane.getRowIndex(node);
-      if (c == col && r == row) {
-        return (StackPane) node;
-      }
+      if (c == col && r == row) return (StackPane) node;
     }
     throw new IllegalArgumentException("Tile not found at (" + row + ',' + col + ')');
   }
 
   /**
-   * Loads the player's figure image or falls back to a coloured square.
+   * Creates a graphical icon representing the player's figure. Uses image resource if found,
+   * otherwise renders a default coloured square.
    *
-   * @param figure the player's figure enum
-   * @return an {@code ImageView} containing the figure icon
+   * @param figure the enum describing the player's figure type
+   * @return an ImageView representing the figure
    */
   private ImageView createFigureVisual(Player.Figure figure) {
     String fileName = figure.name().toLowerCase().replace("_", "");
     String resourcePath = "images/" + fileName + ".png";
     InputStream is = getClass().getClassLoader().getResourceAsStream(resourcePath);
     if (is != null) {
-      Image img = new Image(is, 24, 24, true, true);
+      Image img = new Image(is, 27, 27, true, true);
       ImageView view = new ImageView(img);
       view.setUserData(figure);
       return view;
@@ -164,22 +174,5 @@ public class PlayerRender extends EventListeningComponent {
     fallback.setPreserveRatio(false);
     fallback.setUserData(figure);
     return fallback;
-  }
-
-  /**
-   * Returns a grid alignment position based on a player's index on a tile. Used to visually offset
-   * multiple player icons occupying the same tile to avoid overlap.
-   *
-   * @param index the number of player icons already placed on the tile
-   * @return the {@link Pos} value representing the placement of the new player icon
-   */
-  private Pos iconAlignmentForIndex(int index) {
-    return switch (index) {
-      case 0 -> Pos.TOP_LEFT;
-      case 1 -> Pos.TOP_RIGHT;
-      case 2 -> Pos.BOTTOM_LEFT;
-      case 3 -> Pos.BOTTOM_RIGHT;
-      default -> Pos.CENTER;
-    };
   }
 }

@@ -33,6 +33,9 @@ public class SnakeAndLadderGame extends Game<SnakeAndLadderTile, SnakeAndLadderP
   public SnakeAndLadderGame(
       EventBus eventBus, Board<SnakeAndLadderTile> board, List<SnakeAndLadderPlayer> players) {
     super(eventBus, board, players);
+    for (SnakeAndLadderPlayer player : players) {
+      player.setPosition(1);
+    }
   }
 
   /** Executes the next player's turn by rolling the dice and applying tile effects. */

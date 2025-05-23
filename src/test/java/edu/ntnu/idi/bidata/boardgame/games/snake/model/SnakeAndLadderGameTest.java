@@ -56,7 +56,7 @@ class SnakeAndLadderGameTest {
       assertThat(game.getBoard().tiles()).hasSize(14);
 
       var player = game.getPlayers().getFirst();
-      assertThat(player.getPosition()).isZero();
+      assertThat(player.getPosition()).isEqualTo(1);
 
       game.nextTurn();
       assertThat(player.getPosition())
