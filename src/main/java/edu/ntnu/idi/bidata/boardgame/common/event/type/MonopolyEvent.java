@@ -48,4 +48,20 @@ public sealed interface MonopolyEvent extends Event {
       requireNonNull(ownable, "Ownable cannot be null!");
     }
   }
+
+  /**
+   * Represents the event of a player being sent to jail in a Monopoly game. This event occurs when
+   * a player lands on the "Go to Jail" space, draws a "Go to Jail" card, or is otherwise directed
+   * to go to jail by the rules of the game.
+   *
+   * <p>An instance of this record encapsulates the information about the player who has been sent
+   * to jail.
+   *
+   * @param player The MonopolyPlayer who is being sent to jail. Must not be null.
+   */
+  record PlayerSentToJail(MonopolyPlayer player) implements MonopolyEvent {
+    public PlayerSentToJail {
+      requireNonNull(player, "Player cannot be null!");
+    }
+  }
 }

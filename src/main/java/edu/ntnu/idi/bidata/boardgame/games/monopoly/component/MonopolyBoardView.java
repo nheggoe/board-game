@@ -24,7 +24,6 @@ import java.util.function.Supplier;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -79,7 +78,8 @@ public class MonopolyBoardView extends EventListeningComponent {
         eventBus,
         CoreEvent.PlayerMoved.class,
         MonopolyEvent.Purchased.class,
-        MonopolyEvent.UpgradePurchased.class);
+        MonopolyEvent.UpgradePurchased.class,
+        MonopolyEvent.PlayerSentToJail.class);
 
     this.playersSupplier = playersSupplier;
     this.tilesSupplier = tilesSupplier;
@@ -93,6 +93,8 @@ public class MonopolyBoardView extends EventListeningComponent {
   public void onEvent(Event event) {
     switch (event) {
       case CoreEvent.PlayerMoved(Player player) -> playerMoved(player, player.getPosition());
+      case MonopolyEvent.PlayerSentToJail(MonopolyPlayer player) ->
+          playerMoved(player, player.getPosition());
       case MonopolyEvent.Purchased ignored -> updateAllProperties();
       case MonopolyEvent.UpgradePurchased ignored -> updateAllProperties();
       default -> throw new UnhandledEventException(event);
@@ -194,7 +196,9 @@ public class MonopolyBoardView extends EventListeningComponent {
    */
   private void addPlayerFigure(StackPane tilePane, Player player) {
     String imagePath = getFigureImagePath(player.getFigure());
-    ImageView playerFigure = new ImageView(new Image(imagePath, 30, 30, true, true));
+    ImageView playerFigure = new ImageView(imagePath);
+    playerFigure.setFitWidth(30);
+    playerFigure.setFitHeight(30);
     playerFigure.setUserData(player.getId()); // Store player ID for identification
 
     // Position the figure appropriately on the tile
@@ -292,8 +296,9 @@ public class MonopolyBoardView extends EventListeningComponent {
 
     switch (tile) {
       case FreeParkingMonopolyTile freeParkingMonopolyTile -> {
-        var image = new Image("icons/free-parking-tile.png", tileSize, tileSize, true, true);
-        var imageView = new ImageView(image);
+        var imageView = new ImageView("icons/free-parking-tile.png");
+        imageView.setFitWidth(tileSize);
+        imageView.setFitHeight(tileSize);
         imageView.setPreserveRatio(true);
         imageView.setSmooth(true);
         tilePane.getChildren().add(imageView);
@@ -302,21 +307,24 @@ public class MonopolyBoardView extends EventListeningComponent {
             new Background(new BackgroundFill(Color.GREY, CornerRadii.EMPTY, Insets.EMPTY)));
       }
       case GoToJailMonopolyTile goToJailMonopolyTile -> {
-        var image = new Image("icons/go-to-jail-tile.png", tileSize, tileSize, true, true);
-        var imageView = new ImageView(image);
+        var imageView = new ImageView("icons/go-to-jail-tile.png");
+        imageView.setFitWidth(tileSize);
+        imageView.setFitHeight(tileSize);
         imageView.setPreserveRatio(true);
         imageView.setSmooth(true);
         tilePane.getChildren().add(imageView);
       }
       case JailMonopolyTile jailMonopolyTile -> {
-        var image = new Image("icons/jail-tile.png", tileSize, tileSize, true, true);
-        var imageView = new ImageView(image);
+        var imageView = new ImageView("icons/jail-tile.png");
+        imageView.setFitWidth(tileSize);
+        imageView.setFitHeight(tileSize);
         imageView.setPreserveRatio(true);
         tilePane.getChildren().add(imageView);
       }
       case StartMonopolyTile startMonopolyTile -> {
-        var image = new Image("icons/go-tile.png", tileSize, tileSize, true, true);
-        var imageView = new ImageView(image);
+        var imageView = new ImageView("icons/go-tile.png");
+        imageView.setFitWidth(tileSize);
+        imageView.setFitHeight(tileSize);
         imageView.setPreserveRatio(true);
         imageView.setSmooth(true);
         tilePane.getChildren().add(imageView);
@@ -329,8 +337,9 @@ public class MonopolyBoardView extends EventListeningComponent {
                     new BackgroundFill(
                         colorAdapter(property.getColor()), CornerRadii.EMPTY, Insets.EMPTY)));
 
-            var image = new Image("icons/propertyTileIcon.png", tileSize, tileSize, true, true);
-            var imageView = new ImageView(image);
+            var imageView = new ImageView("icons/propertyTileIcon.png");
+            imageView.setFitWidth(tileSize);
+            imageView.setFitHeight(tileSize);
             imageView.setPreserveRatio(true);
             imageView.setSmooth(true);
 
@@ -354,11 +363,10 @@ public class MonopolyBoardView extends EventListeningComponent {
             tilePane.setBackground(
                 new Background(
                     new BackgroundFill(Color.DARKGREY, CornerRadii.EMPTY, Insets.EMPTY)));
-            tilePane
-                .getChildren()
-                .add(
-                    new ImageView(
-                        new Image("icons/railroad.png", tileSize, tileSize, true, false)));
+            var imageView = new ImageView("icons/railroad.png");
+            imageView.setFitWidth(tileSize);
+            imageView.setFitHeight(tileSize);
+            tilePane.getChildren().add(imageView);
 
             // Railroad will store its data for updating owner later
             tilePane.setUserData(railroad);
@@ -369,10 +377,10 @@ public class MonopolyBoardView extends EventListeningComponent {
           case Utility utility -> {
             tilePane.setBackground(
                 new Background(new BackgroundFill(Color.BROWN, CornerRadii.EMPTY, Insets.EMPTY)));
-            tilePane
-                .getChildren()
-                .add(
-                    new ImageView(new Image("icons/utility.png", tileSize, tileSize, true, false)));
+            var imageView = new ImageView("icons/utility.png");
+            imageView.setFitWidth(tileSize);
+            imageView.setFitHeight(tileSize);
+            tilePane.getChildren().add(imageView);
 
             // Utility will store its data for updating owner later
             tilePane.setUserData(utility);
@@ -385,9 +393,10 @@ public class MonopolyBoardView extends EventListeningComponent {
       case TaxMonopolyTile taxTile -> {
         tilePane.setBackground(
             new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
-        tilePane
-            .getChildren()
-            .add(new ImageView(new Image("icons/propertyTileIcon.png", 60, 60, true, false)));
+        var imageView = new ImageView("icons/taxTileIcon.png");
+        imageView.setFitWidth(tileSize);
+        imageView.setFitHeight(tileSize);
+        tilePane.getChildren().add(imageView);
       }
     }
     tilePane.setStyle("-fx-border-color: black;");

@@ -1,5 +1,6 @@
 Name,Type,Color Group,Cost
-# default layout, don't touch
+# Make sure to keep the element count of this file of n % 4 == 0
+# can simply delete the file in /data/csv/monopoly.csv to get a fresh new copy
 Mediterranean Avenue,Property,Brown,60
 Baltic Avenue,Property,Brown,60
 Oriental Avenue,Property,Light Blue,100

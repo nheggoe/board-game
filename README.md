@@ -35,10 +35,26 @@ boardgame
 13 directories
 ```
 
-Project source code is organized into packages:
+Project source code is organised into packages:
 
 * `core` package provides the abstract class that concreate implementation extends from.
 * `games` package is where the individual game lives.
+
+## Data Files
+
+The application uses external CSV files located in the `data/` directory to configure board elements and player
+profiles.
+
+- `player.csv` can be edited directly from within the application using the built-in interface.
+- `snakeAndLaddercsv` and `monopoly.csv` must be manually edited outside the application.
+
+To modify the Snake and Ladder board, you may add or remove lines in `snakeAndLadder.csv`. Highest tested was 10,000; it
+remained functional but rendered poorly and overlapped other UI elements.
+
+Extreme scenarios could potentially harm the file, so if it corrupts or fails to load, delete the file, and it will be
+automatically reset.
+
+Ensure that the file structure and formatting are preserved when editing these files to avoid runtime errors.
 
 ## Link to repository
 
