@@ -69,7 +69,7 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
     var jail = getJailTile();
     if (jail.isPlayerInJail(player)) {
       jail.releaseIfPossible(player);
-      boolean isOutOfJail = jail.isPlayerInJail(player);
+      boolean isOutOfJail = !jail.isPlayerInJail(player);
       if (isOutOfJail) {
         println("%s is out of jail.".formatted(player.getName()));
       } else {
@@ -284,7 +284,7 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
 
   private void sendPlayerToJail(MonopolyPlayer player) {
     player.setPosition(getBoard().getTilePosition(getJailTile()));
-    notifyPlayerMoved(player);
+    // notifyPlayerMoved(player);
     getJailTile().jailForNumberOfRounds(player, 2);
     getEventBus().publishEvent(new MonopolyEvent.PlayerSentToJail(player));
     getEventBus()

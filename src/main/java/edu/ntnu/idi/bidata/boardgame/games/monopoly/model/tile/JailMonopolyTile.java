@@ -66,7 +66,7 @@ public final class JailMonopolyTile extends CornerMonopolyTile {
       throw new IllegalStateException("Player is not in jail!");
     }
     prisoners.merge(player, -1, Integer::sum);
-    if (prisoners.get(player) <= 0) {
+    if (prisoners.get(player) < 0) {
       prisoners.remove(player);
     }
   }
