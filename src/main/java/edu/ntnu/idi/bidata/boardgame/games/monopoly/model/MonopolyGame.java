@@ -284,7 +284,6 @@ public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
 
   private void sendPlayerToJail(MonopolyPlayer player) {
     player.setPosition(getBoard().getTilePosition(getJailTile()));
-    // notifyPlayerMoved(player);
     getJailTile().jailForNumberOfRounds(player, 2);
     getEventBus().publishEvent(new MonopolyEvent.PlayerSentToJail(player));
     getEventBus()
