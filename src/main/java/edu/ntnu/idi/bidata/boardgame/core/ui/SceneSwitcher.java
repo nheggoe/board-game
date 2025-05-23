@@ -12,10 +12,14 @@ import edu.ntnu.idi.bidata.boardgame.core.GameEngine;
 import edu.ntnu.idi.bidata.boardgame.core.PlayerManager;
 import edu.ntnu.idi.bidata.boardgame.games.monopoly.controller.MonopolyGameController;
 import edu.ntnu.idi.bidata.boardgame.games.snake.controller.SnakeGameController;
+import java.awt.Taskbar;
+import java.awt.Toolkit;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.logging.Logger;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
@@ -30,6 +34,10 @@ import javafx.stage.Stage;
 public class SceneSwitcher {
 
   private static final Logger LOGGER = Logger.getLogger(SceneSwitcher.class.getName());
+  private static final Path BOARD_GAME_ICON =
+      Path.of("src/main/resources/icons/board-game-icon.png");
+  private static final Path MONOPOLY_ICON = Path.of("src/main/resources/icons/monopoly-icon.png");
+  private static final Path SNAKE_ICON = Path.of("src/main/resources/icons/snake-icon.png");
 
   private final EventBus eventBus = new EventBus();
   private final Scene scene;
@@ -46,6 +54,7 @@ public class SceneSwitcher {
   public SceneSwitcher(Stage primaryStage) {
     requireNonNull(primaryStage, "primaryStage must not be null");
     this.scene = new Scene(new Pane(), primaryStage.getWidth(), primaryStage.getHeight());
+    primaryStage.getIcons().add(new Image(BOARD_GAME_ICON.toUri().toString()));
     primaryStage.setScene(scene);
     primaryStage.show();
     primaryStage.centerOnScreen();
@@ -88,6 +97,7 @@ public class SceneSwitcher {
     }
     this.controller = createController(name);
     setRoot(controller.getView());
+    setTaskBarIcon(name);
   }
 
   /**
@@ -111,6 +121,14 @@ public class SceneSwitcher {
       case PLAYER_SETUP_VIEW -> createPlayerSetupController();
       case MONOPOLY_GAME_VIEW -> createMonopolyGameController();
     };
+  }
+
+  private void setTaskBarIcon(SceneName name) {
+    switch (name) {
+      case MONOPOLY_GAME_VIEW -> setTaskBarIcon(MONOPOLY_ICON);
+      case SNAKE_GAME_VIEW -> setTaskBarIcon(SNAKE_ICON);
+      default -> setTaskBarIcon(BOARD_GAME_ICON);
+    }
   }
 
   private PlayerSetupController createPlayerSetupController() {
@@ -157,5 +175,16 @@ public class SceneSwitcher {
    */
   public void setRoot(Parent root) {
     scene.setRoot(requireNonNull(root, "root must not be null"));
+  }
+
+  private static void setTaskBarIcon(Path iconPath) {
+    if (Taskbar.isTaskbarSupported()) {
+      var taskbar = Taskbar.getTaskbar();
+      if (taskbar.isSupported(Taskbar.Feature.ICON_IMAGE)) {
+        final Toolkit defaultToolkit = Toolkit.getDefaultToolkit();
+        var dockIcon = defaultToolkit.getImage(iconPath.toString());
+        taskbar.setIconImage(dockIcon);
+      }
+    }
   }
 }

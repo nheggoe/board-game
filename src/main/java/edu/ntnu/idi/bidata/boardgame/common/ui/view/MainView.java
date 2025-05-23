@@ -3,12 +3,15 @@ package edu.ntnu.idi.bidata.boardgame.common.ui.view;
 import edu.ntnu.idi.bidata.boardgame.common.ui.component.SettingButton;
 import edu.ntnu.idi.bidata.boardgame.core.ui.SceneSwitcher;
 import edu.ntnu.idi.bidata.boardgame.core.ui.View;
+import java.nio.file.Path;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 
 /**
  * Represents the primary UI view for the application, providing functionality for navigating to
@@ -49,16 +52,45 @@ public class MainView extends View {
     root.setRight(new SettingButton(sceneSwitcher));
   }
 
-  private VBox createCenterPane(
+  private Pane createCenterPane(
       EventHandler<ActionEvent> snake, EventHandler<ActionEvent> monopoly) {
-    var center = new VBox();
+    var center = new HBox();
     center.setAlignment(Pos.CENTER);
     center.setSpacing(10);
-    var monopolyButton = new Button("Monopoly");
-    var snakeAndeLadderButton = new Button("Snake and Ladder");
-    snakeAndeLadderButton.setOnAction(snake);
+    var monopolyButton = new Button();
+    var monopolyIcon = Path.of("src/main/resources/icons/monopoly-icon.png");
+    monopolyButton.setGraphic(createIcon(monopolyIcon));
+
+    var snakeButton = new Button();
+    var snakeIcon = Path.of("src/main/resources/icons/snake-icon.png");
+    snakeButton.setGraphic(createIcon(snakeIcon));
+
+    setHoverEffect(snakeButton, monopolyButton);
+
+    snakeButton.setOnAction(snake);
     monopolyButton.setOnAction(monopoly);
-    center.getChildren().addAll(monopolyButton, snakeAndeLadderButton);
+    center.getChildren().addAll(monopolyButton, snakeButton);
     return center;
+  }
+
+  private static ImageView createIcon(Path iconFile) {
+    var iconView = new ImageView(iconFile.toUri().toString());
+    iconView.setFitWidth(200);
+    iconView.setFitHeight(200);
+    return iconView;
+  }
+
+  private void setHoverEffect(Button... buttons) {
+    for (Button button : buttons) {
+      button.setStyle("-fx-background-color: transparent; -fx-border-color: transparent;");
+      button.setOnMouseEntered(
+          e ->
+              button.setStyle(
+                  "-fx-background-color: transparent; -fx-border-color: transparent;"
+                      + " -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 10, 0.3, 0, 2);"));
+      button.setOnMouseExited(
+          e ->
+              button.setStyle("-fx-background-color: transparent; -fx-border-color: transparent;"));
+    }
   }
 }
