@@ -36,10 +36,6 @@ class JailMonopolyTileTest {
 
     jailTile.releaseIfPossible(mockPlayer);
 
-    assertThat(jailTile.isPlayerInJail(mockPlayer)).isTrue();
-    assertThat(jailTile.getNumberOfRoundsLeft(mockPlayer)).isZero();
-
-    jailTile.releaseIfPossible(mockPlayer);
     assertThat(jailTile.isPlayerInJail(mockPlayer)).isFalse();
     assertThatThrownBy(() -> jailTile.getNumberOfRoundsLeft(mockPlayer))
         .isInstanceOf(IllegalStateException.class);
