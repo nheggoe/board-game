@@ -28,7 +28,6 @@ public class SnakeGameController extends Controller {
    * @param sceneSwitcher global scene switcher
    * @param eventBus event bus for event publishing
    * @param engine the core game engine
-   * @param board the game board model
    */
   public SnakeGameController(
       SceneSwitcher sceneSwitcher,

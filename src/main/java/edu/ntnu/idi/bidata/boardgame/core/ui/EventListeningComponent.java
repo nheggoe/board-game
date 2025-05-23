@@ -9,8 +9,13 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * @author Nick Heggø
- * @version 2025.05.08
+ * Represents an abstract component that listens for specific events on an {@link EventBus}. This
+ * class serves as a base for components that handle events of specified types. Subclasses must
+ * define their own behavior for handling specific events by implementing {@link
+ * EventListener#onEvent(Event)}.
+ *
+ * <p>The component automatically registers itself as a listener for the events provided during
+ * construction, and unregisters upon closure.
  */
 public abstract class EventListeningComponent extends Component implements EventListener {
 

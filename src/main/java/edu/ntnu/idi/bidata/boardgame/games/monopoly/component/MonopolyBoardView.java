@@ -42,8 +42,12 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
 /**
- * @author Nick Heggø
- * @version 2025.05.07
+ * A visual representation of the Monopoly game board.
+ *
+ * <p>The class handles rendering the board with its tiles and players, managing visual updates
+ * based on game events like player movements, property ownership changes, and upgrades. It
+ * leverages suppliers to dynamically retrieve the current game state for tiles and players. The
+ * class also binds to the scene properties to ensure a responsive layout during gameplay.
  */
 public class MonopolyBoardView extends EventListeningComponent {
   private final GridPane board;
@@ -58,6 +62,15 @@ public class MonopolyBoardView extends EventListeningComponent {
     Color.web("#e2e3e5")
   };
 
+  /**
+   * Constructs a MonopolyBoardView that serves as the visual representation of a Monopoly game
+   * board. This class initializes the board layout and listens to relevant game events to update
+   * the view.
+   *
+   * @param eventBus the event bus used for subscribing to and handling game events
+   * @param playersSupplier a supplier providing the list of Monopoly players in the game
+   * @param tilesSupplier a supplier providing the list of tiles (spaces) on the Monopoly board
+   */
   public MonopolyBoardView(
       EventBus eventBus,
       Supplier<List<MonopolyPlayer>> playersSupplier,
@@ -260,6 +273,13 @@ public class MonopolyBoardView extends EventListeningComponent {
     players.get().forEach(player -> playerMoved(player, 0));
   }
 
+  /**
+   * Binds the size properties of the board to the size properties of the scene containing it.
+   *
+   * <p>This method ensures that the `board` Pane's width and height dynamically adjust to match the
+   * width and height of the scene. The binding guarantees that the board resizes automatically when
+   * the scene's size changes, maintaining a responsive layout.
+   */
   public void bindSizeProperty() {
     board.prefWidthProperty().bind(this.getScene().widthProperty());
     board.prefHeightProperty().bind(this.getScene().heightProperty());
@@ -457,9 +477,7 @@ public class MonopolyBoardView extends EventListeningComponent {
       tilePane.getChildren().add(hotelIndicator);
       StackPane.setAlignment(hotelIndicator, Pos.TOP_LEFT);
       StackPane.setMargin(hotelIndicator, new Insets(5, 0, 0, 5));
-    }
-    // Check for houses (green squares)
-    else {
+    } else {
       int houseCount = property.countHouses();
       if (houseCount > 0) {
         HBox houseContainer = new HBox(2);

@@ -12,6 +12,14 @@ package edu.ntnu.idi.bidata.boardgame.games.monopoly.model.upgrade;
  */
 public record Upgrade(UpgradeType type, int rentMultiplierPercentage) {
 
+  /**
+   * Constructor for the {@code Upgrade} record, ensuring the rent multiplier percentage is valid.
+   *
+   * @param type the type of the upgrade, such as HOUSE or HOTEL. Must not be null.
+   * @param rentMultiplierPercentage the additional percentage multiplier provided by the upgrade.
+   *     Must be non-negative.
+   * @throws IllegalArgumentException if {@code rentMultiplierPercentage} is negative.
+   */
   public Upgrade {
     if (rentMultiplierPercentage < 0) {
       throw new IllegalArgumentException("Rent multiplier must be positive!");

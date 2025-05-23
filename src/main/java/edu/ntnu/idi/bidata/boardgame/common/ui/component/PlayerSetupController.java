@@ -5,6 +5,13 @@ import edu.ntnu.idi.bidata.boardgame.core.ui.Controller;
 import edu.ntnu.idi.bidata.boardgame.core.ui.SceneSwitcher;
 import edu.ntnu.idi.bidata.boardgame.core.ui.View;
 
+/**
+ * The PlayerSetupController class is responsible for managing the player setup view. It facilitates
+ * initialization and interaction between the player setup interface and the application backend.
+ *
+ * <p>This controller connects the player setup view with the scene management system, enabling
+ * smooth transitions and dynamic resizing of the view relative to the application's main scene.
+ */
 public class PlayerSetupController extends Controller {
 
   /**

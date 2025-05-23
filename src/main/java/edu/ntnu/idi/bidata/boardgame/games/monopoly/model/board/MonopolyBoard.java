@@ -24,6 +24,19 @@ import java.util.Map;
  */
 public record MonopolyBoard(List<MonopolyTile> tiles) implements Board<MonopolyTile> {
 
+  /**
+   * Represents the Monopoly game board, which consists of a sequence of tiles arranged in a
+   * specific layout. The constructor initializes the board, validates its layout, and arranges the
+   * tiles in the appropriate configuration around the corners. The layout must meet the required
+   * structural and logical constraints.
+   *
+   * @param tiles the list of {@link MonopolyTile} objects that make up the board. It is assumed
+   *     that this list includes all necessary tiles (e.g., corner tiles, ownable tiles) and adheres
+   *     to the game's layout rules. The tiles are validated and rearranged to ensure proper
+   *     alignment before being stored in the board.
+   * @throws InvalidBoardLayoutException if the provided tiles do not constitute a valid board
+   *     layout (e.g., missing corners, incorrect number of tiles).
+   */
   public MonopolyBoard {
     assertValidLayout(tiles);
     tiles = List.copyOf(alignTilesAroundCorners(tiles));

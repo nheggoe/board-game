@@ -22,7 +22,8 @@ import javafx.scene.layout.VBox;
  *   <li>Exiting the application closes the program.
  * </ul>
  *
- * This dialog is displayed in a centered layout with buttons providing the aforementioned actions.
+ * <p>This dialog is displayed in a centered layout with buttons providing the aforementioned
+ * actions.
  *
  * @author Nick Heggø
  * @version 2025.05.20

@@ -17,6 +17,12 @@ public class MonopolyBoardFactory {
 
   private MonopolyBoardFactory() {}
 
+  /**
+   * Generates a Monopoly game board based on the specified layout.
+   *
+   * @param layout the layout configuration for the board, which determines its structure
+   * @return a {@link MonopolyBoard} instance created according to the specified layout
+   */
   public static MonopolyBoard generateBoard(MonopolyBoard.Layout layout) {
     return switch (layout) {
       case NORMAL, EASY, UNFAIR -> generateNormalBoard();

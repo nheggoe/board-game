@@ -35,11 +35,22 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 
 /**
- * @author Nick Heggø
- * @version 2025.05.16
+ * Represents a Monopoly game. It is an extension of the generic {@code Game} class tailored to
+ * Monopoly-specific tiles, players, and rules. Manages the gameplay logic, player turns, and
+ * interactions with Monopoly tiles and actions.
  */
 public class MonopolyGame extends Game<MonopolyTile, MonopolyPlayer> {
 
+  /**
+   * Constructs a new instance of the MonopolyGame class.
+   *
+   * <p>This constructor initializes the game with the provided event bus, game board, and list of
+   * players. Additionally, each player is given an initial balance of 200 units.
+   *
+   * @param eventBus the event bus used for managing game-related events
+   * @param monopolyBoard the game board used in the Monopoly game
+   * @param players the list of players participating in the game
+   */
   public MonopolyGame(
       EventBus eventBus, MonopolyBoard monopolyBoard, List<MonopolyPlayer> players) {
     super(eventBus, monopolyBoard, players);

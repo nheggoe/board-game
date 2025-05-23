@@ -97,7 +97,6 @@ public class PlayerRender extends EventListeningComponent {
     }
   }
 
-
   /**
    * Converts a tile number to grid coordinates.
    *

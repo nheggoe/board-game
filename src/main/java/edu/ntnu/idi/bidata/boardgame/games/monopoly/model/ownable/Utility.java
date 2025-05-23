@@ -1,14 +1,21 @@
 package edu.ntnu.idi.bidata.boardgame.games.monopoly.model.ownable;
 
 /**
- * Represents a Utility that charges rent based on a new dice roll. If the owner owns both
- * utilities, rent is 10× the dice roll total; otherwise, it is 4×.
+ * Represents a Utility that charges rent based on a new dice roll.
  *
  * @author Mihailo Hranisavljevic
  * @version 2025.04.26
  */
 public record Utility(String name, int price) implements Ownable {
 
+  /**
+   * Constructs a {@code Utility} instance with a specified name and price. Validates that the name
+   * is not null or blank to ensure a proper representation of the Utility entity.
+   *
+   * @param name the name of the utility. Must not be null or blank.
+   * @param price the purchase price of the utility.
+   * @throws IllegalArgumentException if the name is null or blank.
+   */
   public Utility {
     if (name == null || name.isBlank()) {
       throw new IllegalArgumentException("Utility name cannot be null or blank!");

@@ -91,10 +91,7 @@ class SnakeAndLadderGameTest {
   @Test
   void test_simulateGamePlay_with_rollOnSix() {
     try (MockedStatic<Dice> mockedDice = mockStatic(Dice.class)) {
-      mockedDice
-          .when(() -> Dice.roll(1))
-          .thenReturn(new DiceRoll(6))
-          .thenReturn(new DiceRoll(2));
+      mockedDice.when(() -> Dice.roll(1)).thenReturn(new DiceRoll(6)).thenReturn(new DiceRoll(2));
 
       assertThat(game.getBoard()).isNotNull();
       assertThat(game.getBoard().tiles()).hasSize(14);

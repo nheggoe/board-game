@@ -37,11 +37,32 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.StageStyle;
 
+/**
+ * Represents a view for setting up players in an application. Provides user interface elements for
+ * managing player entities, including adding, editing, removing, saving players, and editing player
+ * attributes. The view is backed by a {@code PlayerSetupPresenter} and utilizes a {@code TableView}
+ * to display the players in a structured manner.
+ *
+ * <p>The class manages layout components and functionality for: - Displaying a list of players in a
+ * table view. - Adding new players using input fields for player name and figure. - Editing and
+ * deleting existing players via context menus and dialogs. - Saving player information
+ * persistently.
+ *
+ * <p>The view is designed with JavaFX components and follows an MVP architecture, communicating
+ * with its presenter to handle data-related operations.
+ */
 public class PlayerSetupView extends View {
   private final TableView<Player> playerTableView;
   private final ObservableList<Player> players;
   private final PlayerSetupPresenter presenter;
 
+  /**
+   * Constructs a {@code PlayerSetupView} instance, initializes and organizes the UI components for
+   * the player setup screen, including a table view for managing players and other layout elements.
+   * It also sets up the presenter and loads the initial player data from a CSV file.
+   *
+   * @param sceneSwitcher the {@code SceneSwitcher} instance used to handle scene transitions
+   */
   public PlayerSetupView(SceneSwitcher sceneSwitcher) {
     super();
 
@@ -234,11 +255,11 @@ public class PlayerSetupView extends View {
     grid.setVgap(10);
     grid.setPadding(new Insets(20, 150, 10, 10));
 
-    TextField nameField = new TextField(player.getName());
     ComboBox<Player.Figure> figureComboBox = new ComboBox<>();
     figureComboBox.getItems().addAll(Player.Figure.values());
     figureComboBox.setValue(player.getFigure());
 
+    TextField nameField = new TextField(player.getName());
     grid.add(new Label("Name:"), 0, 0);
     grid.add(nameField, 1, 0);
     grid.add(new Label("Figure:"), 0, 1);

@@ -57,7 +57,7 @@ public class PlayerDashboard<P extends Player> extends EventListeningComponent {
    * information and is updated based on various events.
    *
    * @param eventBus the event bus to listen to for player-related events, must not be null
-   * @param players the list of players to display in the dashboard, must not be null
+   * @param playersSupplier the list of players to display in the dashboard, must not be null
    */
   public PlayerDashboard(EventBus eventBus, Supplier<List<P>> playersSupplier) {
     super(

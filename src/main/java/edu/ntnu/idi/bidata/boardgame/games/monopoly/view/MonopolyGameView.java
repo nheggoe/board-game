@@ -20,11 +20,32 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
 /**
- * @author Nick Heggø
- * @version 2025.05.16
+ * Represents the view for the Monopoly game, extending the generic {@code GameView} class to
+ * include Monopoly-specific components such as the game board, dice, and Monopoly tiles and
+ * players.
+ *
+ * <p>This class defines the layout of the Monopoly game interface, including a center pane
+ * containing the background, board, and dice views. It also manages the initialization of necessary
+ * UI elements specific to the Monopoly game.
  */
 public class MonopolyGameView extends GameView<MonopolyTile, MonopolyPlayer> {
 
+  /**
+   * Constructs a new instance of the {@code MonopolyGameView} class, which serves as the view of
+   * the Monopoly game. This class is responsible for managing the game-specific UI elements such as
+   * the Monopoly board and dice.
+   *
+   * @param sceneSwitcher the {@link SceneSwitcher} instance responsible for handling scene
+   *     transitions; must not be {@code null}
+   * @param eventBus the {@link EventBus} used for communication and event handling between
+   *     components; must not be {@code null}
+   * @param tilesSupplier a {@link Supplier} that provides a list of {@link MonopolyTile} objects
+   *     representing the game board tiles; must not be {@code null}
+   * @param playersSupplier a {@link Supplier} that provides a list of {@link MonopolyPlayer}
+   *     objects representing the game's players; must not be {@code null}
+   * @param rollDiceHandler the {@link EventHandler} for handling dice roll actions triggered within
+   *     the game; must not be {@code null}
+   */
   public MonopolyGameView(
       SceneSwitcher sceneSwitcher,
       EventBus eventBus,
@@ -39,12 +60,12 @@ public class MonopolyGameView extends GameView<MonopolyTile, MonopolyPlayer> {
       EventBus eventBus,
       Supplier<List<MonopolyTile>> tiles,
       Supplier<List<MonopolyPlayer>> players) {
-    var center = new StackPane();
     var image = new Image("/images/monopoly-background.png");
     var imageView = new ImageView(image);
     imageView.setPreserveRatio(true);
     imageView.setFitHeight(600);
     imageView.setFitWidth(800);
+    var center = new StackPane();
     center.getChildren().add(imageView);
     center.prefWidthProperty().bind(this.widthProperty().multiply(0.6));
     center.prefHeightProperty().bind(this.heightProperty().multiply(0.6));

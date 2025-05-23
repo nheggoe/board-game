@@ -5,8 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Nick Heggø
- * @version 2025.05.08
+ * Represents a player in a Monopoly game. This class extends the Player class and provides
+ * functionality specific to managing a player's assets, balance, and transactions in the context of
+ * the Monopoly game.
  */
 public class MonopolyPlayer extends Player {
 
@@ -14,6 +15,12 @@ public class MonopolyPlayer extends Player {
 
   private int balance = 0;
 
+  /**
+   * Constructs a new MonopolyPlayer with the specified name and figure.
+   *
+   * @param name the player's name. Must not be null or blank.
+   * @param figure the figure selected by the player. Represents the player's piece in the game.
+   */
   public MonopolyPlayer(String name, Figure figure) {
     super(name, figure);
     this.ownedAssets = new ArrayList<>();

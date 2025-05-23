@@ -27,6 +27,17 @@ public class FileUtil {
 
   private FileUtil() {}
 
+  /**
+   * Generates a file path based on a given file name and file extension. The method validates the
+   * file extension against a predefined list of supported extensions and formats the file path
+   * using a specified template.
+   *
+   * @param fileName the name of the file; must not be null
+   * @param fileExtension the file extension; must not be null and must be supported
+   * @return the generated file path
+   * @throws NullPointerException if fileName or fileExtension is null
+   * @throws UnsupportedOperationException if the file extension is not supported
+   */
   public static Path generateFilePath(String fileName, String fileExtension) {
     requireNonNull(fileName, "File name cannot be null");
     requireNonNull(fileExtension, "File extension cannot be null");

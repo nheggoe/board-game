@@ -14,6 +14,15 @@ import edu.ntnu.idi.bidata.boardgame.core.ui.EventListeningComponent;
  */
 public class UnhandledEventException extends RuntimeException {
 
+  /**
+   * Constructs a new {@code UnhandledEventException} with the specified event.
+   *
+   * <p>This exception is thrown to indicate that the provided event type is unsupported or
+   * unhandled by the system. The exception includes the class name of the event to aid debugging
+   * and identification of unhandled scenarios.
+   *
+   * @param event the event instance that triggered this exception; must not be null
+   */
   public UnhandledEventException(Event event) {
     super("Unhandled event type: " + event.getClass().getSimpleName());
   }
