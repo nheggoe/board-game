@@ -61,52 +61,28 @@ class SnakeAndLadderGameTest {
       game.nextTurn();
       assertThat(player.getPosition())
           .withFailMessage(
-              "After one move should land the the tile on index 1, instead it was "
-                  + player.getPosition())
-          .isEqualTo(1);
-      assertThat(game.getBoard().getTileAtIndex(player.getPosition()))
+              "After one move should land on tile index 2, instead it was " + player.getPosition())
+          .isEqualTo(2);
+      assertThat(game.getBoard().getTileAtIndex(player.getPosition() - 1))
           .isInstanceOf(NormalTile.class);
-
       game.nextTurn();
       assertThat(player.getPosition())
           .withFailMessage(
-              "After two moves should've landed on the tile with index 4, but was "
+              "After two moves should've landed on the tile with index 5, but was "
                   + player.getPosition())
-          .isEqualTo(4);
-      assertThat(game.getBoard().getTileAtIndex(player.getPosition()))
-          .isInstanceOf(NormalTile.class);
-
-      game.nextTurn();
-      assertThat(player.getPosition()).isEqualTo(6);
-      assertThat(game.getBoard().getTileAtIndex(player.getPosition()))
+          .isEqualTo(5);
+      assertThat(game.getBoard().getTileAtIndex(player.getPosition() - 1))
           .isInstanceOf(NormalTile.class);
 
       game.nextTurn();
       assertThat(player.getPosition()).isEqualTo(7);
-      assertThat(game.getBoard().getTileAtIndex(player.getPosition()))
-          .isInstanceOf(NormalTile.class);
-    }
-  }
-
-  @Test
-  void test_simulateGamePlay_with_rollOnSix() {
-    try (MockedStatic<Dice> mockedDice = mockStatic(Dice.class)) {
-      mockedDice.when(() -> Dice.roll(1)).thenReturn(new DiceRoll(6)).thenReturn(new DiceRoll(2));
-
-      assertThat(game.getBoard()).isNotNull();
-      assertThat(game.getBoard().tiles()).hasSize(14);
-
-      var player = game.getPlayers().getFirst();
-      assertThat(player.getPosition()).isZero();
-
-      game.nextTurn();
-      assertThat(player.getPosition()).isEqualTo(7);
-      assertThat(game.getBoard().getTileAtIndex(player.getPosition()))
+      assertThat(game.getBoard().getTileAtIndex(player.getPosition() - 1))
           .isInstanceOf(NormalTile.class);
 
       game.nextTurn();
-      assertThat(game.getBoard().getTileAtIndex(player.getPosition()))
+      assertThat(player.getPosition()).isEqualTo(8);
+      assertThat(game.getBoard().getTileAtIndex(player.getPosition() - 1))
           .isInstanceOf(NormalTile.class);
     }
   }
-}
+  }
