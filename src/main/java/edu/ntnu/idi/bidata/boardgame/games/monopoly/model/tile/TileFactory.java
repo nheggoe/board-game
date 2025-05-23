@@ -30,8 +30,7 @@ public class TileFactory {
    */
   public static List<MonopolyTile> generateOwnableTiles() {
     try {
-      return generateTilesFromCSV(
-          CSVReader.readAll(Path.of("src/main/resources/csv/monopoly_default.csv")), 4);
+      return generateTilesFromCSV(CSVReader.readAll(Path.of("data/csv/monopoly.csv")), 4);
     } catch (IOException ignored) {
       return List.of();
     }

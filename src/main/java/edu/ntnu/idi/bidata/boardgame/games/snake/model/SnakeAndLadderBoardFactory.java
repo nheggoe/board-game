@@ -27,7 +27,7 @@ public class SnakeAndLadderBoardFactory {
    * @throws IllegalStateException if the file fails to load or parse
    */
   public static SnakeAndLadderBoard createBoard() {
-    return createBoardFromCsv(Path.of("src/main/resources/csv/snake_and_ladder_default.csv"));
+    return createBoardFromCsv(Path.of("data/csv/snakeAndLadder.csv"));
   }
 
   /**

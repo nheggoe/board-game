@@ -38,7 +38,9 @@ public class SnakeAndLadderGame extends Game<SnakeAndLadderTile, SnakeAndLadderP
   /** Executes the next player's turn by rolling the dice and applying tile effects. */
   @Override
   public void nextTurn() {
-    rollAndMovePlayer(getNextPlayer());
+    if (!isEnded()) {
+      rollAndMovePlayer(getNextPlayer());
+    }
   }
 
   /**
@@ -63,7 +65,7 @@ public class SnakeAndLadderGame extends Game<SnakeAndLadderTile, SnakeAndLadderP
   }
 
   private boolean isAtTheEnd(SnakeAndLadderPlayer player) {
-    return player.getPosition() == getBoard().size() - 1;
+    return player.getPosition() >= getBoard().size() - 1;
   }
 
   /**
@@ -161,7 +163,7 @@ public class SnakeAndLadderGame extends Game<SnakeAndLadderTile, SnakeAndLadderP
     int oldIndex = player.getPosition();
     int targetIndex = oldIndex + tilesToMove;
 
-    int maxIndex = getBoard().size() - 1;
+    int maxIndex = getBoard().size();
 
     player.setPosition(Math.min(targetIndex, maxIndex));
     notifyPlayerMoved(player);
