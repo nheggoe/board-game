@@ -14,22 +14,144 @@ modular software architecture, object-oriented programming, and user interface d
 ## Project structure
 
 ```
-$ tree boardgame -d -L 2
 boardgame
+├── Launcher.java
 ├── common
 │   ├── event
+│   │   ├── EventBus.java
+│   │   ├── EventListener.java
+│   │   ├── EventPublisher.java
+│   │   ├── UnhandledEventException.java
+│   │   └── type
+│   │       ├── CoreEvent.java
+│   │       ├── Event.java
+│   │       ├── MonopolyEvent.java
+│   │       ├── SnakeAndLadderEvent.java
+│   │       └── UserInterfaceEvent.java
 │   ├── io
+│   │   ├── DAO.java
+│   │   ├── FileUtil.java
+│   │   ├── csv
+│   │   │   ├── CSVHandler.java
+│   │   │   ├── CSVReader.java
+│   │   │   └── CSVWriter.java
+│   │   └── json
+│   │       ├── CustomGson.java
+│   │       ├── JsonException.java
+│   │       ├── JsonReader.java
+│   │       ├── JsonService.java
+│   │       ├── JsonType.java
+│   │       ├── JsonWriter.java
+│   │       └── adapter
+│   │           ├── BoardAdapter.java
+│   │           ├── MonopolyTileAdapter.java
+│   │           ├── OwnableAdapter.java
+│   │           └── SnakeAndLadderTileAdapter.java
 │   ├── repository
+│   │   ├── DataRepository.java
+│   │   └── JsonRepository.java
 │   ├── ui
+│   │   ├── component
+│   │   │   ├── EndDialog.java
+│   │   │   ├── PlayerSetupController.java
+│   │   │   ├── SettingButton.java
+│   │   │   └── SettingDialog.java
+│   │   ├── controller
+│   │   │   └── MainController.java
+│   │   └── view
+│   │       ├── MainView.java
+│   │       └── PlayerSetupView.java
 │   └── util
+│       ├── AlertFactory.java
+│       ├── GameFactory.java
+│       └── StringFormatter.java
 ├── core
+│   ├── BoardGame.java
+│   ├── GameEngine.java
+│   ├── PlayerManager.java
 │   ├── model
+│   │   ├── Board.java
+│   │   ├── Game.java
+│   │   ├── Player.java
+│   │   ├── Tile.java
+│   │   ├── TileAction.java
+│   │   ├── TurnManager.java
+│   │   └── dice
+│   │       ├── Dice.java
+│   │       └── DiceRoll.java
 │   └── ui
+│       ├── Component.java
+│       ├── Controller.java
+│       ├── EventListeningComponent.java
+│       ├── GameView.java
+│       ├── SceneSwitcher.java
+│       └── View.java
 └── games
     ├── monopoly
+    │   ├── component
+    │   │   ├── DiceView.java
+    │   │   ├── MessagePanel.java
+    │   │   ├── MonopolyBoardView.java
+    │   │   ├── PlayerDashboard.java
+    │   │   └── RollDiceButton.java
+    │   ├── controller
+    │   │   └── MonopolyGameController.java
+    │   ├── model
+    │   │   ├── MonopolyGame.java
+    │   │   ├── board
+    │   │   │   ├── IllegalTilePositionException.java
+    │   │   │   ├── InvalidBoardLayoutException.java
+    │   │   │   ├── MonopolyBoard.java
+    │   │   │   └── MonopolyBoardFactory.java
+    │   │   ├── ownable
+    │   │   │   ├── InsufficientFundsException.java
+    │   │   │   ├── MonopolyPlayer.java
+    │   │   │   ├── Ownable.java
+    │   │   │   ├── Property.java
+    │   │   │   ├── Railroad.java
+    │   │   │   └── Utility.java
+    │   │   ├── tile
+    │   │   │   ├── CornerMonopolyTile.java
+    │   │   │   ├── FreeParkingMonopolyTile.java
+    │   │   │   ├── GoToJailMonopolyTile.java
+    │   │   │   ├── JailMonopolyTile.java
+    │   │   │   ├── MonopolyTile.java
+    │   │   │   ├── OwnableMonopolyTile.java
+    │   │   │   ├── StartMonopolyTile.java
+    │   │   │   ├── TaxMonopolyTile.java
+    │   │   │   └── TileFactory.java
+    │   │   └── upgrade
+    │   │       ├── Upgrade.java
+    │   │       └── UpgradeType.java
+    │   ├── repository
+    │   │   └── JsonMonopolyGameRepository.java
+    │   └── view
+    │       └── MonopolyGameView.java
     └── snake
+        ├── component
+        │   ├── FigureAnimator.java
+        │   ├── PlayerRender.java
+        │   ├── SnakeAndLadderBoardRender.java
+        │   └── SnakeBoardLayout.java
+        ├── controller
+        │   └── SnakeGameController.java
+        ├── model
+        │   ├── SnakeAndLadderBoard.java
+        │   ├── SnakeAndLadderBoardFactory.java
+        │   ├── SnakeAndLadderGame.java
+        │   ├── SnakeAndLadderPlayer.java
+        │   └── tile
+        │       ├── LadderTile.java
+        │       ├── NormalTile.java
+        │       ├── SnakeAndLadderTile.java
+        │       └── SnakeTile.java
+        ├── repository
+        │   └── JsonSALRepository.java
+        └── view
+            ├── SnakeGameView.java
+            └── SnakeSetupView.java
 
-13 directories
+36 directories, 100 files
 ```
 
 Project source code is organised into packages:
