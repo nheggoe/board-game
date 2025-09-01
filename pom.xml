@@ -4,12 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>edu.ntnu.idi.bidata</groupId>
-    <artifactId>board-game</artifactId>
+    <groupId>dev.nheggoe</groupId>
+    <artifactId>boardgame</artifactId>
     <version>1.0.0</version>
 
     <properties>
-        <mainClass>edu.ntnu.idi.bidata.boardgame.Launcher</mainClass>
+        <mainClass>${groupId}.${artifactId}.Launcher</mainClass>
         <java.version>21</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- Dependencies Version -->
